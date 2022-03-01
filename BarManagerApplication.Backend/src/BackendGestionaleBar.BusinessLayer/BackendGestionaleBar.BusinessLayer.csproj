@@ -4,4 +4,10 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BackendGestionaleBar.Authentication\BackendGestionaleBar.Authentication.csproj" />
+    <ProjectReference Include="..\BackendGestionaleBar.DataAccessLayer\BackendGestionaleBar.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\BackendGestionaleBar.Shared\BackendGestionaleBar.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
