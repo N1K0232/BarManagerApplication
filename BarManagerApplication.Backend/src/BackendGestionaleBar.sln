@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar", "BackendGestionaleBar\BackendGestionaleBar.csproj", "{5FE9D102-FE83-4C72-8004-4DF222A8A455}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.BusinessLayer", "BackendGestionaleBar.BusinessLayer\BackendGestionaleBar.BusinessLayer.csproj", "{A99EB352-0342-46C3-ABC0-0F6206D0B669}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Authentication", "BackendGestionaleBar.Authentication\BackendGestionaleBar.Authentication.csproj", "{9ADD6852-6679-446C-991F-06EB808C6E2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.DataAccessLayer", "BackendGestionaleBar.DataAccessLayer\BackendGestionaleBar.DataAccessLayer.csproj", "{83301E6A-C6C9-4DE0-B085-FCFAA8AB29FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Security", "BackendGestionaleBar.Security\BackendGestionaleBar.Security.csproj", "{9C3B0F07-A201-4E46-A680-229DBB437D99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Shared", "BackendGestionaleBar.Shared\BackendGestionaleBar.Shared.csproj", "{AA4B448C-90BC-4BE7-95F4-77186EA64104}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5FE9D102-FE83-4C72-8004-4DF222A8A455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FE9D102-FE83-4C72-8004-4DF222A8A455}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FE9D102-FE83-4C72-8004-4DF222A8A455}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FE9D102-FE83-4C72-8004-4DF222A8A455}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A99EB352-0342-46C3-ABC0-0F6206D0B669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A99EB352-0342-46C3-ABC0-0F6206D0B669}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A99EB352-0342-46C3-ABC0-0F6206D0B669}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A99EB352-0342-46C3-ABC0-0F6206D0B669}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ADD6852-6679-446C-991F-06EB808C6E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ADD6852-6679-446C-991F-06EB808C6E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ADD6852-6679-446C-991F-06EB808C6E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ADD6852-6679-446C-991F-06EB808C6E2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83301E6A-C6C9-4DE0-B085-FCFAA8AB29FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83301E6A-C6C9-4DE0-B085-FCFAA8AB29FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83301E6A-C6C9-4DE0-B085-FCFAA8AB29FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83301E6A-C6C9-4DE0-B085-FCFAA8AB29FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C3B0F07-A201-4E46-A680-229DBB437D99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C3B0F07-A201-4E46-A680-229DBB437D99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C3B0F07-A201-4E46-A680-229DBB437D99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C3B0F07-A201-4E46-A680-229DBB437D99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA4B448C-90BC-4BE7-95F4-77186EA64104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA4B448C-90BC-4BE7-95F4-77186EA64104}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA4B448C-90BC-4BE7-95F4-77186EA64104}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA4B448C-90BC-4BE7-95F4-77186EA64104}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1C9B205-76BD-4290-B6A1-425535616AD3}
+	EndGlobalSection
+EndGlobal
