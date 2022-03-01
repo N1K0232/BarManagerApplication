@@ -5,15 +5,17 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar", "BackendGestionaleBar\BackendGestionaleBar.csproj", "{5FE9D102-FE83-4C72-8004-4DF222A8A455}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.BusinessLayer", "BackendGestionaleBar.BusinessLayer\BackendGestionaleBar.BusinessLayer.csproj", "{A99EB352-0342-46C3-ABC0-0F6206D0B669}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.BusinessLayer", "BackendGestionaleBar.BusinessLayer\BackendGestionaleBar.BusinessLayer.csproj", "{A99EB352-0342-46C3-ABC0-0F6206D0B669}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Authentication", "BackendGestionaleBar.Authentication\BackendGestionaleBar.Authentication.csproj", "{9ADD6852-6679-446C-991F-06EB808C6E2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Authentication", "BackendGestionaleBar.Authentication\BackendGestionaleBar.Authentication.csproj", "{9ADD6852-6679-446C-991F-06EB808C6E2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.DataAccessLayer", "BackendGestionaleBar.DataAccessLayer\BackendGestionaleBar.DataAccessLayer.csproj", "{83301E6A-C6C9-4DE0-B085-FCFAA8AB29FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.DataAccessLayer", "BackendGestionaleBar.DataAccessLayer\BackendGestionaleBar.DataAccessLayer.csproj", "{83301E6A-C6C9-4DE0-B085-FCFAA8AB29FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Security", "BackendGestionaleBar.Security\BackendGestionaleBar.Security.csproj", "{9C3B0F07-A201-4E46-A680-229DBB437D99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Security", "BackendGestionaleBar.Security\BackendGestionaleBar.Security.csproj", "{9C3B0F07-A201-4E46-A680-229DBB437D99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Shared", "BackendGestionaleBar.Shared\BackendGestionaleBar.Shared.csproj", "{AA4B448C-90BC-4BE7-95F4-77186EA64104}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Shared", "BackendGestionaleBar.Shared\BackendGestionaleBar.Shared.csproj", "{AA4B448C-90BC-4BE7-95F4-77186EA64104}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BackendGestionaleBar.Database", "BackendGestionaleBar.Database\BackendGestionaleBar.Database.sqlproj", "{E06206B0-4C36-4DB7-AA75-F765279C2CD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,12 @@ Global
 		{AA4B448C-90BC-4BE7-95F4-77186EA64104}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA4B448C-90BC-4BE7-95F4-77186EA64104}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA4B448C-90BC-4BE7-95F4-77186EA64104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E06206B0-4C36-4DB7-AA75-F765279C2CD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E06206B0-4C36-4DB7-AA75-F765279C2CD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E06206B0-4C36-4DB7-AA75-F765279C2CD0}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E06206B0-4C36-4DB7-AA75-F765279C2CD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E06206B0-4C36-4DB7-AA75-F765279C2CD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E06206B0-4C36-4DB7-AA75-F765279C2CD0}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
