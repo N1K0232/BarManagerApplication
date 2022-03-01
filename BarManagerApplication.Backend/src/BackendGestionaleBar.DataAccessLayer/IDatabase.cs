@@ -2,7 +2,8 @@
 
 namespace BackendGestionaleBar.DataAccessLayer
 {
-    public class Class1
+    public interface IDatabase : IDisposable
     {
+
     }
 }
