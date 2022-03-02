@@ -1,10 +1,11 @@
-﻿using BackendGestionaleBar.Security.Models;
+﻿using BackendGestionaleBar.Security.Models.Request;
+using BackendGestionaleBar.Security.Models.Response;
 
 namespace BackendGestionaleBar.Security
 {
     public interface IPasswordHasher
     {
-        CheckResult Check(string hash, string password);
+        CheckPasswordResponse Check(CheckPasswordRequest request);
         string Hash(string password);
     }
 }
