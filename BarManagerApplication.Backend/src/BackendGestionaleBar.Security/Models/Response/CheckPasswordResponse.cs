@@ -1,8 +1,9 @@
-﻿namespace BackendGestionaleBar.Security.Models
+﻿namespace BackendGestionaleBar.Security.Models.Response
+
 {
-    public class CheckResult
+    public class CheckPasswordResponse
     {
-        public CheckResult(bool verified, bool needsUpgrade)
+        internal CheckPasswordResponse(bool verified, bool needsUpgrade)
         {
             Verified = verified;
             NeedsUpgrade = needsUpgrade;

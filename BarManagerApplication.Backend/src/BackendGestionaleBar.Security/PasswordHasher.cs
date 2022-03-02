@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.Security.Models;
+﻿using BackendGestionaleBar.Security.Models.Request;
+using BackendGestionaleBar.Security.Models.Response;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
@@ -11,9 +12,9 @@ namespace BackendGestionaleBar.Security
         private const int KeySize = 32;
         private const int Iterations = 10000;
 
-        public CheckResult Check(string hash, string password)
+        public CheckPasswordResponse Check(CheckPasswordRequest request)
         {
-            string[] parts = hash.Split(',', 3);
+            string[] parts = request.Hash.Split(',', 3);
             if (parts.Length != 3)
             {
                 throw new FormatException("Formato della stringa non corretto");
@@ -23,12 +24,12 @@ namespace BackendGestionaleBar.Security
             byte[] salt = Convert.FromBase64String(parts[1]);
             byte[] key = Convert.FromBase64String(parts[2]);
 
-            using var algorithm = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA512);
+            using var algorithm = new Rfc2898DeriveBytes(request.Password, salt, iterations, HashAlgorithmName.SHA512);
             byte[] keyToCheck = algorithm.GetBytes(KeySize);
             bool verified = keyToCheck.SequenceEqual(key);
             bool needsUpgrade = iterations != Iterations;
 
-            return new CheckResult(verified, needsUpgrade);
+            return new CheckPasswordResponse(verified, needsUpgrade);
         }
         public string Hash(string password)
         {
