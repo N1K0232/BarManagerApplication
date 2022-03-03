@@ -11,5 +11,12 @@ namespace BackendGestionaleBar.DataAccessLayer.Internal
             builder.AppendLine("WHERE IdCliente=@IdCliente");
             return builder.ToString();
         }
+        public static string InsertCliente()
+        {
+            StringBuilder builder = new();
+            builder.AppendLine("INSERT INTO Clienti(IdCliente,Nome,Cognome,DataNascita,CodiceFiscale,Telefono)");
+            builder.AppendLine("VALUES(@IdCliente,@Nome,@Cognome,@DataNascita,@CodiceFiscale,@Telefono)");
+            return builder.ToString();
+        }
     }
 }
