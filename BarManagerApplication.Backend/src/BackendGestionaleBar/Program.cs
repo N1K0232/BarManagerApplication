@@ -8,18 +8,27 @@ namespace BackendGestionaleBar
     {
         public async static Task Main(string[] args)
         {
-            var builder = CreateHostBuilder(args);
-            using var host = builder.Build();
+            IHostBuilder builder = await CreateHostBuilderAsync(args);
+            IHost host = await CreateHostAsync(builder);
             await host.RunAsync();
+            host.Dispose();
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args)
+        private static Task<IHostBuilder> CreateHostBuilderAsync(string[] args)
         {
-            return Host.CreateDefaultBuilder(args)
+            IHostBuilder builder = Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+            return Task.FromResult(builder);
+        }
+
+        private static Task<IHost> CreateHostAsync(IHostBuilder builder)
+        {
+            IHost host = builder.Build();
+            return Task.FromResult(host);
         }
     }
 }

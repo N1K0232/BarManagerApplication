@@ -32,24 +32,21 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
                 connection = null;
             }
 
-            if (e != null)
+            if (e == null)
             {
-                await StopAsync(cancellationToken);
-                return;
-            }
-
-            try
-            {
-                await connection.OpenAsync(cancellationToken);
-                await connection.CloseAsync();
-            }
-            catch (SqlException ex)
-            {
-                e = ex;
-            }
-            catch (InvalidOperationException ex)
-            {
-                e = ex;
+                try
+                {
+                    await connection.OpenAsync(cancellationToken);
+                    await connection.CloseAsync();
+                }
+                catch (SqlException ex)
+                {
+                    e = ex;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    e = ex;
+                }
             }
 
             if (e != null)
