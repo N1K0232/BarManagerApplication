@@ -1,7 +1,10 @@
-﻿using BackendGestionaleBar.Security;
+﻿using BackendGestionaleBar.DataAccessLayer.Extensions;
+using BackendGestionaleBar.DataAccessLayer.Internal;
+using BackendGestionaleBar.Security;
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.DataAccessLayer
 {
@@ -45,6 +48,33 @@ namespace BackendGestionaleBar.DataAccessLayer
             {
                 throw ex;
             }
+        }
+
+        public async Task<DataTable> GetClienteAsync(Guid idCliente)
+        {
+            DataTable dataTable;
+
+            try
+            {
+                await connection.OpenAsync();
+                using var command = connection.CreateCommand();
+                command.CommandText = SelectQueries.GetCliente();
+                command.Parameters.Add(new SqlParameter("IdCliente", idCliente));
+                using var adapter = new SqlDataAdapter(command);
+                dataTable = new DataTable();
+                await adapter.FillAsync(dataTable);
+                await connection.CloseAsync();
+            }
+            catch (SqlException)
+            {
+                dataTable = null;
+            }
+            catch (InvalidOperationException)
+            {
+                dataTable = null;
+            }
+
+            return dataTable;
         }
 
         public void Dispose()
