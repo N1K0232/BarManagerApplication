@@ -69,6 +69,12 @@ namespace BackendGestionaleBar.DataAccessLayer
         }
         public async Task<int> RegisterClienteAsync(Cliente cliente)
         {
+            DataTable dataTable = await GetClienteAsync(cliente.IdCliente, QueryGenerator.GetCliente());
+            if (dataTable.Rows.Count > 0)
+            {
+                return -2;
+            }
+
             int result;
             string query = QueryGenerator.InsertCliente();
 
@@ -93,7 +99,7 @@ namespace BackendGestionaleBar.DataAccessLayer
             }
             catch (InvalidOperationException)
             {
-                result = -2;
+                result = -3;
             }
 
             return result;
