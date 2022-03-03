@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.DataAccessLayer.Internal
 {
-    internal static class SelectQueries
+    internal static class QueryGenerator
     {
         public static string GetCliente()
         {
