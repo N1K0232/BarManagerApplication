@@ -70,4 +70,7 @@
     <Build Include="dbo\Stored Procedures\SP_RegisterCliente.sql" />
     <Build Include="dbo\Stored Procedures\SP_RegisterCredenziali.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="BackendGestionaleBar.Database.publish.xml" />
+  </ItemGroup>
 </Project>
