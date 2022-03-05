@@ -10,8 +10,6 @@ namespace BackendGestionaleBar.Shared.Models.Requests
 
         public DateTime? DataNascita { get; set; }
 
-        public string CodiceFiscale { get; set; }
-
         public string Telefono { get; set; }
     }
 }

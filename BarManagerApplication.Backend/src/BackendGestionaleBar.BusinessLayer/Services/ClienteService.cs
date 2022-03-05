@@ -36,7 +36,6 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 Nome = request.Nome,
                 Cognome = request.Cognome,
                 DataNascita = request.DataNascita.Value,
-                CodiceFiscale = request.CodiceFiscale,
                 Telefono = request.Telefono
             };
 

@@ -154,7 +154,6 @@ namespace BackendGestionaleBar.DataAccessLayer
                 command.Parameters.Add(new SqlParameter("Nome", cliente.Nome));
                 command.Parameters.Add(new SqlParameter("Cognome", cliente.Cognome));
                 command.Parameters.Add(new SqlParameter("DataNascita", cliente.DataNascita));
-                command.Parameters.Add(new SqlParameter("CodiceFiscale", cliente.CodiceFiscale));
                 command.Parameters.Add(new SqlParameter("Telefono", cliente.Telefono));
                 result = await command.ExecuteNonQueryAsync();
                 await connection.CloseAsync();

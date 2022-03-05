@@ -21,10 +21,6 @@ namespace BackendGestionaleBar.Shared.Helpers
             {
                 errors.Add("la data di nascita è richiesta");
             }
-            if (string.IsNullOrEmpty(request.CodiceFiscale))
-            {
-                errors.Add("il codice fiscale è richiesto");
-            }
             if (string.IsNullOrEmpty(request.Telefono))
             {
                 errors.Add("il telefono è richiesto");
