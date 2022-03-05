@@ -1,16 +1,14 @@
+using BackendGestionaleBar.BusinessLayer.Services;
+using BackendGestionaleBar.BusinessLayer.StartupTasks;
+using BackendGestionaleBar.DataAccessLayer;
+using BackendGestionaleBar.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace BackendGestionaleBar
 {
@@ -26,11 +24,19 @@ namespace BackendGestionaleBar
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BackendGestionaleBar", Version = "v1" });
+            });
+
+            services.AddHostedService<ConnectionStartupTask>();
+            services.AddScoped<IClienteService, ClienteService>();
+            services.AddScoped<IDatabase, Database>();
+            services.AddScoped<SqlConnection>(_ =>
+            {
+                string connectionString = StringConverter.GetString(Configuration.GetConnectionString("SqlConnection"));
+                return new SqlConnection(connectionString);
             });
         }
 
