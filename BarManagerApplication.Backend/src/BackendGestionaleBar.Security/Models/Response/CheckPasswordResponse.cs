@@ -1,7 +1,6 @@
 ﻿namespace BackendGestionaleBar.Security.Models.Response
-
 {
-    public class CheckPasswordResponse
+    public sealed class CheckPasswordResponse
     {
         internal CheckPasswordResponse(bool verified, bool needsUpgrade)
         {

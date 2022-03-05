@@ -73,4 +73,7 @@
   <ItemGroup>
     <None Include="BackendGestionaleBar.Database.publish.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="BackendGestionaleBar.Database.refactorlog" />
+  </ItemGroup>
 </Project>

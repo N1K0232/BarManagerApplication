@@ -2,7 +2,13 @@
 {
     public class CheckPasswordRequest
     {
-        public string Hash { get; set; }
-        public string Password { get; set; }
+        public CheckPasswordRequest(string hash, string password)
+        {
+            Hash = hash;
+            Password = password;
+        }
+
+        public string Hash { get; }
+        public string Password { get; }
     }
 }
