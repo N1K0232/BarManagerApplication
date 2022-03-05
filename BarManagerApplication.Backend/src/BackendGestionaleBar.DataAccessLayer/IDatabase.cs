@@ -8,6 +8,7 @@ namespace BackendGestionaleBar.DataAccessLayer
     public interface IDatabase : IDisposable
     {
         Task<DataRow> GetClienteAsync(Guid idCliente);
+        Task<bool> LoginAsync(string email, string password);
         Task<int> RegisterClienteAsync(Cliente cliente);
     }
 }

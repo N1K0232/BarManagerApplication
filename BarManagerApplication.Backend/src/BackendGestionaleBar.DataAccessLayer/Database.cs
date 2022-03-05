@@ -2,6 +2,7 @@
 using BackendGestionaleBar.DataAccessLayer.Extensions;
 using BackendGestionaleBar.DataAccessLayer.Internal;
 using BackendGestionaleBar.Security;
+using BackendGestionaleBar.Security.Models.Request;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -52,6 +53,45 @@ namespace BackendGestionaleBar.DataAccessLayer
             {
                 throw ex;
             }
+        }
+
+        public async Task<bool> LoginAsync(string email, string password)
+        {
+            DataTable dataTable;
+
+            try
+            {
+                await connection.OpenAsync();
+                command = new SqlCommand(QueryGenerator.GetCredenziali(), connection);
+                command.Parameters.Add(new SqlParameter("Email", email));
+                adapter = new SqlDataAdapter(command);
+                dataTable = new DataTable();
+                await adapter.FillAsync(dataTable);
+                await connection.CloseAsync();
+            }
+            catch (SqlException)
+            {
+                dataTable = null;
+            }
+            catch (InvalidOperationException)
+            {
+                dataTable = null;
+            }
+
+            if (dataTable == null)
+            {
+                return false;
+            }
+
+            string dbPassword = Convert.ToString(dataTable.Rows[0]["Password"]);
+            return CheckLogin(dbPassword, password);
+        }
+        private bool CheckLogin(string dbPassword, string password)
+        {
+            hasher = new PasswordHasher();
+            var request = new CheckPasswordRequest(dbPassword, password);
+            var response = hasher.Check(request);
+            return response.Verified && !response.NeedsUpgrade;
         }
 
         public async Task<DataRow> GetClienteAsync(Guid idCliente)
@@ -136,7 +176,6 @@ namespace BackendGestionaleBar.DataAccessLayer
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
         private void Dispose(bool disposing)
         {
             if (disposing)
