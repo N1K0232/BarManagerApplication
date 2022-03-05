@@ -25,6 +25,14 @@ namespace BackendGestionaleBar.Shared.Helpers
             {
                 errors.Add("il telefono è richiesto");
             }
+            if (string.IsNullOrEmpty(request.Email))
+            {
+                errors.Add("l'email è richiesta");
+            }
+            if (string.IsNullOrEmpty(request.Password))
+            {
+                errors.Add("la password è richiesta");
+            }
 
             return errors;
         }
