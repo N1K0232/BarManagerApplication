@@ -5,6 +5,7 @@ using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.BusinessLayer.Services
@@ -18,6 +19,28 @@ namespace BackendGestionaleBar.BusinessLayer.Services
             this.db = db;
         }
 
+        public async Task<Cliente> GetClienteAsync(Guid idCliente)
+        {
+            DataRow row = await db.GetClienteAsync(idCliente);
+            Cliente cliente;
+            if (row == null)
+            {
+                cliente = null;
+            }
+            else
+            {
+                cliente = new Cliente
+                {
+                    IdCliente = idCliente,
+                    Nome = Convert.ToString(row["Nome"]),
+                    Cognome = Convert.ToString(row["Cognome"]),
+                    DataNascita = Convert.ToDateTime(row["DataNascita"]),
+                    Telefono = Convert.ToString(row["Telefono"])
+                };
+            }
+
+            return cliente;
+        }
         public async Task<Response> RegisterClienteAsync(RegisterClienteRequest request)
         {
             List<string> errors = ParametersHelper.CheckRegisterClienteParameters(request);
