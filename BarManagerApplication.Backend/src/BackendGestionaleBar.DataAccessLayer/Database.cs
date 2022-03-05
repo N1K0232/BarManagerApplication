@@ -11,11 +11,11 @@ namespace BackendGestionaleBar.DataAccessLayer
 {
     public partial class Database : IDatabase, IDisposable
     {
-        SqlConnection connection;
-        SqlCommand command;
-        SqlDataAdapter adapter;
+        SqlConnection connection = null;
+        SqlCommand command = null;
+        SqlDataAdapter adapter = null;
 
-        PasswordHasher hasher;
+        PasswordHasher hasher = null;
 
         public Database(string[] parameters)
         {
@@ -69,18 +69,46 @@ namespace BackendGestionaleBar.DataAccessLayer
         }
         public async Task<int> RegisterClienteAsync(Cliente cliente)
         {
-            DataTable dataTable = await GetClienteAsync(cliente.IdCliente, QueryGenerator.GetCliente());
-            if (dataTable.Rows.Count > 0)
-            {
-                return -2;
-            }
+            //try
+            //{
+            //    await connection.OpenAsync();
+            //    command = new SqlCommand("SP_RegisterCliente", connection);
+            //    command.AddInput(cliente.IdCliente);
+            //    command.AddInput(cliente.Nome);
+            //    command.AddInput(cliente.Cognome);
+            //    command.AddInput(cliente.DataNascita.Date);
+            //    command.AddInput(cliente.CodiceFiscale);
+            //    command.AddInput(cliente.Telefono);
+            //    command.Parameters.Add(new SqlParameter("@Identity", SqlDbType.Int).Direction = ParameterDirection.Output);
+            //    await command.PrepareAsync();
+            //    int result = await command.ExecuteNonQueryAsync();
+            //    await connection.CloseAsync();
+            //    return Convert.ToInt32(command.Parameters["@Identity"]?.Value);
+            //}
+            //catch (SqlException)
+            //{
+            //    if (connection.State == ConnectionState.Open)
+            //    {
+            //        await connection.CloseAsync();
+            //    }
+            //    return -1;
+            //}
+            //catch (InvalidOperationException)
+            //{
+            //    if (connection.State == ConnectionState.Open)
+            //    {
+            //        await connection.CloseAsync();
+            //    }
+            //    return -2;
+            //}
 
             int result;
-            string query = QueryGenerator.InsertCliente();
+            string query;
 
             try
             {
                 await connection.OpenAsync();
+                query = QueryGenerator.InsertCliente();
                 command = new SqlCommand(query, connection);
                 command.Parameters.Add(new SqlParameter("IdCliente", cliente.IdCliente));
                 command.Parameters.Add(new SqlParameter("Nome", cliente.Nome));
@@ -90,8 +118,6 @@ namespace BackendGestionaleBar.DataAccessLayer
                 command.Parameters.Add(new SqlParameter("Telefono", cliente.Telefono));
                 result = await command.ExecuteNonQueryAsync();
                 await connection.CloseAsync();
-
-                command.Dispose();
             }
             catch (SqlException)
             {
@@ -99,7 +125,7 @@ namespace BackendGestionaleBar.DataAccessLayer
             }
             catch (InvalidOperationException)
             {
-                result = -3;
+                result = -2;
             }
 
             return result;
@@ -113,13 +139,25 @@ namespace BackendGestionaleBar.DataAccessLayer
 
         private void Dispose(bool disposing)
         {
-            if (disposing && connection != null)
+            if (disposing)
             {
-                if (connection.State == ConnectionState.Open)
+                if (connection != null)
                 {
-                    connection.Close();
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+
+                    connection.Dispose();
                 }
-                connection.Dispose();
+                if (command != null)
+                {
+                    command.Dispose();
+                }
+                if (adapter != null)
+                {
+                    adapter.Dispose();
+                }
             }
         }
 
@@ -135,9 +173,6 @@ namespace BackendGestionaleBar.DataAccessLayer
                 dataTable = new DataTable();
                 await adapter.FillAsync(dataTable);
                 await connection.CloseAsync();
-
-                adapter.Dispose();
-                command.Dispose();
             }
             catch (SqlException)
             {
