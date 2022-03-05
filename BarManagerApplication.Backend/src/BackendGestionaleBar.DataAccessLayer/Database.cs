@@ -170,6 +170,37 @@ namespace BackendGestionaleBar.DataAccessLayer
             return result;
         }
 
+
+        public async Task<int> RegisterCredenzialiAsync(Credenziali credenziali, string role)
+        {
+            int result;
+            hasher = new PasswordHasher();
+            string query = QueryGenerator.RegisterCredenziali();
+
+            try
+            {
+                await connection.OpenAsync();
+                command = new SqlCommand(query, connection);
+                command.Parameters.Add(new SqlParameter("IdUtente", credenziali.IdUtente));
+                command.Parameters.Add(new SqlParameter("Email", credenziali.Email));
+                command.Parameters.Add(new SqlParameter("Password", hasher.Hash(credenziali.Password)));
+                command.Parameters.Add(new SqlParameter("Role", role));
+                command.Parameters.Add(new SqlParameter("DataRegistrazione", credenziali.DataRegistrazione));
+                result = await command.ExecuteNonQueryAsync();
+                await connection.CloseAsync();
+            }
+            catch (SqlException)
+            {
+                result = -1;
+            }
+            catch (InvalidOperationException)
+            {
+                result = -2;
+            }
+
+            return result;
+        }
+
         public void Dispose()
         {
             Dispose(true);

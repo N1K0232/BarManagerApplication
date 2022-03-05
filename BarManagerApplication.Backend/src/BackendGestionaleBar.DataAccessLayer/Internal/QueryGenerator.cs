@@ -11,6 +11,13 @@ namespace BackendGestionaleBar.DataAccessLayer.Internal
             sb.AppendLine("WHERE Email=@Email");
             return sb.ToString();
         }
+        public static string RegisterCredenziali()
+        {
+            StringBuilder sb = new();
+            sb.AppendLine("INSERT INTO Credenziali(IdUtente,Email,Password,Role,DataRegistrazione)");
+            sb.AppendLine("VALUES(@IdUtente,@Email,@Password,@Role,@DataRegistrazione)");
+            return sb.ToString();
+        }
 
         public static string GetCliente()
         {

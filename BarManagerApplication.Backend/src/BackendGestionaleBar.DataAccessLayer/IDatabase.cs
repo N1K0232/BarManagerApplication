@@ -10,5 +10,6 @@ namespace BackendGestionaleBar.DataAccessLayer
         Task<DataRow> GetClienteAsync(Guid idCliente);
         Task<bool> LoginAsync(string email, string password);
         Task<int> RegisterClienteAsync(Cliente cliente);
+        Task<int> RegisterCredenzialiAsync(Credenziali credenziali, string role);
     }
 }
