@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE SP_RegisterCliente
-@Id UNIQUEIDENTIFIER,
+@IdCliente UNIQUEIDENTIFIER,
 @Nome NVARCHAR(MAX),
 @Cognome NVARCHAR(MAX),
 @DataNascita DATE,
@@ -13,8 +13,8 @@ IF @count <> 0
 	SET @Identity = 0;
 	RETURN -1;
 BEGIN
-INSERT INTO Clienti(Id,Nome,Cognome,DataNascita,CodiceFiscale,Telefono)
-VALUES(@Id,@Nome,@Cognome,@DataNascita,@CodiceFiscale,@Telefono);
+INSERT INTO Clienti(IdCliente,Nome,Cognome,DataNascita,CodiceFiscale,Telefono)
+VALUES(@IdCliente,@Nome,@Cognome,@DataNascita,@CodiceFiscale,@Telefono);
 IF @@ERROR <> 0
 	SET @Identity = 0;
 	RETURN -101;

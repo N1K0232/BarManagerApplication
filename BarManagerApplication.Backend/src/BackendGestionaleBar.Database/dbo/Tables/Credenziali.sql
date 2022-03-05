@@ -7,6 +7,6 @@
     [DataCambioPassword] DATE             NULL,
     [DataUltimoAccesso]  DATE             NULL,
     PRIMARY KEY CLUSTERED ([Email] ASC),
-    FOREIGN KEY ([IdUtente]) REFERENCES [dbo].[Clienti] ([Id])
+    FOREIGN KEY ([IdUtente]) REFERENCES [dbo].[Clienti] ([IdCliente])
 );
 
