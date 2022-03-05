@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.DataAccessLayer;
+﻿using BackendGestionaleBar.Authentication;
+using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.Shared.Helpers;
 using BackendGestionaleBar.Shared.Models.Requests;
@@ -62,9 +63,18 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 Telefono = request.Telefono
             };
 
-            var result = await db.RegisterClienteAsync(cliente);
+            var credenziali = new Credenziali
+            {
+                IdUtente = cliente.IdCliente,
+                Email = request.Email,
+                Password = request.Password,
+                DataRegistrazione = DateTime.Today,
+            };
 
-            if (result > 0)
+            int registerCliente = await db.RegisterClienteAsync(cliente);
+            int registerCredenziali = await db.RegisterCredenzialiAsync(credenziali, RoleNames.Cliente);
+
+            if (registerCliente > 0 && registerCredenziali > 0)
             {
                 return new Response
                 {
