@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="Settings\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
