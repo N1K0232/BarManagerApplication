@@ -86,6 +86,54 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
             return response;
         }
+        public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request)
+        {
+            var user = ValidateAccessToken(request.AccessToken);
+            if (user != null)
+            {
+                var userId = user.GetId();
+                var dbUser = await userManager.FindByIdAsync(userId.ToString());
+
+                if (dbUser?.RefreshToken == null || dbUser?.RefreshTokenExpirationDate < DateTime.UtcNow || dbUser?.RefreshToken != request.RefreshToken)
+                {
+                    return null;
+                }
+
+                var response = CreateToken(user.Claims);
+
+                dbUser.RefreshToken = response.RefreshToken;
+                var expirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
+                dbUser.RefreshTokenExpirationDate = expirationDate;
+
+                await userManager.UpdateAsync(dbUser);
+
+                return response;
+            }
+
+            return null;
+        }
+        public async Task<RegisterResponse> UpdatePasswordAsync(UpdatePasswordRequest request)
+        {
+            var user = await userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return new RegisterResponse
+                {
+                    Succeeded = false,
+                    Errors = new List<string>
+                    {
+                        "Utente non esistente"
+                    }
+                };
+            }
+
+            var result = await userManager.ChangePasswordAsync(user, user.PasswordHash, request.NewPassword);
+            return new RegisterResponse
+            {
+                Succeeded = result.Succeeded,
+                Errors = result.Errors.Select(e => e.Description)
+            };
+        }
 
         private AuthResponse CreateToken(IEnumerable<Claim> claims)
         {
@@ -116,34 +164,6 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 return Convert.ToBase64String(randomNumber);
             }
         }
-
-        public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request)
-        {
-            var user = ValidateAccessToken(request.AccessToken);
-            if (user != null)
-            {
-                var userId = user.GetId();
-                var dbUser = await userManager.FindByIdAsync(userId.ToString());
-
-                if (dbUser?.RefreshToken == null || dbUser?.RefreshTokenExpirationDate < DateTime.UtcNow || dbUser?.RefreshToken != request.RefreshToken)
-                {
-                    return null;
-                }
-
-                var response = CreateToken(user.Claims);
-
-                dbUser.RefreshToken = response.RefreshToken;
-                var expirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
-                dbUser.RefreshTokenExpirationDate = expirationDate;
-
-                await userManager.UpdateAsync(dbUser);
-
-                return response;
-            }
-
-            return null;
-        }
-
         private ClaimsPrincipal ValidateAccessToken(string accessToken)
         {
             var parameters = new TokenValidationParameters

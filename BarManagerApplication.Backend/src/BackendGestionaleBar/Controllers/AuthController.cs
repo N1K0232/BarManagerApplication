@@ -66,5 +66,20 @@ namespace BackendGestionaleBar.Controllers
                 return BadRequest(response.Errors);
             }
         }
+
+        [HttpPost("UpdatePassword")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
+        {
+            var response = await identityService.UpdatePasswordAsync(request);
+            if (response.Succeeded)
+            {
+                return Ok("password cambiata con successo");
+            }
+
+            return BadRequest(response);
+        }
     }
 }
