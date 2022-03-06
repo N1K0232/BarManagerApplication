@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BackendGestionaleBar.BusinessLayer\BackendGestionaleBar.BusinessLayer.csproj" />
+    <ProjectReference Include="..\BackendGestionaleBar.Helpers\BackendGestionaleBar.Helpers.csproj" />
   </ItemGroup>
 
 </Project>
