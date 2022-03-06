@@ -9,11 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Authen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.BusinessLayer", "BackendGestionaleBar.BusinessLayer\BackendGestionaleBar.BusinessLayer.csproj", "{DC17A182-F0AE-49A5-9931-9C84E03B8E6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.DataAccessLayer", "BackendGestionaleBar.DataAccessLayer\BackendGestionaleBar.DataAccessLayer.csproj", "{57147ACE-7784-4FC7-82C4-0C0A20B3AEEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.DataAccessLayer", "BackendGestionaleBar.DataAccessLayer\BackendGestionaleBar.DataAccessLayer.csproj", "{57147ACE-7784-4FC7-82C4-0C0A20B3AEEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Shared", "BackendGestionaleBar.Shared\BackendGestionaleBar.Shared.csproj", "{E5D6009F-2662-433E-B270-4643C1D00288}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Shared", "BackendGestionaleBar.Shared\BackendGestionaleBar.Shared.csproj", "{E5D6009F-2662-433E-B270-4643C1D00288}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BackendGestionaleBar.Database", "BackendGestionaleBar.Database\BackendGestionaleBar.Database.sqlproj", "{9B0E3BB4-6097-4CC0-82AC-97AA6C9BCECE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Helpers", "BackendGestionaleBar.Helpers\BackendGestionaleBar.Helpers.csproj", "{2560C0C6-7EC7-49B6-B177-DF4755AD01C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{9B0E3BB4-6097-4CC0-82AC-97AA6C9BCECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B0E3BB4-6097-4CC0-82AC-97AA6C9BCECE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B0E3BB4-6097-4CC0-82AC-97AA6C9BCECE}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{2560C0C6-7EC7-49B6-B177-DF4755AD01C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2560C0C6-7EC7-49B6-B177-DF4755AD01C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2560C0C6-7EC7-49B6-B177-DF4755AD01C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2560C0C6-7EC7-49B6-B177-DF4755AD01C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
