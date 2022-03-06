@@ -3,7 +3,7 @@
     [UserName]                   NVARCHAR (256)     NULL,
     [NormalizedUserName]         NVARCHAR (256)     NULL,
     [FirstName]                  NVARCHAR (256)     NOT NULL,
-    [LastName]                   NVARCHAR (256)     NULL,
+    [LastName]                   NVARCHAR (256)     NOT NULL,
     [BirthDate]                  DATETIME           NOT NULL,
     [Email]                      NVARCHAR (256)     NULL,
     [NormalizedEmail]            NVARCHAR (256)     NULL,
