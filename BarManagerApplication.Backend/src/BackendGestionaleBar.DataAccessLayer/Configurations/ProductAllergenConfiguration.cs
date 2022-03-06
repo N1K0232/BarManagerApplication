@@ -10,6 +10,8 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations
         {
             builder.ToTable("ProductAllergens");
 
+            builder.HasKey(pa => new { pa.IdAllergen, pa.IdProduct });
+
             builder.HasOne(pa => pa.Product)
                 .WithMany(p => p.ProductAllergens)
                 .HasForeignKey(pa => pa.IdProduct)
