@@ -4,6 +4,8 @@ using BackendGestionaleBar.Authentication.Requirements;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
+using BackendGestionaleBar.DataAccessLayer;
+using BackendGestionaleBar.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -64,7 +66,14 @@ namespace BackendGestionaleBar
 
             services.AddDbContext<AuthenticationDbContext>(options =>
             {
-                var connectionString = Configuration.GetConnectionString("SqlConnection");
+                var hash = Configuration.GetConnectionString("SqlConnection");
+                var connectionString = StringConverter.GetString(hash);
+                options.UseSqlServer(connectionString);
+            });
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                var hash = Configuration.GetConnectionString("SqlConnection");
+                var connectionString = StringConverter.GetString(hash);
                 options.UseSqlServer(connectionString);
             });
 
