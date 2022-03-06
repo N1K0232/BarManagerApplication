@@ -1,6 +1,6 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Configurations;
-using BackendGestionaleBar.DataAccessLayer.Entities;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace BackendGestionaleBar.DataAccessLayer
 {
@@ -16,8 +16,8 @@ namespace BackendGestionaleBar.DataAccessLayer
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            Type type = typeof(ApplicationDbContext);
+            modelBuilder.ApplyConfigurationsFromAssembly(type.Assembly);
             base.OnModelCreating(modelBuilder);
         }
     }
