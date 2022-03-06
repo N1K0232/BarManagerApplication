@@ -35,6 +35,21 @@ namespace BackendGestionaleBar.Controllers
             return BadRequest("email o password errati");
         }
 
+        [HttpPost("Refresh")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Refresh(RefreshTokenRequest request)
+        {
+            var response = await identityService.RefreshTokenAsync(request);
+            if (response != null)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest();
+        }
+
         [HttpPost("Register")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]

@@ -7,6 +7,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
     public interface IIdentityService
     {
         Task<AuthResponse> LoginAsync(LoginRequest request);
+        Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request);
         Task<RegisterResponse> RegisterUserAsync(RegisterRequest request);
     }
 }

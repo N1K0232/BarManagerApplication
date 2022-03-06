@@ -1,5 +1,6 @@
 ﻿using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Entities;
+using BackendGestionaleBar.Authentication.Extensions;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;
@@ -114,6 +115,65 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 generator.GetBytes(randomNumber);
                 return Convert.ToBase64String(randomNumber);
             }
+        }
+
+        public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request)
+        {
+            var user = ValidateAccessToken(request.AccessToken);
+            if (user != null)
+            {
+                var userId = user.GetId();
+                var dbUser = await userManager.FindByIdAsync(userId.ToString());
+
+                if (dbUser?.RefreshToken == null || dbUser?.RefreshTokenExpirationDate < DateTime.UtcNow || dbUser?.RefreshToken != request.RefreshToken)
+                {
+                    return null;
+                }
+
+                var response = CreateToken(user.Claims);
+
+                dbUser.RefreshToken = response.RefreshToken;
+                var expirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
+                dbUser.RefreshTokenExpirationDate = expirationDate;
+
+                await userManager.UpdateAsync(dbUser);
+
+                return response;
+            }
+
+            return null;
+        }
+
+        private ClaimsPrincipal ValidateAccessToken(string accessToken)
+        {
+            var parameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtSettings.Issuer,
+                ValidateAudience = true,
+                ValidAudience = jwtSettings.Audience,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)),
+                RequireExpirationTime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                var user = tokenHandler.ValidateToken(accessToken, parameters, out var securityToken);
+                if (securityToken is JwtSecurityToken jwtSecurityToken && jwtSecurityToken.Header.Alg == SecurityAlgorithms.HmacSha256)
+                {
+                    return user;
+                }
+            }
+            catch
+            {
+            }
+
+            return null;
         }
     }
 }
