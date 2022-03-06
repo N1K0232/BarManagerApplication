@@ -4,8 +4,7 @@ namespace BackendGestionaleBar.Shared.Models.Responses
 {
     public class Response
     {
-        public bool Succeeded { get; set; }
-
+        public bool Succedeed { get; set; }
         public List<string> Errors { get; set; }
     }
 }

@@ -6,29 +6,20 @@ namespace BackendGestionaleBar
 {
     public class Program
     {
-        public async static Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            IHostBuilder builder = await CreateHostBuilderAsync(args);
-            IHost host = await CreateHostAsync(builder);
+            var builder = CreateHostBuilder(args);
+            var host = builder.Build();
             await host.RunAsync();
-            host.Dispose();
         }
 
-        private static Task<IHostBuilder> CreateHostBuilderAsync(string[] args)
+        private static IHostBuilder CreateHostBuilder(string[] args)
         {
-            IHostBuilder builder = Host.CreateDefaultBuilder(args)
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-
-            return Task.FromResult(builder);
-        }
-
-        private static Task<IHost> CreateHostAsync(IHostBuilder builder)
-        {
-            IHost host = builder.Build();
-            return Task.FromResult(host);
         }
     }
 }

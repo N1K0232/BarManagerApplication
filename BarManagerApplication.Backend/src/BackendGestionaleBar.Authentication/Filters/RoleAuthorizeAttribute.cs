@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.Authentication.Filters
 {
-    public sealed class RoleAuthorizeAttribute : AuthorizeAttribute
+    public class RoleAuthorizeAttribute : AuthorizeAttribute
     {
         public RoleAuthorizeAttribute(params string[] roles)
         {

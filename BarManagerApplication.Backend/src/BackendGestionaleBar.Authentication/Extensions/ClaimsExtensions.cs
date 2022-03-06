@@ -7,15 +7,21 @@ namespace BackendGestionaleBar.Authentication.Extensions
     public static class ClaimsExtensions
     {
         public static Guid GetId(this IPrincipal user)
-        {
-            string value = GetClaimValue(user, ClaimTypes.NameIdentifier);
-            return Guid.Parse(value);
-        }
+            => Guid.Parse(GetClaimValue(user, ClaimTypes.NameIdentifier));
+
+        public static string GetFirstName(this IPrincipal user)
+            => GetClaimValue(user, ClaimTypes.GivenName);
+
+        public static string GetLastName(this IPrincipal user)
+            => GetClaimValue(user, ClaimTypes.Surname);
+
+        public static string GetEmail(this IPrincipal user)
+            => GetClaimValue(user, ClaimTypes.Email);
+
+        public static DateTime GetBirthDate(this IPrincipal user)
+            => DateTime.Parse(GetClaimValue(user, ClaimTypes.DateOfBirth));
 
         private static string GetClaimValue(IPrincipal user, string claimType)
-        {
-            string value = ((ClaimsPrincipal)user).FindFirst(claimType)?.Value;
-            return value;
-        }
+            => ((ClaimsPrincipal)user).FindFirst(claimType)?.Value;
     }
 }

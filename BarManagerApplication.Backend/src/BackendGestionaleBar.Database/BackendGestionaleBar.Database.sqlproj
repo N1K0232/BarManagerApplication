@@ -6,7 +6,7 @@
     <Name>BackendGestionaleBar.Database</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
-    <ProjectGuid>{e06206b0-4c36-4db7-aa75-f765279c2cd0}</ProjectGuid>
+    <ProjectGuid>{9b0e3bb4-6097-4cc0-82ac-97aa6c9bcece}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
@@ -58,22 +58,21 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="dbo\" />
-    <Folder Include="dbo\Tables\" />
-    <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="dbo" />
+    <Folder Include="dbo\Tables" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\Clienti.sql" />
-    <Build Include="dbo\Tables\Credenziali.sql" />
-    <Build Include="dbo\Tables\Categorie.sql" />
-    <Build Include="dbo\Tables\Prodotti.sql" />
-    <Build Include="dbo\Stored Procedures\SP_RegisterCliente.sql" />
-    <Build Include="dbo\Stored Procedures\SP_RegisterCredenziali.sql" />
+    <Build Include="dbo\Tables\AspNetRoleClaims.sql" />
+    <Build Include="dbo\Tables\AspNetRoles.sql" />
+    <Build Include="dbo\Tables\AspNetUserClaims.sql" />
+    <Build Include="dbo\Tables\AspNetUserLogins.sql" />
+    <Build Include="dbo\Tables\AspNetUserRoles.sql" />
+    <Build Include="dbo\Tables\AspNetUsers.sql" />
+    <Build Include="dbo\Tables\AspNetUserTokens.sql" />
+    <Build Include="dbo\Tables\Categories.sql" />
+    <Build Include="dbo\Tables\Products.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BackendGestionaleBar.Database.publish.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="BackendGestionaleBar.Database.refactorlog" />
   </ItemGroup>
 </Project>
