@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BackendGestionaleBar.BusinessLayer\BackendGestionaleBar.BusinessLayer.csproj" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

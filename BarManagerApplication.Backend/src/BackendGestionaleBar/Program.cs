@@ -1,34 +1,26 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BackendGestionaleBar
 {
     public class Program
     {
-        public async static Task Main(string[] args)
+        public static void Main(string[] args)
         {
-            IHostBuilder builder = await CreateHostBuilderAsync(args);
-            IHost host = await CreateHostAsync(builder);
-            await host.RunAsync();
-            host.Dispose();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        private static Task<IHostBuilder> CreateHostBuilderAsync(string[] args)
-        {
-            IHostBuilder builder = Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-
-            return Task.FromResult(builder);
-        }
-
-        private static Task<IHost> CreateHostAsync(IHostBuilder builder)
-        {
-            IHost host = builder.Build();
-            return Task.FromResult(host);
-        }
     }
 }
