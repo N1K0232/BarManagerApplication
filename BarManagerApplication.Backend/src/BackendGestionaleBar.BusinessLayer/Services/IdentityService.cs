@@ -49,7 +49,8 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 new Claim(ClaimTypes.GivenName, user.FirstName),
                 new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
                 new Claim(ClaimTypes.DateOfBirth, user.BirthDate.ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.MobilePhone, user.TelephoneNumber)
             }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var response = CreateToken(claims);

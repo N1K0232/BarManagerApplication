@@ -23,7 +23,8 @@ namespace BackendGestionaleBar.Controllers
                 LastName = User.GetLastName(),
                 BirthDate = User.GetBirthDate(),
                 Email = User.GetEmail(),
-                UserName = User.GetUserName()
+                UserName = User.GetUserName(),
+                TelephoneNumber = User.GetPhoneNumber()
             };
 
             return Ok(user);
