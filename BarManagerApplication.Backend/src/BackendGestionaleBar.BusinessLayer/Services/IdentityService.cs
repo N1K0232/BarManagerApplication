@@ -70,7 +70,8 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 LastName = request.LastName,
                 BirthDate = request.BirthDate,
                 Email = request.Email,
-                UserName = request.UserName
+                UserName = request.UserName,
+                TelephoneNumber = request.TelephoneNumber
             };
 
             var result = await userManager.CreateAsync(user, request.Password);
@@ -95,7 +96,8 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 LastName = request.LastName,
                 BirthDate = request.BirthDate,
                 Email = request.Email,
-                UserName = request.UserName
+                UserName = request.UserName,
+                TelephoneNumber = request.TelephoneNumber
             };
 
             var result = await userManager.CreateAsync(user, request.Password);
