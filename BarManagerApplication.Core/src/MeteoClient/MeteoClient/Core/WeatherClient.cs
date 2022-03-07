@@ -13,10 +13,13 @@ namespace MeteoClient.Core
         private const string ApiKey = "7f4389ff11a94fd4938110520212306";
 
         private string url = "";
-        private string result;
+        private string result = null;
 
-        private Information _info = null;
-        private Location _location = null;
+        private string text = "";
+        private string icon = "";
+        private double? temperature = 0;
+
+        private readonly HttpClient httpClient = new();
 
         public WeatherClient()
         {
@@ -34,21 +37,16 @@ namespace MeteoClient.Core
             }
         }
 
-        public Information Info => _info;
-        public Location Location => _location;
-
-        public async Task SearchAsync(string city)
+        public async Task<Response> SearchAsync(string city)
         {
-            string text;
-            string icon;
-            double? temperature;
+            Location location;
+            Information information;
 
-            using var client = new HttpClient();
             url += $"&q={city}&aqi=no";
 
             try
             {
-                result = await client.GetStringAsync(url);
+                result = await httpClient.GetStringAsync(url);
                 text = "";
             }
             catch (HttpRequestException)
@@ -62,25 +60,50 @@ namespace MeteoClient.Core
 
             if (!string.IsNullOrEmpty(text))
             {
-                return;
+                return null;
             }
 
-            var deserialized = JObject.Parse(result);
+            JObject deserialized = JObject.Parse(result);
             try
             {
                 temperature = deserialized["current"]?["temp_c"]?.ToObject<double?>();
                 text = deserialized["current"]?["condition"]?["text"]?.ToString();
                 icon = deserialized["current"]?["condition"]?["icon"]?.ToString();
-                _location = deserialized["location"]?.ToObject<Location>();
-                _info = new Information(text, icon, temperature);
+                location = deserialized["location"]?.ToObject<Location>();
+                information = new(text, icon, temperature);
             }
-            catch (NullReferenceException ex)
+            catch (NullReferenceException)
             {
-                throw ex;
+                location = null;
+                information = null;
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
-                throw ex;
+                location = null;
+                information = null;
+            }
+
+            if (location == null && information == null)
+            {
+                return null;
+            }
+            else
+            {
+                return new Response(information, location);
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing && httpClient != null)
+            {
+                httpClient.Dispose();
             }
         }
     }
