@@ -50,7 +50,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
                 new Claim(ClaimTypes.DateOfBirth, user.BirthDate.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.MobilePhone, user.TelephoneNumber)
+                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
             }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var response = CreateToken(claims);
@@ -70,7 +70,8 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 LastName = request.LastName,
                 BirthDate = request.BirthDate,
                 Email = request.Email,
-                UserName = request.UserName
+                UserName = request.UserName,
+                PhoneNumber = request.PhoneNumber
             };
 
             var result = await userManager.CreateAsync(user, request.Password);
@@ -95,7 +96,8 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 LastName = request.LastName,
                 BirthDate = request.BirthDate,
                 Email = request.Email,
-                UserName = request.UserName
+                UserName = request.UserName,
+                PhoneNumber = request.PhoneNumber
             };
 
             var result = await userManager.CreateAsync(user, request.Password);

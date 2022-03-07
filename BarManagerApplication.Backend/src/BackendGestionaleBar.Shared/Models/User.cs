@@ -14,6 +14,6 @@ namespace BackendGestionaleBar.Shared.Models
 
         public string UserName { get; set; }
 
-        public string TelephoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }
