@@ -18,6 +18,9 @@ namespace BackendGestionaleBar.Authentication.Extensions
         public static string GetEmail(this IPrincipal user)
             => GetClaimValue(user, ClaimTypes.Email);
 
+        public static string GetUserName(this IPrincipal user)
+            => GetClaimValue(user, ClaimTypes.Name);
+
         public static DateTime GetBirthDate(this IPrincipal user)
             => DateTime.Parse(GetClaimValue(user, ClaimTypes.DateOfBirth));
 
