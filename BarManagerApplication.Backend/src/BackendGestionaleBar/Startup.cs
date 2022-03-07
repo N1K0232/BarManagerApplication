@@ -66,15 +66,20 @@ namespace BackendGestionaleBar
 
             services.AddDbContext<AuthenticationDbContext>(options =>
             {
-                var hash = Configuration.GetConnectionString("SqlConnection");
-                var connectionString = StringConverter.GetString(hash);
+                string hash = Configuration.GetConnectionString("SqlConnection");
+                string connectionString = StringConverter.GetString(hash);
                 options.UseSqlServer(connectionString);
             });
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                var hash = Configuration.GetConnectionString("SqlConnection");
-                var connectionString = StringConverter.GetString(hash);
+                string hash = Configuration.GetConnectionString("SqlConnection");
+                string connectionString = StringConverter.GetString(hash);
                 options.UseSqlServer(connectionString);
+            });
+            services.AddScoped<IDatabase>(_ =>
+            {
+                string hash = Configuration.GetConnectionString("SqlConnection");
+                return new Database(hash);
             });
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
