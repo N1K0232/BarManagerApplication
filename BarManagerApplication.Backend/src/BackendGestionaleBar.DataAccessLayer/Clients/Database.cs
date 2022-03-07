@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.DataAccessLayer.Clients
 {
-    public sealed partial class Database : IDatabase
+    internal sealed partial class Database : IDatabase
     {
-        private SqlConnection connection;
-        private SqlCommand command;
-        private SqlDataAdapter adapter;
+        SqlConnection connection;
+        SqlCommand command;
+        SqlDataAdapter adapter;
 
         public Database(string connectionStringHash)
         {
