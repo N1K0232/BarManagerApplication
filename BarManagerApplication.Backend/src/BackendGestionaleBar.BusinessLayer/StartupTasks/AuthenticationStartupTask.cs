@@ -23,7 +23,7 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
             using var scope = serviceProvider.CreateScope();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
-            var roleNames = new string[] { RoleNames.Administrator, RoleNames.Cliente };
+            var roleNames = new string[] { RoleNames.Administrator, RoleNames.Cliente, RoleNames.Staff };
 
             foreach (var roleName in roleNames)
             {
@@ -44,7 +44,7 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
                 UserName = "N1K0232"
             };
 
-            await CheckCreateUserAsync(admin, "NicoSilve22!", RoleNames.Administrator, RoleNames.Cliente);
+            await CheckCreateUserAsync(admin, "NicoSilve22!", RoleNames.Administrator, RoleNames.Staff);
 
             async Task CheckCreateUserAsync(ApplicationUser user, string password, params string[] roles)
             {
