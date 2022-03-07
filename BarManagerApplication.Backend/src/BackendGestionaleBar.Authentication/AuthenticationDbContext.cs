@@ -23,9 +23,29 @@ namespace BackendGestionaleBar.Authentication
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            Type type = typeof(AuthenticationDbContext);
-            builder.ApplyConfigurationsFromAssembly(type.Assembly);
             base.OnModelCreating(builder);
+
+            builder.Entity<ApplicationUser>(user =>
+            {
+                user.Property(user => user.FirstName).HasMaxLength(256).IsRequired();
+                user.Property(user => user.LastName).HasMaxLength(256).IsRequired();
+                user.Property(user => user.BirthDate).IsRequired();
+            });
+
+            builder.Entity<ApplicationUserRole>(userRole =>
+            {
+                userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+                userRole.HasOne(ur => ur.User)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+
+                userRole.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+            });
         }
     }
 }
