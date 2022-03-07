@@ -50,13 +50,30 @@ namespace BackendGestionaleBar.Controllers
             return BadRequest();
         }
 
-        [HttpPost("Register")]
+        [HttpPost("RegisterCliente")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        public async Task<IActionResult> RegisterCliente([FromBody] RegisterRequest request)
         {
-            var response = await identityService.RegisterUserAsync(request);
+            var response = await identityService.RegisterClienteAsync(request);
+            if (response.Succeeded)
+            {
+                return Ok("Utente registrato con successo");
+            }
+            else
+            {
+                return BadRequest(response.Errors);
+            }
+        }
+
+        [HttpPost("RegisterStaff")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> RegisterStaff([FromBody] RegisterRequest request)
+        {
+            var response = await identityService.RegisterStaffAsync(request);
             if (response.Succeeded)
             {
                 return Ok("Utente registrato con successo");

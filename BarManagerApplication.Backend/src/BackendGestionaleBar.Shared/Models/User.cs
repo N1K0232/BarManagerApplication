@@ -13,5 +13,7 @@ namespace BackendGestionaleBar.Shared.Models
         public string Email { get; set; }
 
         public string UserName { get; set; }
+
+        public string TelephoneNumber { get; set; }
     }
 }

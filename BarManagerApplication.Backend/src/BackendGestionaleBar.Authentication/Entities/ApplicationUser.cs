@@ -12,6 +12,8 @@ namespace BackendGestionaleBar.Authentication.Entities
 
         public DateTime? BirthDate { get; set; }
 
+        public string TelephoneNumber { get; set; }
+
         public string RefreshToken { get; set; }
 
         public DateTime? RefreshTokenExpirationDate { get; set; }

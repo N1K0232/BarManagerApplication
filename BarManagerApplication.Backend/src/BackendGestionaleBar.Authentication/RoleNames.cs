@@ -4,5 +4,6 @@
     {
         public const string Administrator = nameof(Administrator);
         public const string Cliente = nameof(Cliente);
+        public const string Staff = nameof(Staff);
     }
 }
