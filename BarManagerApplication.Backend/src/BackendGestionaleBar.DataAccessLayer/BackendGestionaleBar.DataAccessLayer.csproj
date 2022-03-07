@@ -14,8 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
-    <Folder Include="Internal\" />
+    <ProjectReference Include="..\BackendGestionaleBar.Helpers\BackendGestionaleBar.Helpers.csproj" />
   </ItemGroup>
 
 </Project>
