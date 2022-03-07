@@ -7,6 +7,7 @@
     [BirthDate]                  DATETIME           NOT NULL,
     [Email]                      NVARCHAR (256)     NULL,
     [NormalizedEmail]            NVARCHAR (256)     NULL,
+    [TelephoneNumber]            NVARCHAR (10)      NOT NULL,
     [EmailConfirmed]             BIT                NOT NULL,
     [PasswordHash]               NVARCHAR (MAX)     NULL,
     [SecurityStamp]              NVARCHAR (MAX)     NULL,
