@@ -10,7 +10,7 @@ namespace BackendGestionaleBar.Shared.Models.Requests
 
         public DateTime BirthDate { get; set; }
 
-        public string TelephoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
         public string Email { get; set; }
 

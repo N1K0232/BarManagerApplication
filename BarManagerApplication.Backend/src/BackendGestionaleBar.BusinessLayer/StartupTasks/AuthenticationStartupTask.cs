@@ -42,7 +42,7 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
                 BirthDate = DateTime.Parse("22/10/2002"),
                 Email = "ns.nicolasilvestri@gmail.com",
                 UserName = "N1K0232",
-                TelephoneNumber = "3319907702"
+                PhoneNumber = "3319907702"
             };
 
             await CheckCreateUserAsync(admin, "NicoSilve22!", RoleNames.Administrator, RoleNames.Staff);
