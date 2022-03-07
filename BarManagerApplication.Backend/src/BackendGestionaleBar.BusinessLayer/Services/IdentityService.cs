@@ -62,7 +62,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
             return response;
         }
-        public async Task<RegisterResponse> RegisterUserAsync(RegisterRequest request)
+        public async Task<RegisterResponse> RegisterClienteAsync(RegisterRequest request)
         {
             var user = new ApplicationUser
             {
@@ -77,6 +77,31 @@ namespace BackendGestionaleBar.BusinessLayer.Services
             if (result.Succeeded)
             {
                 result = await userManager.AddToRoleAsync(user, RoleNames.Cliente);
+            }
+
+            var response = new RegisterResponse
+            {
+                Succeeded = result.Succeeded,
+                Errors = result.Errors.Select(e => e.Description)
+            };
+
+            return response;
+        }
+        public async Task<RegisterResponse> RegisterStaffAsync(RegisterRequest request)
+        {
+            var user = new ApplicationUser
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                BirthDate = request.BirthDate,
+                Email = request.Email,
+                UserName = request.UserName
+            };
+
+            var result = await userManager.CreateAsync(user, request.Password);
+            if (result.Succeeded)
+            {
+                result = await userManager.AddToRoleAsync(user, RoleNames.Staff);
             }
 
             var response = new RegisterResponse
@@ -135,7 +160,6 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 Errors = result.Errors.Select(e => e.Description)
             };
         }
-
         private AuthResponse CreateToken(IEnumerable<Claim> claims)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(jwtSettings.SecurityKey);
