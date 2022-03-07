@@ -37,12 +37,12 @@ namespace MeteoClient.Core
             }
         }
 
-        public async Task<Response> SearchAsync(string city)
+        public async Task<Response> SearchAsync(Request request)
         {
             Location location;
             Information information;
 
-            url += $"&q={city}&aqi=no";
+            url += $"&q={request.City}&aqi=no";
 
             try
             {

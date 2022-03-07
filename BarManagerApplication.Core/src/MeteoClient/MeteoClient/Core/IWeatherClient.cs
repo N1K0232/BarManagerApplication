@@ -6,6 +6,6 @@ namespace MeteoClient.Core
 {
     public interface IWeatherClient : IDisposable
     {
-        Task<Response> SearchAsync(string city);
+        Task<Response> SearchAsync(Request request);
     }
 }
