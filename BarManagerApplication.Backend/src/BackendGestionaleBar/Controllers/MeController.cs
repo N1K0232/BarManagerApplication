@@ -14,7 +14,7 @@ namespace BackendGestionaleBar.Controllers
     {
         [HttpGet("GetMe")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
-        [RoleAuthorize(RoleNames.Administrator, RoleNames.Cliente)]
+        [RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
         public IActionResult GetMe()
         {
             var user = new User
