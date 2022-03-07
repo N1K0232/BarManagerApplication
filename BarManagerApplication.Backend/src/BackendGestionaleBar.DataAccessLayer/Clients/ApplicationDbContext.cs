@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace BackendGestionaleBar.DataAccessLayer
+namespace BackendGestionaleBar.DataAccessLayer.Clients
 {
     public class ApplicationDbContext : DbContext
     {

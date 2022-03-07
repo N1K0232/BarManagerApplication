@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using MeteoClient.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace MeteoClient.Core
 {
-    public interface IWeatherClient
+    public interface IWeatherClient : IDisposable
     {
-        Task SearchAsync(string city);
+        Task<Response> SearchAsync(Request request);
     }
 }

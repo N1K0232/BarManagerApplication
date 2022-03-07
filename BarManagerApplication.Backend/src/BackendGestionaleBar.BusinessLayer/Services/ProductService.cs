@@ -1,4 +1,4 @@
-﻿using BackendGestionaleBar.DataAccessLayer;
+﻿using BackendGestionaleBar.DataAccessLayer.Clients;
 using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;
@@ -11,10 +11,12 @@ namespace BackendGestionaleBar.BusinessLayer.Services
     public class ProductService : IProductService
     {
         private readonly ApplicationDbContext context;
+        private readonly IDatabase database;
 
-        public ProductService(ApplicationDbContext context)
+        public ProductService(ApplicationDbContext context, IDatabase database)
         {
             this.context = context;
+            this.database = database;
         }
 
         public async Task<Product> GetProductAsync(Guid id)

@@ -71,6 +71,8 @@
     <Build Include="dbo\Tables\AspNetUserTokens.sql" />
     <Build Include="dbo\Tables\Categories.sql" />
     <Build Include="dbo\Tables\Products.sql" />
+    <Build Include="dbo\Tables\Allergens.sql" />
+    <Build Include="dbo\Tables\ProductAllergens.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BackendGestionaleBar.Database.publish.xml" />

@@ -48,7 +48,7 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
 
             async Task CheckCreateUserAsync(ApplicationUser user, string password, params string[] roles)
             {
-                var dbUser = await userManager.FindByEmailAsync(user.Email);
+                var dbUser = await userManager.FindByNameAsync(user.UserName);
                 if (dbUser == null)
                 {
                     var result = await userManager.CreateAsync(user, password);

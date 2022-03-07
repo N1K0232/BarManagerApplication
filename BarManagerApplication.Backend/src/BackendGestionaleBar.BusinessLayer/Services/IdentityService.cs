@@ -137,32 +137,35 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
         private AuthResponse CreateToken(IEnumerable<Claim> claims)
         {
-            var bytes = Encoding.UTF8.GetBytes(jwtSettings.SecurityKey);
-            var symmetricSecurityKey = new SymmetricSecurityKey(bytes);
-            var signInCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+            byte[] bytes = Encoding.UTF8.GetBytes(jwtSettings.SecurityKey);
+            SymmetricSecurityKey symmetricSecurityKey = new(bytes);
+            SigningCredentials signInCredentials = new(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
-            var notBefore = DateTime.UtcNow;
-            var expire = DateTime.UtcNow.AddMinutes(jwtSettings.AccessTokenExpirationMinutes);
+            DateTime notBefore = DateTime.UtcNow;
+            DateTime expire = DateTime.UtcNow.AddMinutes(jwtSettings.AccessTokenExpirationMinutes);
 
-            var jwtSecurityToken = new JwtSecurityToken(jwtSettings.Issuer, jwtSettings.Audience, claims,
+            JwtSecurityToken jwtSecurityToken = new(jwtSettings.Issuer, jwtSettings.Audience, claims,
                 notBefore, expire, signInCredentials);
 
-            var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            JwtSecurityTokenHandler handler = new();
+
+            string accessToken = handler.WriteToken(jwtSecurityToken);
+            string refreshToken = GenerateRefreshToken();
+
             var response = new AuthResponse
             {
                 AccessToken = accessToken,
-                RefreshToken = GenerateRefreshToken()
+                RefreshToken = refreshToken
             };
 
             return response;
-
-            static string GenerateRefreshToken()
-            {
-                var randomNumber = new byte[256];
-                using var generator = RandomNumberGenerator.Create();
-                generator.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
+        }
+        private static string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[256];
+            using var generator = RandomNumberGenerator.Create();
+            generator.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
         private ClaimsPrincipal ValidateAccessToken(string accessToken)
         {

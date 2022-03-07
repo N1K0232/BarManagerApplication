@@ -4,7 +4,8 @@ using BackendGestionaleBar.Authentication.Requirements;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
-using BackendGestionaleBar.DataAccessLayer;
+using BackendGestionaleBar.DataAccessLayer.Clients;
+using BackendGestionaleBar.DataAccessLayer.Extensions;
 using BackendGestionaleBar.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -66,16 +67,17 @@ namespace BackendGestionaleBar
 
             services.AddDbContext<AuthenticationDbContext>(options =>
             {
-                var hash = Configuration.GetConnectionString("SqlConnection");
-                var connectionString = StringConverter.GetString(hash);
+                string hash = Configuration.GetConnectionString("SqlConnection");
+                string connectionString = StringConverter.GetString(hash);
                 options.UseSqlServer(connectionString);
             });
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                var hash = Configuration.GetConnectionString("SqlConnection");
-                var connectionString = StringConverter.GetString(hash);
+                string hash = Configuration.GetConnectionString("SqlConnection");
+                string connectionString = StringConverter.GetString(hash);
                 options.UseSqlServer(connectionString);
             });
+            services.AddDatabase(Configuration.GetConnectionString("SqlConnection"));
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
