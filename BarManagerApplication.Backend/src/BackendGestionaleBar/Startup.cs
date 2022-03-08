@@ -5,7 +5,6 @@ using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
 using BackendGestionaleBar.DataAccessLayer.Clients;
-using BackendGestionaleBar.DataAccessLayer.Extensions;
 using BackendGestionaleBar.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -77,7 +76,11 @@ namespace BackendGestionaleBar
                 string connectionString = StringConverter.GetString(hash);
                 options.UseSqlServer(connectionString);
             });
-            services.AddDatabase(Configuration.GetConnectionString("SqlConnection"));
+            services.AddScoped<IDatabase>(_ =>
+            {
+                string hash = Configuration.GetConnectionString("SqlConnection");
+                return new Database(hash);
+            });
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
