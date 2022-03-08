@@ -40,7 +40,11 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
                 await adapter.FillAsync(dataTable);
                 await connection.CloseAsync();
             }
-            catch (Exception)
+            catch (SqlException)
+            {
+                dataTable = null;
+            }
+            catch (InvalidOperationException)
             {
                 dataTable = null;
             }
