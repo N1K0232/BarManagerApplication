@@ -18,7 +18,8 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            using var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            using var scope = serviceProvider.CreateScope();
+            using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             bool canConnect = await dbContext.Database.CanConnectAsync(cancellationToken);
             if (!canConnect)
             {
