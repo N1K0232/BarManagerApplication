@@ -20,9 +20,17 @@ namespace MeteoClient.Core
 
         public WeatherClient()
         {
+            CreateUrl();
+        }
+
+        private void CreateUrl()
+        {
+            string baseUrl = Environment.GetEnvironmentVariable("BaseUrl");
+            string apiKey = Environment.GetEnvironmentVariable("ApiKey");
+
             try
             {
-                url = $"{BaseUrl}{ApiKey}";
+                url = $"{baseUrl}{apiKey}";
             }
             catch (ArgumentNullException ex)
             {
@@ -31,23 +39,6 @@ namespace MeteoClient.Core
             catch (SecurityException ex)
             {
                 throw ex;
-            }
-        }
-
-        private string BaseUrl
-        {
-            get
-            {
-                string key = nameof(BaseUrl);
-                return Environment.GetEnvironmentVariable(key);
-            }
-        }
-        private string ApiKey
-        {
-            get
-            {
-                string key = nameof(ApiKey);
-                return Environment.GetEnvironmentVariable(key);
             }
         }
 
