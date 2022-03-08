@@ -12,6 +12,12 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        /// <summary>
+        /// disposes the connection, the command and the adapter
+        /// if the disposing parameter is true
+        /// </summary>
+        /// <param name="disposing">true if the resources should be disposed otherwise false</param>
         private void Dispose(bool disposing)
         {
             if (disposing)
@@ -38,7 +44,7 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
         /// <summary>
         /// creates the connection and tests it
         /// </summary>
-        /// <param name="connectionStringHash"></param>
+        /// <param name="connectionStringHash">the encoded connection string</param>
         private void CreateConnection(string connectionStringHash)
         {
             string connectionString = StringConverter.GetString(connectionStringHash);

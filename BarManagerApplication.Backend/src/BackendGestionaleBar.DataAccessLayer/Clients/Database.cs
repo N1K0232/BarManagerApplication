@@ -7,12 +7,20 @@ using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.DataAccessLayer.Clients
 {
+    /// <summary>
+    /// creates a connection with the database
+    /// this class is needed for getting the views in the database
+    /// </summary>
     public sealed partial class Database : IDatabase
     {
-        SqlConnection connection;
-        SqlCommand command;
-        SqlDataAdapter adapter;
+        SqlConnection connection = null;
+        SqlCommand command = null;
+        SqlDataAdapter adapter = null;
 
+        /// <summary>
+        /// creates a new instance of the Database class
+        /// </summary>
+        /// <param name="connectionStringHash">the encoded connection string</param>
         public Database(string connectionStringHash)
         {
             CreateConnection(connectionStringHash);
