@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using BackendGestionaleBar.DataAccessLayer.Clients;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -18,26 +18,15 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            using var connection = serviceProvider.GetRequiredService<SqlConnection>();
-
-            try
+            using var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            bool canConnect = await dbContext.Database.CanConnectAsync(cancellationToken);
+            if (!canConnect)
             {
-                await connection.OpenAsync(cancellationToken);
-                await connection.CloseAsync();
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
+                throw new Exception("can't connect to database");
             }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+            => Task.CompletedTask;
     }
 }
