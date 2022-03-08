@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "MeteoClient": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ApiKey": "7f4389ff11a94fd4938110520212306",
+        "BaseUrl": "http:/api.weatherapi.com/v1/current.json?key="
+      }
+    }
+  }
+}
