@@ -21,7 +21,7 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             using var scope = serviceProvider.CreateScope();
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+            using var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
             var roleNames = new string[] { RoleNames.Administrator, RoleNames.Cliente, RoleNames.Staff };
 
@@ -34,7 +34,7 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
                 }
             }
 
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            using var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var admin = new ApplicationUser
             {
                 FirstName = "Nicola",
