@@ -1,5 +1,5 @@
 ﻿using MeteoClient.Core;
-using System;
+using MeteoClient.Models;
 using System.Threading.Tasks;
 
 namespace MeteoClient.Test
@@ -8,11 +8,9 @@ namespace MeteoClient.Test
     {
         public async static Task Main()
         {
-            var client = new WeatherClient();
-            await client.SearchAsync("Rimini");
-
-            Console.Write(client.Location);
-            Console.Write(client.Info);
+            using var client = new WeatherClient();
+            var request = new Request { City = "Rimini" };
+            var response = await client.SearchAsync(request);
         }
     }
 }
