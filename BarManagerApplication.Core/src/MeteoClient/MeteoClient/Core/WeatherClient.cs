@@ -9,9 +9,6 @@ namespace MeteoClient.Core
 {
     public sealed class WeatherClient : IWeatherClient
     {
-        private const string BaseUrl = "http://api.weatherapi.com/v1/current.json?key=";
-        private const string ApiKey = "7f4389ff11a94fd4938110520212306";
-
         private string url = "";
         private string result = null;
 
@@ -34,6 +31,23 @@ namespace MeteoClient.Core
             catch (SecurityException ex)
             {
                 throw ex;
+            }
+        }
+
+        private string BaseUrl
+        {
+            get
+            {
+                string key = nameof(BaseUrl);
+                return Environment.GetEnvironmentVariable(key);
+            }
+        }
+        private string ApiKey
+        {
+            get
+            {
+                string key = nameof(ApiKey);
+                return Environment.GetEnvironmentVariable(key);
             }
         }
 
