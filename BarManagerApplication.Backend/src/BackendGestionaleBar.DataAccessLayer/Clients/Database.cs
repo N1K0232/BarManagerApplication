@@ -1,6 +1,5 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Extensions;
 using BackendGestionaleBar.DataAccessLayer.Internal;
-using BackendGestionaleBar.Helpers;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
@@ -8,15 +7,23 @@ using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.DataAccessLayer.Clients
 {
-    internal sealed partial class Database : IDatabase
+    /// <summary>
+    /// creates a connection with the database
+    /// this class is needed for getting the views in the database
+    /// </summary>
+    public sealed partial class Database : IDatabase
     {
-        SqlConnection connection;
-        SqlCommand command;
-        SqlDataAdapter adapter;
+        SqlConnection connection = null;
+        SqlCommand command = null;
+        SqlDataAdapter adapter = null;
 
+        /// <summary>
+        /// creates a new instance of the Database class
+        /// </summary>
+        /// <param name="connectionStringHash">the encoded connection string</param>
         public Database(string connectionStringHash)
         {
-            InstanceConnection(connectionStringHash);
+            CreateConnection(connectionStringHash);
         }
 
         public async Task<DataTable> GetMenuAsync()
@@ -33,55 +40,16 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
                 await adapter.FillAsync(dataTable);
                 await connection.CloseAsync();
             }
-            catch (Exception)
+            catch (SqlException)
+            {
+                dataTable = null;
+            }
+            catch (InvalidOperationException)
             {
                 dataTable = null;
             }
 
             return dataTable;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (connection != null)
-                {
-                    if (connection.State == ConnectionState.Open)
-                    {
-                        connection.Close();
-                    }
-                    connection.Dispose();
-                }
-                if (command != null)
-                {
-                    command.Dispose();
-                }
-                if (adapter != null)
-                {
-                    adapter.Dispose();
-                }
-            }
-        }
-        private void InstanceConnection(string connectionStringHash)
-        {
-            string connectionString = StringConverter.GetString(connectionStringHash);
-            connection = new SqlConnection(connectionString);
-
-            try
-            {
-                connection.Open();
-                connection.Close();
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
         }
     }
 }

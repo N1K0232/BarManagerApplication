@@ -4,6 +4,7 @@ using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.BusinessLayer.Services
@@ -23,6 +24,12 @@ namespace BackendGestionaleBar.BusinessLayer.Services
         {
             var product = await context.Products.FindAsync(id);
             return product;
+        }
+
+        public async Task<DataTable> GetMenuAsync()
+        {
+            DataTable dataTable = await database.GetMenuAsync();
+            return dataTable;
         }
 
         public async Task<Response> RegisterProductAsync(RegisterProductRequest request)
