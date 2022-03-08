@@ -19,10 +19,11 @@ namespace MeteoClient.Core
         private string icon = "";
         private double? temperature = 0;
 
-        private readonly HttpClient httpClient = new();
+        private readonly HttpClient httpClient;
 
-        public WeatherClient()
+        public WeatherClient(HttpClient httpClient)
         {
+            this.httpClient = httpClient;
             CreateUrl();
         }
 

@@ -5,10 +5,14 @@ namespace MeteoClient.DependencyInjection
 {
     public static class WeatherClientExtensions
     {
-        public static IServiceCollection AddWeatherClient(this IServiceCollection services)
+        public static IHttpClientBuilder AddWeatherClient(this IServiceCollection services)
         {
-            services.AddScoped<IWeatherClient, WeatherClient>();
-            return services;
+            var httpClientBuilder = services.AddHttpClient<IWeatherClient, WeatherClient>(httpClient =>
+            {
+                return new WeatherClient(httpClient);
+            });
+
+            return httpClientBuilder;
         }
     }
 }
