@@ -9,8 +9,8 @@ namespace MeteoClient.Core
 {
     public sealed class WeatherClient : IWeatherClient
     {
-        private const string BaseUrl = "http://api.weatherapi.com/v1/current.json?key=";
         private const string ApiKey = "7f4389ff11a94fd4938110520212306";
+        private const string BaseUrl = "http://api.weatherapi.com//v1//current.json?key/=";
 
         private string url = "";
         private string result = null;
@@ -19,9 +19,15 @@ namespace MeteoClient.Core
         private string icon = "";
         private double? temperature = 0;
 
-        private readonly HttpClient httpClient = new();
+        private readonly HttpClient httpClient;
 
-        public WeatherClient()
+        public WeatherClient(HttpClient httpClient)
+        {
+            this.httpClient = httpClient;
+            CreateUrl();
+        }
+
+        private void CreateUrl()
         {
             try
             {

@@ -2,6 +2,7 @@
 using BackendGestionaleBar.Authentication.Filters;
 using BackendGestionaleBar.BusinessLayer.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -32,6 +33,24 @@ namespace BackendGestionaleBar.Controllers
             }
 
             return Ok(dataTable);
+        }
+
+        [HttpGet("GetProduct")]
+        [RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
+        [ProducesResponseType(204)]
+        //[ProducesResponseType(200, Type = typeof(DataTable))]
+        //[ProducesResponseType(404)]
+        public Task<IActionResult> GetProduct(Guid idProduct)
+        {
+            return Task.FromResult(NoContent() as IActionResult);
+        }
+
+        [HttpPost("RegisterProduct")]
+        [RoleAuthorize(RoleNames.Administrator, RoleNames.Staff)]
+        [ProducesResponseType(204)]
+        public Task<IActionResult> RegisterProduct()
+        {
+            return Task.FromResult(NoContent() as IActionResult);
         }
     }
 }
