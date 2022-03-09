@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarApplication.APIClient", "BarApplication.APIClient\BarApplication.APIClient.csproj", "{CC12AEBB-3FC9-4905-8F36-B5F3EE49A6D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BarApplication.APIClient", "BarApplication.APIClient\BarApplication.APIClient.csproj", "{CC12AEBB-3FC9-4905-8F36-B5F3EE49A6D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarApplication.APIClient.DependencyInjection", "BarApplication.APIClient.DependencyInjection\BarApplication.APIClient.DependencyInjection.csproj", "{0E4E6CDD-59B8-47DF-A851-36AFD1570078}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{CC12AEBB-3FC9-4905-8F36-B5F3EE49A6D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC12AEBB-3FC9-4905-8F36-B5F3EE49A6D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC12AEBB-3FC9-4905-8F36-B5F3EE49A6D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E4E6CDD-59B8-47DF-A851-36AFD1570078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E4E6CDD-59B8-47DF-A851-36AFD1570078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E4E6CDD-59B8-47DF-A851-36AFD1570078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E4E6CDD-59B8-47DF-A851-36AFD1570078}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
