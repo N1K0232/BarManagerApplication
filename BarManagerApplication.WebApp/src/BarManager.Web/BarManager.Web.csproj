@@ -5,9 +5,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Reference Include="MeteoClient.DependencyInjection">
-			<HintPath>..\..\..\BarManagerApplication.Core\src\MeteoClient\MeteoClient.DependencyInjection\bin\Debug\net5.0\ref\MeteoClient.DependencyInjection.dll</HintPath>
-		</Reference>
+	  <ProjectReference Include="..\..\..\BarManagerApplication.Core\src\MeteoClient\MeteoClient.DependencyInjection\MeteoClient.DependencyInjection.csproj" />
 	</ItemGroup>
 
 </Project>
