@@ -77,6 +77,18 @@ namespace BarApplication.APIClient.Identity.Core
 
             return null;
         }
+        public async Task<RegisterResponse> UpdatePasswordAsync(UpdatePasswordRequest request)
+        {
+            using var apiResponse = await httpClient.PutAsJsonAsync(Constants.UpdatePasswordUrl, request);
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var content = await apiResponse.Content.ReadAsStringAsync();
+                var response = JsonConvert.DeserializeObject<RegisterResponse>(content);
+                return response;
+            }
+
+            return null;
+        }
 
         public void Dispose()
         {

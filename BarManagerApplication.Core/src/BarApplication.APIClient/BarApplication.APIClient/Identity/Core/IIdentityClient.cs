@@ -13,5 +13,6 @@ namespace BarApplication.APIClient.Identity.Core
         Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request);
         Task<RegisterResponse> RegisterClienteAsync(RegisterRequest request);
         Task<RegisterResponse> RegisterStaffAsync(RegisterRequest request);
+        Task<RegisterResponse> UpdatePasswordAsync(UpdatePasswordRequest request);
     }
 }
