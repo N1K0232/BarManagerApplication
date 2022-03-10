@@ -10,5 +10,7 @@ namespace BarApplication.APIClient.Identity.Core
     {
         Task<User> GetUserAsync(string accessToken);
         Task<AuthResponse> LoginAsync(LoginRequest request);
+        Task<RegisterResponse> RegisterClienteAsync(RegisterRequest request);
+        Task<RegisterResponse> RegisterStaffAsync(RegisterRequest request);
     }
 }

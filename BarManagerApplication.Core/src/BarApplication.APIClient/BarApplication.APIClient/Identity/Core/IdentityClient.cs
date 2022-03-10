@@ -31,17 +31,39 @@ namespace BarApplication.APIClient.Identity.Core
         }
         public async Task<AuthResponse> LoginAsync(LoginRequest request)
         {
-            using var message = await httpClient.PostAsJsonAsync(Constants.LoginUrl, request);
-            if (message.IsSuccessStatusCode)
+            using var apiResponse = await httpClient.PostAsJsonAsync(Constants.LoginUrl, request);
+            if (apiResponse.IsSuccessStatusCode)
             {
-                var result = await message.Content.ReadAsStringAsync();
-                var response = JsonConvert.DeserializeObject<AuthResponse>(result);
+                var content = await apiResponse.Content.ReadAsStringAsync();
+                var response = JsonConvert.DeserializeObject<AuthResponse>(content);
                 return response;
             }
-            else
+
+            return null;
+        }
+        public async Task<RegisterResponse> RegisterClienteAsync(RegisterRequest request)
+        {
+            using var apiResponse = await httpClient.PostAsJsonAsync(Constants.RegisterClienteUrl, request);
+            if (apiResponse.IsSuccessStatusCode)
             {
-                return null;
+                var content = await apiResponse.Content.ReadAsStringAsync();
+                var response = JsonConvert.DeserializeObject<RegisterResponse>(content);
+                return response;
             }
+
+            return null;
+        }
+        public async Task<RegisterResponse> RegisterStaffAsync(RegisterRequest request)
+        {
+            using var apiResponse = await httpClient.PostAsJsonAsync(Constants.RegisterStaffUrl, request);
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var content = await apiResponse.Content.ReadAsStringAsync();
+                var response = JsonConvert.DeserializeObject<RegisterResponse>(content);
+                return response;
+            }
+
+            return null;
         }
 
         public void Dispose()
