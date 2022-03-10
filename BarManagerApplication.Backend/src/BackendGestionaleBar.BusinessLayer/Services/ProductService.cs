@@ -20,11 +20,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
             this.database = database;
         }
 
-        public async Task<Product> GetProductAsync(Guid id)
-        {
-            var product = await context.Products.FindAsync(id);
-            return product;
-        }
+        public async Task<Product> GetProductAsync(Guid id) => await GetProductInternalAsync(id);
 
         public async Task<DataTable> GetMenuAsync()
         {
@@ -64,6 +60,12 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                     }
                 };
             }
+        }
+
+        private async Task<Product> GetProductInternalAsync(Guid id)
+        {
+            var product = await context.Products.FindAsync(id);
+            return product;
         }
     }
 }

@@ -84,7 +84,7 @@ namespace BackendGestionaleBar.Controllers
             }
         }
 
-        [HttpPost("UpdatePassword")]
+        [HttpPut("UpdatePassword")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
