@@ -65,6 +65,18 @@ namespace BarApplication.APIClient.Identity.Core
 
             return null;
         }
+        public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request)
+        {
+            using var apiResponse = await httpClient.PostAsJsonAsync(Constants.RefreshTokenUrl, request);
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var content = await apiResponse.Content.ReadAsStringAsync();
+                var response = JsonConvert.DeserializeObject<AuthResponse>(content);
+                return response;
+            }
+
+            return null;
+        }
 
         public void Dispose()
         {
