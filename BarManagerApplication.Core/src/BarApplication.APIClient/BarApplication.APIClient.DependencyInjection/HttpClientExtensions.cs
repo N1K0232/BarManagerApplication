@@ -11,7 +11,7 @@ namespace BarApplication.APIClient.DependencyInjection
         {
             var httpClientBuilder = services.AddHttpClient<IIdentityClient, IdentityClient>(httpClient =>
             {
-                httpClient.BaseAddress = new Uri(Constants.BaseUrl);
+                httpClient.BaseAddress = new Uri("https://localhost:44388/");
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 return new IdentityClient(httpClient);
