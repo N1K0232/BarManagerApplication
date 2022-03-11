@@ -8,20 +8,22 @@ using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.BusinessLayer.StartupTasks
 {
-    public class ConnectionStartupTask : IHostedService
+    public class ConnectionStartupTask : IHostedService, IDisposable
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IServiceScope scope;
+
+        private AuthenticationDbContext authenticationDbContext;
+        private ApplicationDbContext applicationDbContext;
 
         public ConnectionStartupTask(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;
+            scope = serviceProvider.CreateScope();
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            using var scope = serviceProvider.CreateScope();
-            using var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var authenticationDbContext = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext>();
+            applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            authenticationDbContext = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext>();
 
             bool canConnect = await applicationDbContext.Database.CanConnectAsync(cancellationToken);
             if (canConnect)
@@ -37,5 +39,29 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
 
         public Task StopAsync(CancellationToken cancellationToken)
             => Task.CompletedTask;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (scope != null)
+                {
+                    scope.Dispose();
+                }
+                if (applicationDbContext != null)
+                {
+                    applicationDbContext.Dispose();
+                }
+                if (authenticationDbContext != null)
+                {
+                    authenticationDbContext.Dispose();
+                }
+            }
+        }
     }
 }
