@@ -54,7 +54,11 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
         }
 
         public Task SaveAsync()
-            => SaveChangesAsync().ConfigureAwait(false);
+        {
+            Task task = SaveChangesAsync();
+            task.ConfigureAwait(false);
+            return task;
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
