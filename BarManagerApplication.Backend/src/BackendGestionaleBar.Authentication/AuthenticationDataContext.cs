@@ -6,7 +6,7 @@ using System;
 
 namespace BackendGestionaleBar.Authentication
 {
-    public class AuthenticationDbContext
+    public class AuthenticationDataContext
         : IdentityDbContext<ApplicationUser,
           ApplicationRole,
           Guid,
@@ -16,7 +16,7 @@ namespace BackendGestionaleBar.Authentication
           IdentityRoleClaim<Guid>,
           IdentityUserToken<Guid>>
     {
-        public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options)
+        public AuthenticationDataContext(DbContextOptions<AuthenticationDataContext> options)
             : base(options)
         {
         }
