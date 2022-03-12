@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Allergens]
 (
-	[IdAllergen] INTEGER NOT NULL IDENTITY(1,1),
+	[IdAllergen] UNIQUEIDENTIFIER NOT NULL,
 	[Name] NVARCHAR(50) NOT NULL,
 	[Description] NVARCHAR(512),
 
