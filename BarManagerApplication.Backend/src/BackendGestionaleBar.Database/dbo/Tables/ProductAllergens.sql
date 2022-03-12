@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[ProductAllergens]
 (
-	[IdAllergen] INTEGER NOT NULL,
+	[IdAllergen] UNIQUEIDENTIFIER NOT NULL,
 	[IdProduct] UNIQUEIDENTIFIER NOT NULL,
 
     PRIMARY KEY(IdAllergen,IdProduct),
