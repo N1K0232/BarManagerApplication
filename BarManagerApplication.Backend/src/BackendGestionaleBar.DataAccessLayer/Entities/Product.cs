@@ -1,12 +1,10 @@
-﻿using System;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using System.Collections.Generic;
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities
 {
-    public class Product
+    public class Product : BaseEntity
     {
-        public Guid IdProduct { get; set; }
-
         public int IdCategory { get; set; }
 
         public string Name { get; set; }
