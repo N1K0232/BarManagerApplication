@@ -64,7 +64,7 @@ namespace BackendGestionaleBar
                 });
             });
 
-            services.AddDbContext<AuthenticationDbContext>(options =>
+            services.AddDbContext<AuthenticationDataContext>(options =>
             {
                 string hash = Configuration.GetConnectionString("SqlConnection");
                 string connectionString = StringConverter.GetString(hash);
@@ -91,7 +91,7 @@ namespace BackendGestionaleBar
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
             })
-            .AddEntityFrameworkStores<AuthenticationDbContext>()
+            .AddEntityFrameworkStores<AuthenticationDataContext>()
             .AddDefaultTokenProviders();
 
             services.AddAuthentication(options =>
@@ -117,7 +117,9 @@ namespace BackendGestionaleBar
             services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IProductService, ProductService>();
+
             services.AddHostedService<AuthenticationStartupTask>();
+            services.AddHostedService<ConnectionStartupTask>();
 
             services.AddAuthorization(options =>
             {
