@@ -70,7 +70,7 @@ namespace BackendGestionaleBar
                 string connectionString = StringConverter.GetString(hash);
                 options.UseSqlServer(connectionString);
             });
-            services.AddDbContext<IApplicationDataContext, ApplicationDataContext>(options =>
+            services.AddDbContext<ApplicationDataContext>(options =>
             {
                 string hash = Configuration.GetConnectionString("SqlConnection");
                 string connectionString = StringConverter.GetString(hash);
@@ -118,7 +118,6 @@ namespace BackendGestionaleBar
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddHostedService<AuthenticationStartupTask>();
-            services.AddHostedService<ConnectionStartupTask>();
 
             services.AddAuthorization(options =>
             {
