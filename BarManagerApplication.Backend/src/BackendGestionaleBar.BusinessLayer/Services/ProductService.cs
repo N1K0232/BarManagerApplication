@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using ApplicationCategory = BackendGestionaleBar.Shared.Models.Category;
+using ApplicationProduct = BackendGestionaleBar.Shared.Models.Product;
 
 namespace BackendGestionaleBar.BusinessLayer.Services
 {
@@ -20,7 +22,25 @@ namespace BackendGestionaleBar.BusinessLayer.Services
             this.database = database;
         }
 
-        public async Task<Product> GetProductAsync(Guid id) => await GetProductInternalAsync(id);
+        public async Task<ApplicationProduct> GetProductAsync(Guid id)
+        {
+            var dbProduct = await GetProductInternalAsync(id);
+            var dbCategory = await GetCategoryInternalAsync(dbProduct.IdCategory);
+            var category = new ApplicationCategory
+            {
+                Name = dbCategory.Name,
+                Description = dbCategory.Description
+            };
+
+            var product = new ApplicationProduct
+            {
+                Category = category,
+                Name = dbProduct.Name,
+                Price = dbProduct.Price
+            };
+
+            return product;
+        }
 
         public async Task<DataTable> GetMenuAsync()
         {
@@ -30,11 +50,11 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
         public async Task<Response> RegisterProductAsync(RegisterProductRequest request)
         {
-            var category = await applicationDataContext.GetAsync<Category>(request.IdCategory.Value);
+            var category = await GetCategoryInternalAsync(request.IdCategory);
 
             var product = new Product
             {
-                IdCategory = request.IdCategory.Value,
+                IdCategory = request.IdCategory,
                 Category = category,
                 Name = request.Name,
                 Price = request.Price.Value
@@ -63,10 +83,29 @@ namespace BackendGestionaleBar.BusinessLayer.Services
             }
         }
 
+        public async Task<bool> DeleteProductAsync(Guid id)
+        {
+            var product = await GetProductInternalAsync(id);
+            if (product == null)
+            {
+                return false;
+            }
+
+            applicationDataContext.Delete(product);
+            await applicationDataContext.SaveAsync();
+            return true;
+        }
+
         private async Task<Product> GetProductInternalAsync(Guid id)
         {
             var product = await applicationDataContext.GetAsync<Product>(id);
             return product;
+        }
+
+        private async Task<Category> GetCategoryInternalAsync(Guid id)
+        {
+            var category = await applicationDataContext.GetAsync<Category>(id);
+            return category;
         }
     }
 }
