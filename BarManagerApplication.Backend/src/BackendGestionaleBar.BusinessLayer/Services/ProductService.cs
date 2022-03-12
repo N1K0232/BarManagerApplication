@@ -11,12 +11,12 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 {
     public class ProductService : IProductService
     {
-        private readonly ApplicationDbContext context;
+        private readonly IApplicationDataContext applicationDataContext;
         private readonly IDatabase database;
 
-        public ProductService(ApplicationDbContext context, IDatabase database)
+        public ProductService(IApplicationDataContext applicationDataContext, IDatabase database)
         {
-            this.context = context;
+            this.applicationDataContext = applicationDataContext;
             this.database = database;
         }
 
@@ -30,7 +30,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
         public async Task<Response> RegisterProductAsync(RegisterProductRequest request)
         {
-            var category = await context.Categories.FindAsync(request.IdCategory.Value);
+            var category = await applicationDataContext.GetAsync<Category>(request.IdCategory.Value);
 
             var product = new Product
             {
@@ -42,7 +42,8 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
             try
             {
-                await context.Products.AddAsync(product);
+                applicationDataContext.Insert(product);
+                await applicationDataContext.SaveAsync();
                 return new Response
                 {
                     Succedeed = true,
@@ -64,7 +65,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
         private async Task<Product> GetProductInternalAsync(Guid id)
         {
-            var product = await context.Products.FindAsync(id);
+            var product = await applicationDataContext.GetAsync<Product>(id);
             return product;
         }
     }

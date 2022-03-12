@@ -13,7 +13,7 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
         private readonly IServiceScope scope;
 
         private AuthenticationDbContext authenticationDbContext;
-        private ApplicationDbContext applicationDbContext;
+        private ApplicationDataContext applicationDbContext;
 
         public ConnectionStartupTask(IServiceProvider serviceProvider)
         {
@@ -22,7 +22,7 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDataContext>();
             authenticationDbContext = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext>();
 
             bool canConnect = await applicationDbContext.Database.CanConnectAsync(cancellationToken);
