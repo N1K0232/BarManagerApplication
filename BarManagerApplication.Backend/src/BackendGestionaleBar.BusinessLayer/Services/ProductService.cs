@@ -42,11 +42,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
             return product;
         }
 
-        public async Task<DataTable> GetMenuAsync()
-        {
-            DataTable dataTable = await database.GetMenuAsync();
-            return dataTable;
-        }
+        public async Task<DataTable> GetMenuAsync() => await database.GetMenuAsync();
 
         public async Task<Response> RegisterProductAsync(RegisterProductRequest request)
         {
@@ -62,8 +58,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
             try
             {
-                applicationDataContext.Insert(product);
-                await applicationDataContext.SaveAsync();
+                await applicationDataContext.AddAsync(product);
                 return new Response
                 {
                     Succedeed = true,
@@ -91,8 +86,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 return false;
             }
 
-            applicationDataContext.Delete(product);
-            await applicationDataContext.SaveAsync();
+            await applicationDataContext.DeleteAsync(product);
             return true;
         }
 
