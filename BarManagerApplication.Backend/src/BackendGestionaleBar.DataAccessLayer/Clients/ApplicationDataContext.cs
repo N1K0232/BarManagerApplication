@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.DataAccessLayer.Clients
@@ -13,51 +11,27 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
         {
         }
 
-        public void Delete<T>(T entity) where T : class
+        public async Task DeleteAsync<T>(T entity) where T : class
         {
             Set<T>().Remove(entity);
+            await SaveChangesAsync();
         }
 
-        public void Delete<T>(IEnumerable<T> entities) where T : class
+        public async ValueTask<T> GetAsync<T>(params object[] keyValues) where T : class
         {
-            Set<T>().RemoveRange(entities);
+            return await Set<T>().FindAsync(keyValues);
         }
 
-        public Task ExecuteTransactionAsync(Func<Task> action)
-        {
-            var strategy = Database.CreateExecutionStrategy();
-            return strategy.ExecuteAsync(async () =>
-            {
-                using var transation = await Database.BeginTransactionAsync().ConfigureAwait(false);
-                await action.Invoke().ConfigureAwait(false);
-            });
-        }
-
-        public ValueTask<T> GetAsync<T>(params object[] keyValues) where T : class
-            => Set<T>().FindAsync(keyValues);
-
-        public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : class
-        {
-            var set = Set<T>().AsQueryable();
-
-            if (ignoreQueryFilters)
-            {
-                set = set.IgnoreQueryFilters();
-            }
-
-            return trackingChanges ? set.AsTracking() : set.AsNoTrackingWithIdentityResolution();
-        }
-
-        public void Insert<T>(T entity) where T : class
+        public async Task AddAsync<T>(T entity) where T : class
         {
             Set<T>().Add(entity);
+            await SaveChangesAsync();
         }
 
-        public Task SaveAsync()
+        public async Task UpdateAsync<T>(T entity) where T : class
         {
-            Task task = SaveChangesAsync();
-            task.ConfigureAwait(false);
-            return task;
+            Set<T>().Update(entity);
+            await SaveChangesAsync();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
