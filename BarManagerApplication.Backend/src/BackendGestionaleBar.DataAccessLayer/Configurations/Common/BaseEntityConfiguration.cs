@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.DataAccessLayer.Configurations.Common
 {
-    public abstract class BaseEntityConfiguration<T> : IEntityTypeConfiguration<T>
+    internal abstract class BaseEntityConfiguration<T> : IEntityTypeConfiguration<T>
         where T : BaseEntity
     {
         public virtual void Configure(EntityTypeBuilder<T> builder)

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.DataAccessLayer.Configurations
 {
-    public class CategoryConfiguration : BaseEntityConfiguration<Category>
+    internal sealed class CategoryConfiguration : BaseEntityConfiguration<Category>
     {
         public override void Configure(EntityTypeBuilder<Category> builder)
         {

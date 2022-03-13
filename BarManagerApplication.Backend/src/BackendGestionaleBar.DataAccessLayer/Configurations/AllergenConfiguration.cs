@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.DataAccessLayer.Configurations
 {
-    public class AllergenConfiguration : BaseEntityConfiguration<Allergen>
+    internal sealed class AllergenConfiguration : BaseEntityConfiguration<Allergen>
     {
         public override void Configure(EntityTypeBuilder<Allergen> builder)
         {
