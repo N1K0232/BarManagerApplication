@@ -10,6 +10,9 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
     /// </summary>
     public interface IDatabase : IDisposable
     {
+        /// <summary>
+        /// gets or sets the connection to the database
+        /// </summary>
         SqlConnection Connection { get; set; }
 
         /// <summary>

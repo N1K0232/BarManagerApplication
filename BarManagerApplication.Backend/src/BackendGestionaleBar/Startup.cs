@@ -7,6 +7,7 @@ using BackendGestionaleBar.BusinessLayer.StartupTasks;
 using BackendGestionaleBar.DataAccessLayer.Clients;
 using BackendGestionaleBar.DataAccessLayer.Extensions;
 using BackendGestionaleBar.Helpers;
+using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -37,6 +38,8 @@ namespace BackendGestionaleBar
         public void ConfigureServices(IServiceCollection services)
         {
             var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));
+
+            services.AddProblemDetails();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -137,9 +140,10 @@ namespace BackendGestionaleBar
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseProblemDetails();
+
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BackendGestionaleBar v1"));
             }

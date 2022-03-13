@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.DataAccessLayer.Configurations
 {
-    public class ProductConfiguration : BaseEntityConfiguration<Product>
+    internal sealed class ProductConfiguration : BaseEntityConfiguration<Product>
     {
         public override void Configure(EntityTypeBuilder<Product> builder)
         {

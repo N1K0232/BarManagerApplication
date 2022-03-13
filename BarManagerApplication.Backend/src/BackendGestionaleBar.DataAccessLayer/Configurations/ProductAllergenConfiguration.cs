@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.DataAccessLayer.Configurations
 {
-    public class ProductAllergenConfiguration : IEntityTypeConfiguration<ProductAllergen>
+    internal sealed class ProductAllergenConfiguration : IEntityTypeConfiguration<ProductAllergen>
     {
         public void Configure(EntityTypeBuilder<ProductAllergen> builder)
         {
