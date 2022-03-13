@@ -115,8 +115,8 @@ namespace BackendGestionaleBar
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IProductService, ProductService>();
 
-            services.AddHostedService<AuthenticationStartupTask>();
             services.AddHostedService<ConnectionStartupTask>();
+            services.AddHostedService<AuthenticationStartupTask>();
 
             services.AddAuthorization(options =>
             {
