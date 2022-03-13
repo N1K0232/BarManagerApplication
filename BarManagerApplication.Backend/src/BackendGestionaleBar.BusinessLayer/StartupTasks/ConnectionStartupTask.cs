@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.Authentication;
+﻿using BackendGestionaleBar.DataAccessLayer.Clients;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -19,12 +20,21 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             using var scope = serviceProvider.CreateScope();
-            using var authenticationDataContext = scope.ServiceProvider.GetRequiredService<AuthenticationDataContext>();
-            bool canConnect = await authenticationDataContext.Database.CanConnectAsync(cancellationToken);
+            using var database = scope.ServiceProvider.GetRequiredService<IDatabase>();
+            using var connection = database.Connection;
 
-            if (!canConnect)
+            try
             {
-                throw new InvalidOperationException("Can't connect to the database");
+                await connection.OpenAsync(cancellationToken);
+                await connection.CloseAsync();
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw ex;
             }
         }
 

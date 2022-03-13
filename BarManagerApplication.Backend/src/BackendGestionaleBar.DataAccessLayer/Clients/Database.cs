@@ -13,23 +13,19 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
     /// </summary>
     public sealed partial class Database : IDatabase
     {
-        private SqlConnection connection = null;
-        private SqlCommand command = null;
-        private SqlDataAdapter adapter = null;
+        SqlConnection connection;
+        SqlCommand command;
+        SqlDataAdapter adapter;
 
         /// <summary>
-        /// 
+        /// creates a new instance of the <see cref="Database"/>
+        /// class
         /// </summary>
         public Database()
         {
-        }
-        /// <summary>
-        /// creates a new instance of the Database class
-        /// </summary>
-        /// <param name="connectionStringHash">the encoded connection string</param>
-        public Database(string connectionStringHash)
-        {
-            CreateConnection(connectionStringHash);
+            connection = null;
+            command = null;
+            adapter = null;
         }
 
         public async Task<DataTable> GetMenuAsync()
