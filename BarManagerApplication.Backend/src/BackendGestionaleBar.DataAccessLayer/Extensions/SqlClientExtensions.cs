@@ -1,4 +1,7 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using BackendGestionaleBar.DataAccessLayer.Clients;
+using BackendGestionaleBar.Helpers;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Data;
 using System.Threading.Tasks;
@@ -21,6 +24,20 @@ namespace BackendGestionaleBar.DataAccessLayer.Extensions
             }
 
             return Task.FromResult(result);
+        }
+
+        public static IServiceCollection AddSqlServer(this IServiceCollection services, string connectionStringHash)
+        {
+            services.AddScoped<IDatabase, Database>(_ =>
+            {
+                string connectionString = StringConverter.GetString(connectionStringHash);
+                Database database = new();
+                SqlConnection connection = new(connectionString);
+                database.Connection = connection;
+                return database;
+            });
+
+            return services;
         }
     }
 }

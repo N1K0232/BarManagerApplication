@@ -13,10 +13,16 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
     /// </summary>
     public sealed partial class Database : IDatabase
     {
-        SqlConnection connection = null;
-        SqlCommand command = null;
-        SqlDataAdapter adapter = null;
+        private SqlConnection connection = null;
+        private SqlCommand command = null;
+        private SqlDataAdapter adapter = null;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public Database()
+        {
+        }
         /// <summary>
         /// creates a new instance of the Database class
         /// </summary>
