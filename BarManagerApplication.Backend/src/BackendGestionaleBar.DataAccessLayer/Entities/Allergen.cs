@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+using System.Collections.Generic;
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities
 {
-    public class Allergen
+    public class Allergen : BaseEntity
     {
-        public int IdAllergen { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }

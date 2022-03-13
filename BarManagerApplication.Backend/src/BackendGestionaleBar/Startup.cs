@@ -5,6 +5,7 @@ using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
 using BackendGestionaleBar.DataAccessLayer.Clients;
+using BackendGestionaleBar.DataAccessLayer.Extensions;
 using BackendGestionaleBar.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -64,23 +65,19 @@ namespace BackendGestionaleBar
                 });
             });
 
-            services.AddDbContext<AuthenticationDbContext>(options =>
+            services.AddDbContext<AuthenticationDataContext>(options =>
             {
                 string hash = Configuration.GetConnectionString("SqlConnection");
                 string connectionString = StringConverter.GetString(hash);
                 options.UseSqlServer(connectionString);
             });
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<IApplicationDataContext, ApplicationDataContext>(options =>
             {
                 string hash = Configuration.GetConnectionString("SqlConnection");
                 string connectionString = StringConverter.GetString(hash);
                 options.UseSqlServer(connectionString);
             });
-            services.AddScoped<IDatabase>(_ =>
-            {
-                string hash = Configuration.GetConnectionString("SqlConnection");
-                return new Database(hash);
-            });
+            services.AddSqlServer(Configuration.GetConnectionString("SqlConnection"));
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
@@ -91,7 +88,7 @@ namespace BackendGestionaleBar
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
             })
-            .AddEntityFrameworkStores<AuthenticationDbContext>()
+            .AddEntityFrameworkStores<AuthenticationDataContext>()
             .AddDefaultTokenProviders();
 
             services.AddAuthentication(options =>
@@ -117,6 +114,7 @@ namespace BackendGestionaleBar
             services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IProductService, ProductService>();
+
             services.AddHostedService<AuthenticationStartupTask>();
             services.AddHostedService<ConnectionStartupTask>();
 

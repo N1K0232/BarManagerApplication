@@ -7,6 +7,41 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
 {
     public sealed partial class Database
     {
+        public SqlConnection Connection
+        {
+            get
+            {
+                return connection;
+            }
+            set
+            {
+                Exception e = null;
+
+                try
+                {
+                    value.Open();
+                    value.Close();
+                }
+                catch (SqlException ex)
+                {
+                    e = ex;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    e = ex;
+                }
+
+                if (e == null && value != Connection)
+                {
+                    connection = value;
+                }
+                else
+                {
+                    throw e;
+                }
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);

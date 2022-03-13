@@ -1,5 +1,4 @@
 ﻿using BackendGestionaleBar.Authentication;
-using BackendGestionaleBar.DataAccessLayer.Clients;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -20,18 +19,12 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             using var scope = serviceProvider.CreateScope();
-            using var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            using var authenticationDbContext = scope.ServiceProvider.GetRequiredService<AuthenticationDbContext>();
-
-            bool canConnect = await applicationDbContext.Database.CanConnectAsync(cancellationToken);
-            if (canConnect)
-            {
-                canConnect = await authenticationDbContext.Database.CanConnectAsync(cancellationToken);
-            }
+            using var authenticationDataContext = scope.ServiceProvider.GetRequiredService<AuthenticationDataContext>();
+            bool canConnect = await authenticationDataContext.Database.CanConnectAsync(cancellationToken);
 
             if (!canConnect)
             {
-                throw new InvalidOperationException("can't connect to database");
+                throw new InvalidOperationException("Can't connect to the database");
             }
         }
 

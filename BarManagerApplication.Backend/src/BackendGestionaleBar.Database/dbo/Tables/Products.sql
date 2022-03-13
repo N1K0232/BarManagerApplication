@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[Products]
 (
 	[IdProduct] UNIQUEIDENTIFIER NOT NULL,
-	[IdCategory] INTEGER NOT NULL,
+	[IdCategory] UNIQUEIDENTIFIER NOT NULL,
 	[Name] NVARCHAR(256) NOT NULL,
 	[Price] DECIMAL(10,2) NOT NULL,
 
