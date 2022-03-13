@@ -1,5 +1,4 @@
-﻿using BackendGestionaleBar.Helpers;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
 
@@ -73,30 +72,6 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
                 {
                     adapter.Dispose();
                 }
-            }
-        }
-
-        /// <summary>
-        /// creates the connection and tests it
-        /// </summary>
-        /// <param name="connectionStringHash">the encoded connection string</param>
-        private void CreateConnection(string connectionStringHash)
-        {
-            string connectionString = StringConverter.GetString(connectionStringHash);
-            connection = new SqlConnection(connectionString);
-
-            try
-            {
-                connection.Open();
-                connection.Close();
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            catch (InvalidOperationException)
-            {
-                throw;
             }
         }
     }
