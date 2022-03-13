@@ -28,6 +28,11 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
             adapter = null;
         }
 
+        ~Database()
+        {
+            Dispose(false);
+        }
+
         public async Task<DataTable> GetMenuAsync()
         {
             DataTable dataTable;
