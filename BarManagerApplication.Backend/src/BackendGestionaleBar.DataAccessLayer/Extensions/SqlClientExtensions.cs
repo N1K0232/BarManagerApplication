@@ -1,6 +1,8 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Clients;
+using BackendGestionaleBar.DataAccessLayer.Internal;
 using BackendGestionaleBar.Helpers;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Data;
@@ -37,6 +39,18 @@ namespace BackendGestionaleBar.DataAccessLayer.Extensions
                 return database;
             });
 
+            return services;
+        }
+
+        public static IServiceCollection AddAzureSqlServer(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddScoped<IDatabase, Database>(_ =>
+            {
+                Database database = new();
+                SqlConnection connection = ConnectionHelper.CreateAzureConnection(configuration);
+                database.Connection = connection;
+                return database;
+            });
             return services;
         }
     }
