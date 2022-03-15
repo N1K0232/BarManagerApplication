@@ -74,7 +74,7 @@ namespace BackendGestionaleBar
                 string connectionString = StringConverter.GetString(hash);
                 options.UseSqlServer(connectionString);
             });
-            services.AddDbContext<IApplicationDataContext, ApplicationDataContext>(options =>
+            services.AddDbContext<IDataContext, DataContext>(options =>
             {
                 string hash = Configuration.GetConnectionString("SqlConnection");
                 string connectionString = StringConverter.GetString(hash);
