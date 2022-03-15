@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.DataAccessLayer.Clients
 {
-    public class ApplicationDataContext : DbContext, IApplicationDataContext
+    public class DataContext : DbContext, IDataContext
     {
-        public ApplicationDataContext(DbContextOptions<ApplicationDataContext> options)
+        public DataContext(DbContextOptions<DataContext> options)
             : base(options)
         {
         }
@@ -36,7 +36,7 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            Type type = typeof(ApplicationDataContext);
+            Type type = typeof(DataContext);
             modelBuilder.ApplyConfigurationsFromAssembly(type.Assembly);
             base.OnModelCreating(modelBuilder);
         }
