@@ -13,10 +13,10 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 {
     public class ProductService : IProductService
     {
-        private readonly IApplicationDataContext applicationDataContext;
+        private readonly IDataContext applicationDataContext;
         private readonly IDatabase database;
 
-        public ProductService(IApplicationDataContext applicationDataContext, IDatabase database)
+        public ProductService(IDataContext applicationDataContext, IDatabase database)
         {
             this.applicationDataContext = applicationDataContext;
             this.database = database;
