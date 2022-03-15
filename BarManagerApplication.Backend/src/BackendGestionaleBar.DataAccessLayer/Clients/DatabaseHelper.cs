@@ -6,14 +6,18 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
 {
     public sealed partial class Database
     {
+        /// <summary>
+        /// gets or sets the connection to the database
+        /// </summary>
+        /// <exception cref="SqlException">can't connect to the database</exception>
+        /// <exception cref="InvalidOperationException">can't connect to the database</exception>
         public SqlConnection Connection
         {
-            get
-            {
-                return connection;
-            }
+            get => connection;
             set
             {
+                //tests the connection before assign it to
+                //the connection field
                 Exception e = null;
 
                 try
@@ -30,9 +34,12 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
                     e = ex;
                 }
 
-                if (e == null && value != Connection)
+                if (e == null)
                 {
-                    connection = value;
+                    if (value != Connection)
+                    {
+                        connection = value;
+                    }
                 }
                 else
                 {
