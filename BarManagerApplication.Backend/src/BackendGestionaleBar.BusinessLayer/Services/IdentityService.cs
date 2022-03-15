@@ -20,12 +20,14 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 {
     public class IdentityService : IIdentityService
     {
+        private readonly RandomNumberGenerator generator;
         private readonly JwtSettings jwtSettings;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
 
         public IdentityService(IOptions<JwtSettings> jwtSettingOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
+            generator = RandomNumberGenerator.Create();
             jwtSettings = jwtSettingOptions.Value;
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -164,6 +166,19 @@ namespace BackendGestionaleBar.BusinessLayer.Services
         }
         private AuthResponse CreateToken(IEnumerable<Claim> claims)
         {
+            string accessToken = GenerateAccessToken(claims);
+            string refreshToken = GenerateRefreshToken();
+
+            var response = new AuthResponse
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+
+            return response;
+        }
+        private string GenerateAccessToken(IEnumerable<Claim> claims)
+        {
             byte[] bytes = Encoding.UTF8.GetBytes(jwtSettings.SecurityKey);
             SymmetricSecurityKey symmetricSecurityKey = new(bytes);
             SigningCredentials signInCredentials = new(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
@@ -175,23 +190,13 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 notBefore, expire, signInCredentials);
 
             JwtSecurityTokenHandler handler = new();
-
-            string accessToken = handler.WriteToken(jwtSecurityToken);
-            string refreshToken = GenerateRefreshToken();
-
-            var response = new AuthResponse
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
-
-            return response;
+            return handler.WriteToken(jwtSecurityToken);
         }
-        private static string GenerateRefreshToken()
+        private string GenerateRefreshToken()
         {
             var randomNumber = new byte[256];
-            using var generator = RandomNumberGenerator.Create();
             generator.GetBytes(randomNumber);
+            generator.Dispose();
             return Convert.ToBase64String(randomNumber);
         }
         private ClaimsPrincipal ValidateAccessToken(string accessToken)
