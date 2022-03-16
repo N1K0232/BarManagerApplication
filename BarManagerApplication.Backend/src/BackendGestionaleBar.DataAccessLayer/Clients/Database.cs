@@ -13,9 +13,7 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
     /// </summary>
     public sealed partial class Database : IDatabase
     {
-        SqlConnection connection;
-        SqlCommand command;
-        SqlDataAdapter adapter;
+        private SqlConnection connection;
 
         /// <summary>
         /// creates a new instance of the <see cref="Database"/>
@@ -24,8 +22,6 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
         public Database()
         {
             connection = null;
-            command = null;
-            adapter = null;
         }
 
         ~Database()
@@ -36,6 +32,8 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
         public async Task<DataTable> GetMenuAsync()
         {
             DataTable dataTable;
+            SqlCommand command;
+            SqlDataAdapter adapter;
             string query = QueryGenerator.GetMenu();
 
             try
