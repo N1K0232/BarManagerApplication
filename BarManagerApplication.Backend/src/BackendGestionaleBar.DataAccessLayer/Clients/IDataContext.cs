@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.DataAccessLayer.Clients
 {
-    public interface IApplicationDataContext
+    public interface IDataContext
     {
         Task AddAsync<T>(T entity) where T : class;
         Task DeleteAsync<T>(T entity) where T : class;

@@ -13,6 +13,8 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
         /// <summary>
         /// gets or sets the connection to the database
         /// </summary>
+        /// <exception cref="SqlException">can't connect to the database</exception>
+        /// <exception cref="InvalidOperationException">can't connect to the database</exception>
         SqlConnection Connection { get; set; }
 
         /// <summary>

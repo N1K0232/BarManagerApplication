@@ -13,12 +13,12 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 {
     public class ProductService : IProductService
     {
-        private readonly IApplicationDataContext applicationDataContext;
+        private readonly IDataContext dataContext;
         private readonly IDatabase database;
 
-        public ProductService(IApplicationDataContext applicationDataContext, IDatabase database)
+        public ProductService(IDataContext dataContext, IDatabase database)
         {
-            this.applicationDataContext = applicationDataContext;
+            this.dataContext = dataContext;
             this.database = database;
         }
 
@@ -58,7 +58,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
             try
             {
-                await applicationDataContext.AddAsync(product);
+                await dataContext.AddAsync(product);
                 return new Response
                 {
                     Succedeed = true,
@@ -86,19 +86,19 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 return false;
             }
 
-            await applicationDataContext.DeleteAsync(product);
+            await dataContext.DeleteAsync(product);
             return true;
         }
 
         private async Task<Product> GetProductInternalAsync(Guid id)
         {
-            var product = await applicationDataContext.GetAsync<Product>(id);
+            var product = await dataContext.GetAsync<Product>(id);
             return product;
         }
 
         private async Task<Category> GetCategoryInternalAsync(Guid id)
         {
-            var category = await applicationDataContext.GetAsync<Category>(id);
+            var category = await dataContext.GetAsync<Category>(id);
             return category;
         }
     }
