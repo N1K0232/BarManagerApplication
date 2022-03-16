@@ -12,7 +12,7 @@ namespace BackendGestionaleBar.DataAccessLayer.Extensions
 {
     public static class SqlClientExtensions
     {
-        public static Task<int> FillAsync(this SqlDataAdapter adapter, DataTable dataTable)
+        public static async Task<int> FillAsync(this SqlDataAdapter adapter, DataTable dataTable)
         {
             int result;
 
@@ -25,7 +25,7 @@ namespace BackendGestionaleBar.DataAccessLayer.Extensions
                 result = -1;
             }
 
-            return Task.FromResult(result);
+            return await Task.FromResult(result);
         }
 
         public static IServiceCollection AddSqlServer(this IServiceCollection services, string connectionStringHash)
