@@ -58,7 +58,8 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
             try
             {
-                await dataContext.AddAsync(product);
+                dataContext.Insert(product);
+                await dataContext.SaveAsync();
                 return new Response
                 {
                     Succedeed = true,
@@ -86,7 +87,8 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 return false;
             }
 
-            await dataContext.DeleteAsync(product);
+            dataContext.Delete(product);
+            await dataContext.SaveAsync();
             return true;
         }
 

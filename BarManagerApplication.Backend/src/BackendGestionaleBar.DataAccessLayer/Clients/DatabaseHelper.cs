@@ -61,24 +61,13 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
         /// <param name="disposing">true if the resources should be disposed otherwise false</param>
         private void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && connection != null)
             {
-                if (connection != null)
+                if (connection.State == ConnectionState.Open)
                 {
-                    if (connection.State == ConnectionState.Open)
-                    {
-                        connection.Close();
-                    }
-                    connection.Dispose();
+                    connection.Close();
                 }
-                if (command != null)
-                {
-                    command.Dispose();
-                }
-                if (adapter != null)
-                {
-                    adapter.Dispose();
-                }
+                connection.Dispose();
             }
         }
     }
