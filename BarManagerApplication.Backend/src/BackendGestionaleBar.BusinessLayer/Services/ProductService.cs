@@ -2,10 +2,8 @@
 using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.BusinessLayer.Services
@@ -23,10 +21,10 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
         public async Task<bool> DeleteProductAsync(Guid id)
         {
-            var product = await dataContext.Products.FindAsync(id);
+            var product = await dataContext.ReadAsync<Product>(id);
             if (product != null)
             {
-                dataContext.Products.Remove(product);
+                dataContext.Delete(product);
                 await dataContext.SaveAsync();
                 return true;
             }
@@ -38,16 +36,11 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
         public async Task<Product> GetProductAsync(Guid id)
         {
-            var product = await dataContext.Products
-                .Where(p => p.Id == id && p.Quantity > 0)
-                .FirstOrDefaultAsync();
-
+            var product = await dataContext.ReadAsync<Product>();
             return product;
         }
 
         public Task<Response> RegisterProductAsync(RegisterProductRequest request)
-        {
-            throw new NotImplementedException();
-        }
+            => Task.FromResult(new Response());
     }
 }
