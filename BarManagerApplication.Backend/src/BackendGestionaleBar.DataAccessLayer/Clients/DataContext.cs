@@ -11,10 +11,8 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
         {
         }
 
-        public DbSet<Allergen> Allergens { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<ProductAllergen> ProductAllergens { get; set; }
 
         public async Task<bool> SaveAsync()
         {
