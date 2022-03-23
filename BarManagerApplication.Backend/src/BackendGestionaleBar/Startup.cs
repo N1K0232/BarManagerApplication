@@ -4,7 +4,6 @@ using BackendGestionaleBar.Authentication.Requirements;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
-using BackendGestionaleBar.DataAccessLayer.Clients;
 using BackendGestionaleBar.DataAccessLayer.Extensions;
 using BackendGestionaleBar.Helpers;
 using Hellang.Middleware.ProblemDetails;
@@ -72,14 +71,12 @@ namespace BackendGestionaleBar
             {
                 string hash = Configuration.GetConnectionString("SqlConnection");
                 string connectionString = StringConverter.GetString(hash);
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(connectionString, dbOptions =>
+                {
+                    dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
+                });
             });
-            services.AddDbContext<IDataContext, DataContext>(options =>
-            {
-                string hash = Configuration.GetConnectionString("SqlConnection");
-                string connectionString = StringConverter.GetString(hash);
-                options.UseSqlServer(connectionString);
-            });
+            services.AddDataContext(Configuration.GetConnectionString("SqlConnection"));
             services.AddSqlServer(Configuration.GetConnectionString("SqlConnection"));
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -116,7 +113,6 @@ namespace BackendGestionaleBar
 
             services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
             services.AddScoped<IIdentityService, IdentityService>();
-            services.AddScoped<IProductService, ProductService>();
 
             services.AddHostedService<ConnectionStartupTask>();
             services.AddHostedService<AuthenticationStartupTask>();

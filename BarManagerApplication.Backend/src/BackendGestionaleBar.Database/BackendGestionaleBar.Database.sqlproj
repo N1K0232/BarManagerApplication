@@ -6,7 +6,7 @@
     <Name>BackendGestionaleBar.Database</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
-    <ProjectGuid>{9b0e3bb4-6097-4cc0-82ac-97aa6c9bcece}</ProjectGuid>
+    <ProjectGuid>{cf65bf8d-ec9e-45e4-8ff9-439350eb2fb9}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
@@ -58,8 +58,9 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="dbo" />
-    <Folder Include="dbo\Tables" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Tables\" />
+    <Folder Include="dbo\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\AspNetRoleClaims.sql" />
@@ -67,14 +68,11 @@
     <Build Include="dbo\Tables\AspNetUserClaims.sql" />
     <Build Include="dbo\Tables\AspNetUserLogins.sql" />
     <Build Include="dbo\Tables\AspNetUserRoles.sql" />
-    <Build Include="dbo\Tables\AspNetUsers.sql" />
     <Build Include="dbo\Tables\AspNetUserTokens.sql" />
+    <Build Include="dbo\Tables\AspNetUsers.sql" />
     <Build Include="dbo\Tables\Categories.sql" />
     <Build Include="dbo\Tables\Products.sql" />
-    <Build Include="dbo\Tables\Allergens.sql" />
-    <Build Include="dbo\Tables\ProductAllergens.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="BackendGestionaleBar.Database.publish.xml" />
+    <Build Include="dbo\Views\ViewMenu.sql" />
+    <Build Include="dbo\Tables\Reservations.sql" />
   </ItemGroup>
 </Project>
