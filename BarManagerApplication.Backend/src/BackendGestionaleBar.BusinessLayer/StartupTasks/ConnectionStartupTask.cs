@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
             using var scope = serviceProvider.CreateScope();
             using var database = scope.ServiceProvider.GetRequiredService<IDatabase>();
             using var connection = database.Connection;
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<ConnectionStartupTask>>();
 
             try
             {
@@ -30,11 +32,11 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
             }
             catch (SqlException ex)
             {
-                throw ex;
+                logger.LogError(ex, "An error occurred while connecting to the database");
             }
             catch (InvalidOperationException ex)
             {
-                throw ex;
+                logger.LogError(ex, "An error occurred while connecting to the database");
             }
         }
 
