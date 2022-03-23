@@ -12,7 +12,17 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations
             base.Configure(builder);
 
             builder.ToTable("Products");
-            builder.Property(p => p.Name).HasMaxLength(256).IsRequired();
+
+            builder.Property(p => p.Name)
+                .HasMaxLength(256)
+                .IsRequired();
+
+            builder.Property(p => p.Quantity)
+                .IsRequired();
+
+            builder.Property(p => p.Price)
+                .IsRequired();
+
             builder.HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.IdCategory)
