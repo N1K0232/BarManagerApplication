@@ -1,13 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.DataAccessLayer.Clients
 {
     public interface IDataContext
     {
-        void Delete<T>(T entity) where T : class;
-        ValueTask<T> GetAsync<T>(params object[] keyValues) where T : class;
-        void Insert<T>(T entity) where T : class;
-        void Edit<T>(T entity) where T : class;
+        DbSet<Allergen> Allergens { get; set; }
+        DbSet<Category> Categories { get; set; }
+        DbSet<Product> Products { get; set; }
+        DbSet<ProductAllergen> ProductAllergens { get; set; }
 
         Task<bool> SaveAsync();
     }

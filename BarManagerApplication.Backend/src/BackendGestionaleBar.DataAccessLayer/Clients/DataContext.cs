@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 namespace BackendGestionaleBar.DataAccessLayer.Clients
@@ -9,22 +10,11 @@ namespace BackendGestionaleBar.DataAccessLayer.Clients
             : base(options)
         {
         }
-        public void Delete<T>(T entity) where T : class
-        {
-            Set<T>().Remove(entity);
-        }
-        public async ValueTask<T> GetAsync<T>(params object[] keyValues) where T : class
-        {
-            return await Set<T>().FindAsync(keyValues);
-        }
-        public void Insert<T>(T entity) where T : class
-        {
-            Set<T>().Add(entity);
-        }
-        public void Edit<T>(T entity) where T : class
-        {
-            Set<T>().Update(entity);
-        }
+
+        public DbSet<Allergen> Allergens { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductAllergen> ProductAllergens { get; set; }
 
         public async Task<bool> SaveAsync()
         {
