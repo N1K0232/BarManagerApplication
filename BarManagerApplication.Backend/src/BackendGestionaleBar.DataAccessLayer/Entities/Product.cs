@@ -1,5 +1,6 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using System;
+using System.Collections.Generic;
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities
 {
@@ -14,5 +15,7 @@ namespace BackendGestionaleBar.DataAccessLayer.Entities
         public decimal Price { get; set; }
 
         public virtual Category Category { get; set; }
+
+        public virtual ICollection<ReservationDetail> ReservationDetails { get; set; }
     }
 }
