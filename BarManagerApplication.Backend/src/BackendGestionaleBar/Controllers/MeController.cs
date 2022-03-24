@@ -1,6 +1,6 @@
-﻿using BackendGestionaleBar.Authentication;
-using BackendGestionaleBar.Authentication.Extensions;
-using BackendGestionaleBar.Authentication.Filters;
+﻿using BackendGestionaleBar.DataAccessLayer;
+using BackendGestionaleBar.DataAccessLayer.Extensions;
+using BackendGestionaleBar.DataAccessLayer.Filters;
 using BackendGestionaleBar.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
