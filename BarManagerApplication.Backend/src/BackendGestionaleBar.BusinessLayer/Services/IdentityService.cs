@@ -1,7 +1,7 @@
-﻿using BackendGestionaleBar.BusinessLayer.Settings;
-using BackendGestionaleBar.DataAccessLayer;
-using BackendGestionaleBar.DataAccessLayer.Entities;
-using BackendGestionaleBar.DataAccessLayer.Extensions;
+﻿using BackendGestionaleBar.Authentication;
+using BackendGestionaleBar.Authentication.Entities;
+using BackendGestionaleBar.Authentication.Extensions;
+using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;
 using Microsoft.AspNetCore.Identity;

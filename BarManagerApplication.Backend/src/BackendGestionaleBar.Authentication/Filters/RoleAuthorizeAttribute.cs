@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace BackendGestionaleBar.DataAccessLayer.Filters
+namespace BackendGestionaleBar.Authentication.Filters
 {
     public class RoleAuthorizeAttribute : AuthorizeAttribute
     {

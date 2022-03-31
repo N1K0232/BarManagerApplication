@@ -1,10 +1,10 @@
+using BackendGestionaleBar.Authentication;
+using BackendGestionaleBar.Authentication.Entities;
+using BackendGestionaleBar.Authentication.Requirements;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
-using BackendGestionaleBar.DataAccessLayer.Clients;
-using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.DataAccessLayer.Extensions;
-using BackendGestionaleBar.DataAccessLayer.Requirements;
 using BackendGestionaleBar.Helpers;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

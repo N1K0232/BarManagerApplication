@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 
-namespace BackendGestionaleBar.DataAccessLayer.Entities
+namespace BackendGestionaleBar.Authentication.Entities
 {
     public class ApplicationUserRole : IdentityUserRole<Guid>
     {

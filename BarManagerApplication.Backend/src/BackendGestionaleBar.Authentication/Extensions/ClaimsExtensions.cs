@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Security.Principal;
 
-namespace BackendGestionaleBar.DataAccessLayer.Extensions
+namespace BackendGestionaleBar.Authentication.Extensions
 {
     public static class ClaimsExtensions
     {

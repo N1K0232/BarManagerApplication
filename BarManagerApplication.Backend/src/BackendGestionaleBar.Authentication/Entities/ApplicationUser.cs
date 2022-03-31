@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BackendGestionaleBar.DataAccessLayer.Entities
+namespace BackendGestionaleBar.Authentication.Entities
 {
     public class ApplicationUser : IdentityUser<Guid>
     {

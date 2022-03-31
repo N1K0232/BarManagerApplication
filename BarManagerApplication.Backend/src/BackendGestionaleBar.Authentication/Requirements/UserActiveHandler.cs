@@ -1,11 +1,11 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Entities;
-using BackendGestionaleBar.DataAccessLayer.Extensions;
+﻿using BackendGestionaleBar.Authentication.Entities;
+using BackendGestionaleBar.Authentication.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Threading.Tasks;
 
-namespace BackendGestionaleBar.DataAccessLayer.Requirements
+namespace BackendGestionaleBar.Authentication.Requirements
 {
     public class UserActiveHandler : AuthorizationHandler<UserActiveRequirement>
     {

@@ -1,4 +1,4 @@
-﻿namespace BackendGestionaleBar.DataAccessLayer
+﻿namespace BackendGestionaleBar.Authentication
 {
     public static class RoleNames
     {
