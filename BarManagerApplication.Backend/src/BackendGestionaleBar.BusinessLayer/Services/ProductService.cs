@@ -1,5 +1,4 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Clients;
-using BackendGestionaleBar.DataAccessLayer.Entities;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;
 using System;
@@ -10,37 +9,24 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 {
     public class ProductService : IProductService
     {
-        private readonly IDataContext dataContext;
-        private readonly IDatabase database;
-
-        public ProductService(IDataContext dataContext, IDatabase database)
+        public Task<bool> DeleteProductAsync(Guid id)
         {
-            this.dataContext = dataContext;
-            this.database = database;
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> DeleteProductAsync(Guid id)
+        public Task<DataTable> GetMenuAsync()
         {
-            var product = await dataContext.ReadAsync<Product>(id);
-            if (product != null)
-            {
-                dataContext.Delete(product);
-                await dataContext.SaveAsync();
-                return true;
-            }
-
-            return false;
+            throw new NotImplementedException();
         }
 
-        public async Task<DataTable> GetMenuAsync() => await database.GetMenuAsync();
-
-        public async Task<Product> GetProductAsync(Guid id)
+        public Task<Product> GetProductAsync(Guid id)
         {
-            var product = await dataContext.ReadAsync<Product>();
-            return product;
+            throw new NotImplementedException();
         }
 
         public Task<Response> RegisterProductAsync(RegisterProductRequest request)
-            => Task.FromResult(new Response());
+        {
+            throw new NotImplementedException();
+        }
     }
 }
