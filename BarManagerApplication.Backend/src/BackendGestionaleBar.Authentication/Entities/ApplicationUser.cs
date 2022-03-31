@@ -17,7 +17,5 @@ namespace BackendGestionaleBar.Authentication.Entities
         public DateTime? RefreshTokenExpirationDate { get; set; }
 
         public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
-
-        public virtual ICollection<Reservation> Reservations { get; set; }
     }
 }
