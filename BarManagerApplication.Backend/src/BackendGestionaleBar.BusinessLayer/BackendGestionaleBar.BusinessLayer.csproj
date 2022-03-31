@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BackendGestionaleBar.Authentication\BackendGestionaleBar.Authentication.csproj" />
     <ProjectReference Include="..\BackendGestionaleBar.DataAccessLayer\BackendGestionaleBar.DataAccessLayer.csproj" />
     <ProjectReference Include="..\BackendGestionaleBar.Shared\BackendGestionaleBar.Shared.csproj" />

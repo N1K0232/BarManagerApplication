@@ -1,10 +1,11 @@
 using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authentication.Requirements;
+using BackendGestionaleBar.BusinessLayer.MapperConfigurations;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
-using BackendGestionaleBar.DataAccessLayer.Extensions;
+using BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection;
 using BackendGestionaleBar.Helpers;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -76,8 +77,10 @@ namespace BackendGestionaleBar
                     dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
                 });
             });
-            services.AddDataContext(Configuration.GetConnectionString("SqlConnection"));
-            services.AddSqlServer(Configuration.GetConnectionString("SqlConnection"));
+            services.AddDataContext(options =>
+            {
+                options.ConnectionString = Configuration.GetConnectionString("SqlConnection");
+            });
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
@@ -117,12 +120,16 @@ namespace BackendGestionaleBar
             services.AddHostedService<ConnectionStartupTask>();
             services.AddHostedService<AuthenticationStartupTask>();
 
+            services.AddScoped<IProductService, ProductService>();
+
             services.AddAuthorization(options =>
             {
                 var policyBuilder = new AuthorizationPolicyBuilder().RequireAuthenticatedUser();
                 policyBuilder.Requirements.Add(new UserActiveRequirement());
                 options.FallbackPolicy = options.DefaultPolicy = policyBuilder.Build();
             });
+
+            services.AddAutoMapper(typeof(ProductMapperProfile).Assembly);
 
             T Configure<T>(string sectionName) where T : class
             {

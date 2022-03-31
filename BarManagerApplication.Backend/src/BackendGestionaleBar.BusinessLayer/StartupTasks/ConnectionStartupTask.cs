@@ -1,4 +1,4 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Clients;
+﻿using BackendGestionaleBar.DataAccessLayer;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,7 +21,7 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             using var scope = serviceProvider.CreateScope();
-            using var database = scope.ServiceProvider.GetRequiredService<IDatabase>();
+            using var database = scope.ServiceProvider.GetRequiredService<IDataContext>();
             using var connection = database.Connection;
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<ConnectionStartupTask>>();
 

@@ -1,46 +1,54 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Clients;
-using BackendGestionaleBar.DataAccessLayer.Entities;
+﻿using AutoMapper;
+using BackendGestionaleBar.DataAccessLayer;
+using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Models.Requests;
-using BackendGestionaleBar.Shared.Models.Responses;
 using System;
 using System.Data;
 using System.Threading.Tasks;
+using ApplicationProduct = BackendGestionaleBar.DataAccessLayer.Entities.Product;
 
 namespace BackendGestionaleBar.BusinessLayer.Services
 {
     public class ProductService : IProductService
     {
         private readonly IDataContext dataContext;
-        private readonly IDatabase database;
+        private readonly IMapper mapper;
 
-        public ProductService(IDataContext dataContext, IDatabase database)
+        public ProductService(IDataContext dataContext, IMapper mapper)
         {
             this.dataContext = dataContext;
-            this.database = database;
+            this.mapper = mapper;
         }
 
-        public async Task<bool> DeleteProductAsync(Guid id)
-        {
-            var product = await dataContext.ReadAsync<Product>(id);
-            if (product != null)
-            {
-                dataContext.Delete(product);
-                await dataContext.SaveAsync();
-                return true;
-            }
+        public async Task<bool> DeleteProductAsync(Guid id) => await dataContext.DeleteProductAsync(id);
 
-            return false;
-        }
-
-        public async Task<DataTable> GetMenuAsync() => await database.GetMenuAsync();
+        public async Task<DataTable> GetMenuAsync() => await dataContext.GetMenuAsync();
 
         public async Task<Product> GetProductAsync(Guid id)
         {
-            var product = await dataContext.ReadAsync<Product>();
+            var productEntity = await dataContext.GetProductAsync(id);
+            var categoryEntity = await dataContext.GetCategoryAsync(productEntity.IdCategory);
+
+            var product = mapper.Map<Product>(productEntity);
+            var category = mapper.Map<Category>(categoryEntity);
+            product.Category = category;
             return product;
         }
 
-        public Task<Response> RegisterProductAsync(RegisterProductRequest request)
-            => Task.FromResult(new Response());
+        public async Task<bool> RegisterProductAsync(RegisterProductRequest request)
+        {
+            var product = new ApplicationProduct
+            {
+                Id = Guid.NewGuid(),
+                IdCategory = request.IdCategory,
+                Name = request.Name,
+                Price = request.Price.Value,
+                Quantity = request.Quantity,
+                ExpirationDate = request.ExpirationDate.Value
+            };
+
+            var result = await dataContext.RegisterProductAsync(product);
+            return result;
+        }
     }
 }

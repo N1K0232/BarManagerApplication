@@ -1,5 +1,4 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
-using System.Collections.Generic;
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities
 {
@@ -8,7 +7,5 @@ namespace BackendGestionaleBar.DataAccessLayer.Entities
         public string Name { get; set; }
 
         public string Description { get; set; }
-
-        public virtual ICollection<Product> Products { get; set; }
     }
 }
