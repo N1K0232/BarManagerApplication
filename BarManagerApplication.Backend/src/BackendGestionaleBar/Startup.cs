@@ -1,6 +1,7 @@
 using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authentication.Requirements;
+using BackendGestionaleBar.BusinessLayer.MapperConfigurations;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
@@ -119,12 +120,16 @@ namespace BackendGestionaleBar
             services.AddHostedService<ConnectionStartupTask>();
             services.AddHostedService<AuthenticationStartupTask>();
 
+            services.AddScoped<IProductService, ProductService>();
+
             services.AddAuthorization(options =>
             {
                 var policyBuilder = new AuthorizationPolicyBuilder().RequireAuthenticatedUser();
                 policyBuilder.Requirements.Add(new UserActiveRequirement());
                 options.FallbackPolicy = options.DefaultPolicy = policyBuilder.Build();
             });
+
+            services.AddAutoMapper(typeof(ProductMapperProfile).Assembly);
 
             T Configure<T>(string sectionName) where T : class
             {
