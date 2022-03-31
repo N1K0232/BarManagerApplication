@@ -4,7 +4,7 @@ using BackendGestionaleBar.Authentication.Requirements;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
-using BackendGestionaleBar.DataAccessLayer.Extensions;
+using BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection;
 using BackendGestionaleBar.Helpers;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -76,8 +76,10 @@ namespace BackendGestionaleBar
                     dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
                 });
             });
-            services.AddDataContext(Configuration.GetConnectionString("SqlConnection"));
-            services.AddSqlServer(Configuration.GetConnectionString("SqlConnection"));
+            services.AddDataContext(options =>
+            {
+                options.ConnectionString = Configuration.GetConnectionString("SqlConnection");
+            });
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {

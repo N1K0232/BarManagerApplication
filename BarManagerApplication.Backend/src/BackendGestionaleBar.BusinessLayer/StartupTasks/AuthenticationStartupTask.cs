@@ -1,5 +1,5 @@
-﻿using BackendGestionaleBar.DataAccessLayer;
-using BackendGestionaleBar.DataAccessLayer.Entities;
+﻿using BackendGestionaleBar.Authentication;
+using BackendGestionaleBar.Authentication.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

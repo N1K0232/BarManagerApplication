@@ -1,6 +1,6 @@
-﻿using BackendGestionaleBar.BusinessLayer.Services;
-using BackendGestionaleBar.DataAccessLayer;
-using BackendGestionaleBar.DataAccessLayer.Filters;
+﻿using BackendGestionaleBar.Authentication;
+using BackendGestionaleBar.Authentication.Filters;
+using BackendGestionaleBar.BusinessLayer.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Data;
