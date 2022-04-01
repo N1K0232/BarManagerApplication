@@ -1,9 +1,8 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 namespace BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection
 {
-    public class DataContextOptions
+    public class DataContextBuilder
     {
         private string connectionString = "";
 

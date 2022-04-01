@@ -1,9 +1,7 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.DataAccessLayer.Extensions;
-using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.DataAccessLayer
 {
@@ -18,10 +16,7 @@ namespace BackendGestionaleBar.DataAccessLayer
 
         public SqlConnection Connection
         {
-            get
-            {
-                return connection;
-            }
+            get => connection;
             set
             {
                 Exception e = null;
