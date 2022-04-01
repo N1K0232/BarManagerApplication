@@ -1,8 +1,8 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.DataAccessLayer.Extensions;
-using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.DataAccessLayer
@@ -60,13 +60,21 @@ namespace BackendGestionaleBar.DataAccessLayer
 
         public async Task<Category> GetCategoryAsync(Guid id)
         {
+            Category category;
             var dataTable = await GetTableAsync("Categories", id);
-            var category = dataTable == null ? null : new Category
+            if (dataTable == null || dataTable.Rows.Count == 0)
             {
-                Id = id,
-                Name = Convert.ToString(dataTable.Rows[0]["Name"]),
-                Description = Convert.ToString(dataTable.Rows[0]["Description"])
-            };
+                category = null;
+            }
+            else
+            {
+                category = new Category
+                {
+                    Id = id,
+                    Name = Convert.ToString(dataTable.Rows[0]["Name"]),
+                    Description = Convert.ToString(dataTable.Rows[0]["Description"])
+                };
+            }
 
             return category;
         }
@@ -97,16 +105,24 @@ namespace BackendGestionaleBar.DataAccessLayer
         }
         public async Task<Product> GetProductAsync(Guid id)
         {
+            Product product;
             var dataTable = await GetTableAsync("Products", id);
-            var product = dataTable == null ? null : new Product
+            if (dataTable == null)
             {
-                Id = Guid.Parse(Convert.ToString(dataTable.Rows[0]["Id"])),
-                IdCategory = Guid.Parse(Convert.ToString(dataTable.Rows[0]["IdCategory"])),
-                Name = Convert.ToString(dataTable.Rows[0]["Name"]),
-                Price = Convert.ToDecimal(dataTable.Rows[0]["Price"]),
-                ExpirationDate = Convert.ToDateTime(dataTable.Rows[0]["ExpirationDate"]),
-                Quantity = Convert.ToInt32(dataTable.Rows[0]["Quantity"])
-            };
+                product = null;
+            }
+            else
+            {
+                product = new Product
+                {
+                    Id = Guid.Parse(Convert.ToString(dataTable.Rows[0]["Id"])),
+                    IdCategory = Guid.Parse(Convert.ToString(dataTable.Rows[0]["IdCategory"])),
+                    Name = Convert.ToString(dataTable.Rows[0]["Name"]),
+                    Price = Convert.ToDecimal(dataTable.Rows[0]["Price"]),
+                    ExpirationDate = Convert.ToDateTime(dataTable.Rows[0]["ExpirationDate"]),
+                    Quantity = Convert.ToInt32(dataTable.Rows[0]["Quantity"])
+                };
+            }
 
             return product;
         }
