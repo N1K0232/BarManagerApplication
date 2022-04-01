@@ -1,8 +1,9 @@
-﻿using System;
+﻿using BackendGestionaleBar.Shared.Models.Common;
+using System;
 
 namespace BackendGestionaleBar.Shared.Models
 {
-    public class User
+    public class User : BaseModel
     {
         public string FirstName { get; set; }
 
