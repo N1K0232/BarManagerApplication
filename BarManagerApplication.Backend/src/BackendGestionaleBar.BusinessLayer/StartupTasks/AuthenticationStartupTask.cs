@@ -3,9 +3,6 @@ using BackendGestionaleBar.Authentication.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.BusinessLayer.StartupTasks
 {
