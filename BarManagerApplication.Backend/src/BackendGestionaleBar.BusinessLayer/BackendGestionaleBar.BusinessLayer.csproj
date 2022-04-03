@@ -13,7 +13,6 @@
 		</ItemGroup>
 
 		<ItemGroup>
-				<ProjectReference Include="..\BackendGestionaleBar.Authentication\BackendGestionaleBar.Authentication.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.DataAccessLayer\BackendGestionaleBar.DataAccessLayer.csproj" />
 		</ItemGroup>
 
