@@ -1,4 +1,4 @@
-﻿using BackendGestionaleBar.Authentication;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -17,13 +17,27 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             using var scope = serviceProvider.CreateScope();
-            using var dataContext = scope.ServiceProvider.GetService<AuthenticationDataContext>();
+            using var connection = scope.ServiceProvider.GetService<SqlConnection>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<ConnectionStartupTask>>();
 
-            var canConnect = await dataContext.Database.CanConnectAsync(cancellationToken);
-            if (!canConnect)
+            Exception e = null;
+            try
             {
-                logger.LogError("problem occurred while connecting database");
+                await connection.OpenAsync(cancellationToken);
+                await connection.CloseAsync();
+            }
+            catch (SqlException ex)
+            {
+                e = ex;
+            }
+            catch (InvalidOperationException ex)
+            {
+                e = ex;
+            }
+
+            if (e != null)
+            {
+                logger.LogError(e, "Can't connect to the database");
             }
         }
 
