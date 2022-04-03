@@ -1,7 +1,7 @@
 ﻿namespace BackendGestionaleBar.DataAccessLayer.Entities.Common
 {
-    public abstract class BaseEntity<TKey> where TKey : struct
+    public abstract class BaseEntity
     {
-        public TKey Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

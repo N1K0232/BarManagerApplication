@@ -3,13 +3,13 @@ using BackendGestionaleBar.Shared.Models.Enums;
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities
 {
-    public class Order : BaseEntity<int>
+    public class Order : BaseEntity
     {
         public Guid IdUser { get; set; }
 
-        public DateOnly OrderDate { get; set; }
+        public DateTime OrderDate { get; set; }
 
-        public TimeOnly OrderTime { get; set; }
+        public TimeSpan OrderTime { get; set; }
 
         public OrderStatus OrderStatus { get; set; }
     }

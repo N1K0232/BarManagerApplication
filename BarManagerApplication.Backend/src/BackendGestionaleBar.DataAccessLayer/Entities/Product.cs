@@ -2,9 +2,9 @@
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities
 {
-    public class Product : BaseEntity<Guid>
+    public class Product : BaseEntity
     {
-        public int IdCategory { get; set; }
+        public Guid IdCategory { get; set; }
 
         public string Name { get; set; }
 
