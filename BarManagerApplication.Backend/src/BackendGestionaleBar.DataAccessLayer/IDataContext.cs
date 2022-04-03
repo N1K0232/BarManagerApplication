@@ -1,8 +1,6 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Entities;
-using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.DataAccessLayer
 {
@@ -11,7 +9,7 @@ namespace BackendGestionaleBar.DataAccessLayer
         SqlConnection Connection { get; set; }
 
         Task<bool> DeleteProductAsync(Guid id);
-        Task<Category> GetCategoryAsync(Guid id);
+        Task<Category> GetCategoryAsync(int id);
         Task<DataTable> GetMenuAsync();
         Task<Product> GetProductAsync(Guid id);
         Task<bool> RegisterProductAsync(Product product);

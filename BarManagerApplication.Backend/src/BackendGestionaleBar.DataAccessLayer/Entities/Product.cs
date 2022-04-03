@@ -1,11 +1,10 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
-using System;
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities
 {
-    public class Product : BaseEntity
+    public class Product : BaseEntity<Guid>
     {
-        public Guid IdCategory { get; set; }
+        public int IdCategory { get; set; }
 
         public string Name { get; set; }
 

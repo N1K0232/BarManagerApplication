@@ -53,7 +53,7 @@ namespace BackendGestionaleBar.DataAccessLayer
             }
         }
 
-        public async Task<Category> GetCategoryAsync(Guid id)
+        public async Task<Category> GetCategoryAsync(int id)
         {
             Category category;
             var dataTable = await GetTableAsync("Categories", id);
@@ -111,7 +111,7 @@ namespace BackendGestionaleBar.DataAccessLayer
                 product = new Product
                 {
                     Id = Guid.Parse(Convert.ToString(dataTable.Rows[0]["Id"])),
-                    IdCategory = Guid.Parse(Convert.ToString(dataTable.Rows[0]["IdCategory"])),
+                    IdCategory = Convert.ToInt32(dataTable.Rows[0]["IdCategory"]),
                     Name = Convert.ToString(dataTable.Rows[0]["Name"]),
                     Price = Convert.ToDecimal(dataTable.Rows[0]["Price"]),
                     ExpirationDate = Convert.ToDateTime(dataTable.Rows[0]["ExpirationDate"]),
@@ -181,7 +181,7 @@ namespace BackendGestionaleBar.DataAccessLayer
 
             return dataTable;
         }
-        private async Task<DataTable> GetTableAsync(string tableName, Guid id)
+        private async Task<DataTable> GetTableAsync(string tableName, object id)
         {
             DataTable dataTable;
 

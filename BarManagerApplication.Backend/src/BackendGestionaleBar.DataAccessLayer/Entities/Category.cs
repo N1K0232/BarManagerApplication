@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities
 {
-    public class Category : BaseEntity
+    public class Category : BaseEntity<int>
     {
         public string Name { get; set; }
 

@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace BackendGestionaleBar.DataAccessLayer.Entities.Common
+﻿namespace BackendGestionaleBar.DataAccessLayer.Entities.Common
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity<TKey> where TKey : struct
     {
-        public Guid Id { get; set; }
+        public TKey Id { get; set; }
     }
 }
