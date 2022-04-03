@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackendGestionaleBar.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     public class MeController : ControllerBase
     {
