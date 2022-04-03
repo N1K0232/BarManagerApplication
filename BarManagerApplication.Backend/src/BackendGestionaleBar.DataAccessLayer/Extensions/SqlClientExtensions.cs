@@ -1,26 +1,24 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.DataAccessLayer.Extensions
 {
     public static class SqlClientExtensions
     {
-        public static async Task<int> FillAsync(this SqlDataAdapter adapter, DataTable dataTable)
+        public static Task<int> FillAsync(this SqlDataAdapter adapter, DataTable dataTable)
         {
-            int result;
+            int rows;
 
             try
             {
-                result = adapter.Fill(dataTable);
+                rows = adapter.Fill(dataTable);
             }
-            catch (InvalidOperationException)
+            catch (Exception)
             {
-                result = -1;
+                rows = 0;
             }
 
-            return await Task.FromResult(result);
+            return Task.FromResult(rows);
         }
     }
 }
