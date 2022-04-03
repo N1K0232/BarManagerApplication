@@ -32,7 +32,6 @@ namespace BackendGestionaleBar.BusinessLayer.Services
             if (dbCategory == null)
             {
                 dbCategory = mapper.Map<ApplicationCategory>(request);
-                dbCategory.CreatedDate = DateTime.UtcNow;
                 dataContext.Insert(dbCategory);
             }
             else
@@ -41,9 +40,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
             }
 
             await dataContext.SaveAsync();
-
-            var savedCategory = mapper.Map<Category>(dbCategory);
-            return savedCategory;
+            return mapper.Map<Category>(dbCategory);
         }
     }
 }

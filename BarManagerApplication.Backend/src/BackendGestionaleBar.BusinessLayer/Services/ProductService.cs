@@ -63,7 +63,6 @@ namespace BackendGestionaleBar.BusinessLayer.Services
             if (dbProduct == null)
             {
                 dbProduct = mapper.Map<ApplicationProduct>(request);
-                dbProduct.CreatedDate = DateTime.UtcNow;
                 dataContext.Insert(dbProduct);
             }
             else
@@ -72,9 +71,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
             }
 
             await dataContext.SaveAsync();
-
-            var savedProduct = mapper.Map<Product>(dbProduct);
-            return savedProduct;
+            return mapper.Map<Product>(dbProduct);
         }
     }
 }
