@@ -5,6 +5,7 @@ using BackendGestionaleBar.BusinessLayer.MapperConfigurations;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
+using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection;
 using BackendGestionaleBar.Helpers;
 using Hellang.Middleware.ProblemDetails;
@@ -71,9 +72,20 @@ namespace BackendGestionaleBar
                     dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
                 });
             });
-            services.AddDataContext(options =>
+            services.AddDbContext<DataContext>(options =>
             {
-                options.ConnectionString = Configuration.GetConnectionString("SqlConnection");
+                string hash = Configuration.GetConnectionString("SqlConnection");
+                string connectionString = StringConverter.GetString(hash);
+                options.UseSqlServer(connectionString, dbOptions =>
+                {
+                    dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
+                });
+            });
+            services.AddDatabase(options =>
+            {
+                string hash = Configuration.GetConnectionString("SqlConnection");
+                string connectionString = StringConverter.GetString(hash);
+                options.ConnectionString = connectionString;
             });
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -115,6 +127,7 @@ namespace BackendGestionaleBar
             services.AddHostedService<AuthenticationStartupTask>();
 
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             services.AddAuthorization(options =>
             {
