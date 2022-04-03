@@ -52,7 +52,7 @@ namespace BackendGestionaleBar.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RegisterCliente([FromBody] RegisterRequest request)
+        public async Task<IActionResult> RegisterCliente([FromBody] RegisterUserRequest request)
         {
             var response = await identityService.RegisterClienteAsync(request);
             if (response.Succeeded)
@@ -69,7 +69,7 @@ namespace BackendGestionaleBar.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RegisterStaff([FromBody] RegisterRequest request)
+        public async Task<IActionResult> RegisterStaff([FromBody] RegisterUserRequest request)
         {
             var response = await identityService.RegisterStaffAsync(request);
             if (response.Succeeded)

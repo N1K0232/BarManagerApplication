@@ -64,7 +64,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
             return response;
         }
-        public async Task<RegisterResponse> RegisterClienteAsync(RegisterRequest request)
+        public async Task<RegisterResponse> RegisterClienteAsync(RegisterUserRequest request)
         {
             var user = new ApplicationUser
             {
@@ -90,7 +90,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 
             return response;
         }
-        public async Task<RegisterResponse> RegisterStaffAsync(RegisterRequest request)
+        public async Task<RegisterResponse> RegisterStaffAsync(RegisterUserRequest request)
         {
             var user = new ApplicationUser
             {
