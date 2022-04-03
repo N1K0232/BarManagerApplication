@@ -2,7 +2,6 @@
 using BackendGestionaleBar.Authentication.Extensions;
 using BackendGestionaleBar.Authentication.Filters;
 using BackendGestionaleBar.Shared.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendGestionaleBar.Controllers
@@ -19,6 +18,7 @@ namespace BackendGestionaleBar.Controllers
         {
             var user = new User
             {
+                Id = User.GetId(),
                 FirstName = User.GetFirstName(),
                 LastName = User.GetLastName(),
                 BirthDate = User.GetBirthDate(),

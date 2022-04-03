@@ -2,9 +2,7 @@
 using BackendGestionaleBar.Authentication.Filters;
 using BackendGestionaleBar.BusinessLayer.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Data;
-using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.Controllers
 {
