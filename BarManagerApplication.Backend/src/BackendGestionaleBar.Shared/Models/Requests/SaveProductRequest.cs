@@ -1,8 +1,10 @@
 ﻿namespace BackendGestionaleBar.Shared.Models.Requests
 {
-    public class RegisterProductRequest
+    public class SaveProductRequest
     {
-        public int IdCategory { get; set; }
+        public Guid? Id { get; set; }
+
+        public Guid IdCategory { get; set; }
 
         public string Name { get; set; }
 
