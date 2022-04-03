@@ -5,11 +5,13 @@ using BackendGestionaleBar.BusinessLayer.MapperConfigurations;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
+using BackendGestionaleBar.BusinessLayer.Validators;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection;
 using BackendGestionaleBar.Helpers;
 using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +20,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
+using TinyHelpers.Json.Serialization;
 
 namespace BackendGestionaleBar
 {
@@ -36,11 +40,18 @@ namespace BackendGestionaleBar
             var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));
 
             services.AddProblemDetails();
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+                    options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BackendGestionaleBar", Version = "v1" });
-                c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "BackendGestionaleBar", Version = "v1" });
+                options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
                     Description = "Insert the bearer token",
@@ -48,7 +59,7 @@ namespace BackendGestionaleBar
                     Type = SecuritySchemeType.ApiKey
                 });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -62,6 +73,10 @@ namespace BackendGestionaleBar
                         Array.Empty<string>()
                     }
                 });
+            })
+            .AddFluentValidationRulesToSwagger(options =>
+            {
+                options.SetNotNullableIfMinLengthGreaterThenZero = true;
             });
 
             services.AddDbContext<AuthenticationDataContext>(options =>
@@ -146,7 +161,10 @@ namespace BackendGestionaleBar
             });
 
             services.AddAutoMapper(typeof(ProductMapperProfile).Assembly);
-            services.AddFluentValidation();
+            services.AddFluentValidation(options =>
+            {
+                options.RegisterValidatorsFromAssemblyContaining<SaveOrderValidator>();
+            });
 
             T Configure<T>(string sectionName) where T : class
             {
