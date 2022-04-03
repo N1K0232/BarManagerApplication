@@ -8,6 +8,7 @@ using BackendGestionaleBar.BusinessLayer.StartupTasks;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection;
 using BackendGestionaleBar.Helpers;
+using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -81,6 +82,14 @@ namespace BackendGestionaleBar
                     dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
                 });
             });
+            services.AddScoped<IReadOnlyDataContext>(serviceProvider =>
+            {
+                return serviceProvider.GetRequiredService<DataContext>();
+            });
+            services.AddScoped<IDataContext>(serviceProvider =>
+            {
+                return serviceProvider.GetRequiredService<DataContext>();
+            });
             services.AddDatabase(options =>
             {
                 string hash = Configuration.GetConnectionString("SqlConnection");
@@ -137,6 +146,7 @@ namespace BackendGestionaleBar
             });
 
             services.AddAutoMapper(typeof(ProductMapperProfile).Assembly);
+            services.AddFluentValidation();
 
             T Configure<T>(string sectionName) where T : class
             {
