@@ -10,12 +10,14 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 {
     public class ProductService : IProductService
     {
+        private readonly ICategoryService categoryService;
         private readonly IDataContext dataContext;
         private readonly IDatabase database;
         private readonly IMapper mapper;
 
-        public ProductService(IDataContext dataContext, IDatabase database, IMapper mapper)
+        public ProductService(ICategoryService categoryService, IDataContext dataContext, IDatabase database, IMapper mapper)
         {
+            this.categoryService = categoryService;
             this.dataContext = dataContext;
             this.database = database;
             this.mapper = mapper;
@@ -46,7 +48,11 @@ namespace BackendGestionaleBar.BusinessLayer.Services
         public async Task<DataTable> GetMenuAsync() => await database.GetMenuAsync();
         public async Task<Product> GetProductAsync(Guid id)
         {
-            return await Task.FromResult(new Product());
+            var dbProduct = await dataContext.GetAsync<ApplicationProduct>(id);
+            var category = await categoryService.GetCategoryAsync(dbProduct.IdCategory);
+            var product = mapper.Map<Product>(dbProduct);
+            product.Category = category;
+            return product;
         }
         public async Task<Product> SaveProductAsync(SaveProductRequest request)
         {
