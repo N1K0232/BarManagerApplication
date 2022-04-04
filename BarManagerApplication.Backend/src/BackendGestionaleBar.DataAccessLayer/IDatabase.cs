@@ -8,5 +8,6 @@ namespace BackendGestionaleBar.DataAccessLayer
         SqlConnection Connection { get; set; }
 
         Task<DataTable> GetMenuAsync();
+        Task<decimal> GetPriceAsync(Guid idOrder);
     }
 }

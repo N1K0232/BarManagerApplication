@@ -45,8 +45,25 @@ namespace BackendGestionaleBar.DataAccessLayer
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        private void Dispose(bool disposing)
+        {
+            if (disposing && connection != null)
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+                connection.Dispose();
+            }
         }
 
+        public Task<decimal> GetPriceAsync(Guid idOrder)
+        {
+            return Task.FromResult(decimal.MinValue);
+        }
         public async Task<DataTable> GetMenuAsync()
         {
             DataTable dataTable;
