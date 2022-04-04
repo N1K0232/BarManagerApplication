@@ -20,17 +20,15 @@ namespace BackendGestionaleBar.DataAccessLayer
             var set = Set<T>();
             set.RemoveRange(entities);
         }
-
         public async Task<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity
         {
             var set = Set<T>();
             var entity = await set.FindAsync(keyValues);
             return entity;
         }
-
         public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
         {
-            var set = Set<T>().AsQueryable();
+            var set = Set<T>().AsQueryable<T>();
 
             if (ignoreQueryFilters)
             {
@@ -41,14 +39,12 @@ namespace BackendGestionaleBar.DataAccessLayer
                 set.AsTracking() :
                 set.AsNoTracking();
         }
-
         public void Insert<T>(T entity) where T : BaseEntity
         {
             entity.CreatedDate = DateTime.UtcNow;
             var set = Set<T>();
             set.Add(entity);
         }
-
         public async Task SaveAsync() => await SaveChangesAsync();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
