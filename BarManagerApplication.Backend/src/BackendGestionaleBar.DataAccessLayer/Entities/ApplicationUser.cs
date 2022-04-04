@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 
-namespace BackendGestionaleBar.Authentication.Entities
+namespace BackendGestionaleBar.DataAccessLayer.Entities
 {
     public class ApplicationUser : IdentityUser<Guid>
     {
@@ -17,5 +15,7 @@ namespace BackendGestionaleBar.Authentication.Entities
         public DateTime? RefreshTokenExpirationDate { get; set; }
 
         public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
+
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }
