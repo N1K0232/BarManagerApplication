@@ -1,8 +1,9 @@
 ﻿using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Filters;
 using BackendGestionaleBar.BusinessLayer.Services;
+using BackendGestionaleBar.Shared.Models;
+using BackendGestionaleBar.Shared.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace BackendGestionaleBar.Controllers
 {
@@ -20,35 +21,48 @@ namespace BackendGestionaleBar.Controllers
 
         [HttpGet("GetMenu")]
         [RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
-        [ProducesResponseType(200, Type = typeof(DataTable))]
+        [ProducesResponseType(200, Type = typeof(List<Menu>))]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetMenu()
         {
-            DataTable dataTable = await productService.GetMenuAsync();
-            if (dataTable == null || dataTable.Rows.Count == 0)
+            List<Menu> menu = await productService.GetMenuAsync();
+            if (menu != null && menu.Count > 0)
             {
-                return NotFound("no row found");
+                return Ok(menu);
             }
 
-            return Ok(dataTable);
+            return NotFound("No product found");
         }
 
         [HttpGet("GetProduct")]
         [RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
-        [ProducesResponseType(204)]
-        //[ProducesResponseType(200, Type = typeof(DataTable))]
-        //[ProducesResponseType(404)]
-        public Task<IActionResult> GetProduct(Guid idProduct)
+        [ProducesResponseType(200, Type = typeof(Product))]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetProduct(Guid idProduct)
         {
-            return Task.FromResult(NoContent() as IActionResult);
+            var product = await productService.GetProductAsync(idProduct);
+            if (product == null)
+            {
+                return NotFound("No product found");
+            }
+            else
+            {
+                return Ok(product);
+            }
         }
 
         [HttpPost("RegisterProduct")]
         [RoleAuthorize(RoleNames.Administrator, RoleNames.Staff)]
         [ProducesResponseType(204)]
-        public Task<IActionResult> RegisterProduct()
+        public async Task<IActionResult> RegisterProduct([FromBody] SaveProductRequest request)
         {
-            return Task.FromResult(NoContent() as IActionResult);
+            var savedProduct = await productService.SaveProductAsync(request);
+            if (savedProduct != null)
+            {
+                return Ok(savedProduct);
+            }
+
+            return BadRequest("errors during registration");
         }
     }
 }
