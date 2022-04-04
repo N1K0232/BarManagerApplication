@@ -2,9 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
 
-namespace BackendGestionaleBar.Authentication
+namespace BackendGestionaleBar.DataAccessLayer
 {
     public class AuthenticationDataContext
         : IdentityDbContext<ApplicationUser,
