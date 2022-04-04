@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BackendGestionaleBar.Authentication.Entities;
+using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.Shared.Models;
 
 namespace BackendGestionaleBar.BusinessLayer.MapperProfile

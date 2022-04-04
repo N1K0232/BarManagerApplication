@@ -1,4 +1,4 @@
-﻿using BackendGestionaleBar.Authentication.Entities;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

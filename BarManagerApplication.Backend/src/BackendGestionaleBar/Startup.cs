@@ -1,4 +1,3 @@
-using BackendGestionaleBar.Authentication.Requirements;
 using BackendGestionaleBar.BusinessLayer.MapperConfigurations;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
@@ -7,6 +6,7 @@ using BackendGestionaleBar.BusinessLayer.Validators;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection;
+using BackendGestionaleBar.DataAccessLayer.Requirements;
 using BackendGestionaleBar.Helpers;
 using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
