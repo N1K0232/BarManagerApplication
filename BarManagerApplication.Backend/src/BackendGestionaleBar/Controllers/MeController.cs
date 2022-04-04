@@ -2,13 +2,12 @@
 using BackendGestionaleBar.Authentication.Extensions;
 using BackendGestionaleBar.Authentication.Filters;
 using BackendGestionaleBar.Shared.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendGestionaleBar.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     public class MeController : ControllerBase
     {
@@ -19,6 +18,7 @@ namespace BackendGestionaleBar.Controllers
         {
             var user = new User
             {
+                Id = User.GetId(),
                 FirstName = User.GetFirstName(),
                 LastName = User.GetLastName(),
                 BirthDate = User.GetBirthDate(),

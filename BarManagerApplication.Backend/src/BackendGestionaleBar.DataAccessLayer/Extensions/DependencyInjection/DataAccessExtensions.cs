@@ -1,24 +1,31 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection
 {
     public static class DataAccessExtensions
     {
-        public static IServiceCollection AddDataContext(this IServiceCollection services, Action<DataContextOptions> action)
+        public static IServiceCollection AddDatabase(this IServiceCollection services, Action<DatabaseOptionsBuilder> configuration)
         {
-            var settings = new DataContextOptions();
-            action.Invoke(settings);
-            var connection = new SqlConnection(settings.ConnectionString);
-
-            services.AddScoped<IDataContext>(_ =>
+            services.AddSqlConnection(configuration);
+            services.AddScoped<IDatabase, Database>(serviceProvider =>
             {
-                var dataContext = new DataContext
-                {
-                    Connection = connection
-                };
-                return dataContext;
+                var connection = serviceProvider.GetRequiredService<SqlConnection>();
+                var database = new Database();
+                database.Connection = connection;
+                return database;
+            });
+            return services;
+        }
+
+        private static IServiceCollection AddSqlConnection(this IServiceCollection services, Action<DatabaseOptionsBuilder> configuration)
+        {
+            var builder = new DatabaseOptionsBuilder();
+            configuration.Invoke(builder);
+
+            services.AddScoped<SqlConnection>(_ =>
+            {
+                return new SqlConnection(builder.ConnectionString);
             });
 
             return services;

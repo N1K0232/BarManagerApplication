@@ -2,14 +2,12 @@
 using BackendGestionaleBar.Authentication.Filters;
 using BackendGestionaleBar.BusinessLayer.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Data;
-using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     public class ProductsController : ControllerBase
     {

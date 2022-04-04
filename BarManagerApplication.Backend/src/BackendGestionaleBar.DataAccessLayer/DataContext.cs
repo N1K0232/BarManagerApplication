@@ -1,216 +1,58 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Entities;
-using BackendGestionaleBar.DataAccessLayer.Extensions;
-using Microsoft.Data.SqlClient;
-using System;
-using System.Data;
-using System.Threading.Tasks;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace BackendGestionaleBar.DataAccessLayer
 {
-    public class DataContext : IDataContext
+    public class DataContext : DbContext, IDataContext, IReadOnlyDataContext
     {
-        private SqlConnection connection;
-
-        public DataContext()
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            connection = null;
         }
 
-        public SqlConnection Connection
+        public void Delete<T>(T entity) where T : BaseEntity
         {
-            get
-            {
-                return connection;
-            }
-            set
-            {
-                Exception e = null;
-
-                if (value != null)
-                {
-                    try
-                    {
-                        value.Open();
-                        value.Close();
-                    }
-                    catch (SqlException ex)
-                    {
-                        e = ex;
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        e = ex;
-                    }
-                }
-                else
-                {
-                    e = new ArgumentNullException(nameof(value), "Connection can't be null");
-                }
-
-                if (e != null)
-                {
-                    throw e;
-                }
-                else
-                {
-                    connection = value;
-                }
-            }
+            var set = Set<T>();
+            set.Remove(entity);
         }
-
-        public async Task<Category> GetCategoryAsync(Guid id)
+        public void Delete<T>(IEnumerable<T> entities) where T : BaseEntity
         {
-            var dataTable = await GetTableAsync("Categories", id);
-            var category = dataTable == null ? null : new Category
-            {
-                Id = id,
-                Name = Convert.ToString(dataTable.Rows[0]["Name"]),
-                Description = Convert.ToString(dataTable.Rows[0]["Description"])
-            };
-
-            return category;
+            var set = Set<T>();
+            set.RemoveRange(entities);
         }
-
-        public async Task<bool> DeleteProductAsync(Guid id)
+        public async Task<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity
         {
-            bool result;
-
-            try
-            {
-                await connection.OpenAsync();
-                string query = "DELETE FROM Products WHERE Id=@Id";
-                using var command = new SqlCommand(query, connection);
-                await command.ExecuteNonQueryAsync();
-                await connection.CloseAsync();
-                result = true;
-            }
-            catch (SqlException)
-            {
-                result = false;
-            }
-            catch (InvalidOperationException)
-            {
-                result = false;
-            }
-
-            return result;
+            var set = Set<T>();
+            var entity = await set.FindAsync(keyValues);
+            return entity;
         }
-        public async Task<Product> GetProductAsync(Guid id)
+        public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
         {
-            var dataTable = await GetTableAsync("Products", id);
-            var product = dataTable == null ? null : new Product
-            {
-                Id = Guid.Parse(Convert.ToString(dataTable.Rows[0]["Id"])),
-                IdCategory = Guid.Parse(Convert.ToString(dataTable.Rows[0]["IdCategory"])),
-                Name = Convert.ToString(dataTable.Rows[0]["Name"]),
-                Price = Convert.ToDecimal(dataTable.Rows[0]["Price"]),
-                ExpirationDate = Convert.ToDateTime(dataTable.Rows[0]["ExpirationDate"]),
-                Quantity = Convert.ToInt32(dataTable.Rows[0]["Quantity"])
-            };
+            var set = Set<T>().AsQueryable<T>();
 
-            return product;
+            if (ignoreQueryFilters)
+            {
+                set = set.IgnoreQueryFilters();
+            }
+
+            return trackingChanges ?
+                set.AsTracking() :
+                set.AsNoTracking();
         }
-        public async Task<bool> RegisterProductAsync(Product product)
+        public void Insert<T>(T entity) where T : BaseEntity
         {
-            bool result;
-            string query;
-
-            try
-            {
-                query = "";
-                query += "INSERT INTO Products(Id,IdCategory,Name,Price,Quantity,ExpirationDate)";
-                query += "VALUES(@Id,@IdCategory,@Name,@Price,@Quantity,@ExpirationDate)";
-                await connection.OpenAsync();
-                using var command = new SqlCommand(query, connection);
-                command.Parameters.Add(new SqlParameter("Id", product.Id));
-                command.Parameters.Add(new SqlParameter("IdCategory", product.IdCategory));
-                command.Parameters.Add(new SqlParameter("Name", product.Name));
-                command.Parameters.Add(new SqlParameter("Price", product.Price));
-                command.Parameters.Add(new SqlParameter("Quantity", product.Quantity));
-                command.Parameters.Add(new SqlParameter("ExpirationDate", product.ExpirationDate));
-                await command.ExecuteNonQueryAsync();
-                await connection.CloseAsync();
-                result = true;
-            }
-            catch (SqlException)
-            {
-                result = false;
-            }
-            catch (InvalidOperationException)
-            {
-                result = false;
-            }
-
-            return result;
+            entity.CreatedDate = DateTime.UtcNow;
+            var set = Set<T>();
+            set.Add(entity);
         }
+        public async Task SaveAsync() => await SaveChangesAsync();
 
-        public async Task<DataTable> GetMenuAsync() => await GetTableAsync("ViewMenu");
-
-        private async Task<DataTable> GetTableAsync(string tableName)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            DataTable dataTable;
-
-            try
-            {
-                await connection.OpenAsync();
-                using var command = new SqlCommand($"SELECT * FROM {tableName}", connection);
-                using var adapter = new SqlDataAdapter(command);
-                dataTable = new DataTable();
-                await adapter.FillAsync(dataTable);
-                await connection.CloseAsync();
-            }
-            catch (SqlException)
-            {
-                dataTable = null;
-            }
-            catch (InvalidOperationException)
-            {
-                dataTable = null;
-            }
-
-            return dataTable;
-        }
-        private async Task<DataTable> GetTableAsync(string tableName, Guid id)
-        {
-            DataTable dataTable;
-
-            try
-            {
-                await connection.OpenAsync();
-                using var command = new SqlCommand($"SELECT * FROM {tableName} WHERE Id=@Id", connection);
-                command.Parameters.Add(new SqlParameter("Id", id));
-                using var adapter = new SqlDataAdapter(command);
-                dataTable = new DataTable();
-                await adapter.FillAsync(dataTable);
-                await connection.CloseAsync();
-            }
-            catch (SqlException)
-            {
-                dataTable = null;
-            }
-            catch (InvalidOperationException)
-            {
-                dataTable = null;
-            }
-
-            return dataTable;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        private void Dispose(bool disposing)
-        {
-            if (disposing && connection != null)
-            {
-                if (connection.State == ConnectionState.Open)
-                {
-                    connection.Close();
-                }
-                connection.Dispose();
-            }
+            Type currentType = typeof(DataContext);
+            Assembly currentAssembly = currentType.Assembly;
+            modelBuilder.ApplyConfigurationsFromAssembly(currentAssembly);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

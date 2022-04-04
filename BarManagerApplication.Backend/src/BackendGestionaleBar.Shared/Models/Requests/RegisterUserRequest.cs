@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace BackendGestionaleBar.Shared.Models.Requests
+﻿namespace BackendGestionaleBar.Shared.Models.Requests
 {
-    public class RegisterRequest
+    public class RegisterUserRequest
     {
         public string FirstName { get; set; }
 

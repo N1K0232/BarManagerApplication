@@ -2,14 +2,12 @@
 using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     public class AuthController : ControllerBase
     {
@@ -54,7 +52,7 @@ namespace BackendGestionaleBar.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RegisterCliente([FromBody] RegisterRequest request)
+        public async Task<IActionResult> RegisterCliente([FromBody] RegisterUserRequest request)
         {
             var response = await identityService.RegisterClienteAsync(request);
             if (response.Succeeded)
@@ -71,7 +69,7 @@ namespace BackendGestionaleBar.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RegisterStaff([FromBody] RegisterRequest request)
+        public async Task<IActionResult> RegisterStaff([FromBody] RegisterUserRequest request)
         {
             var response = await identityService.RegisterStaffAsync(request);
             if (response.Succeeded)

@@ -5,23 +5,23 @@ using BackendGestionaleBar.BusinessLayer.MapperConfigurations;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
+using BackendGestionaleBar.BusinessLayer.Validators;
+using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection;
 using BackendGestionaleBar.Helpers;
+using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using System;
 using System.Text;
+using System.Text.Json.Serialization;
+using TinyHelpers.Json.Serialization;
 
 namespace BackendGestionaleBar
 {
@@ -40,11 +40,18 @@ namespace BackendGestionaleBar
             var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));
 
             services.AddProblemDetails();
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+                    options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BackendGestionaleBar", Version = "v1" });
-                c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "BackendGestionaleBar", Version = "v1" });
+                options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
                     Description = "Insert the bearer token",
@@ -52,7 +59,7 @@ namespace BackendGestionaleBar
                     Type = SecuritySchemeType.ApiKey
                 });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -66,6 +73,10 @@ namespace BackendGestionaleBar
                         Array.Empty<string>()
                     }
                 });
+            })
+            .AddFluentValidationRulesToSwagger(options =>
+            {
+                options.SetNotNullableIfMinLengthGreaterThenZero = true;
             });
 
             services.AddDbContext<AuthenticationDataContext>(options =>
@@ -77,9 +88,28 @@ namespace BackendGestionaleBar
                     dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
                 });
             });
-            services.AddDataContext(options =>
+            services.AddDbContext<DataContext>(options =>
             {
-                options.ConnectionString = Configuration.GetConnectionString("SqlConnection");
+                string hash = Configuration.GetConnectionString("SqlConnection");
+                string connectionString = StringConverter.GetString(hash);
+                options.UseSqlServer(connectionString, dbOptions =>
+                {
+                    dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
+                });
+            });
+            services.AddScoped<IReadOnlyDataContext>(serviceProvider =>
+            {
+                return serviceProvider.GetRequiredService<DataContext>();
+            });
+            services.AddScoped<IDataContext>(serviceProvider =>
+            {
+                return serviceProvider.GetRequiredService<DataContext>();
+            });
+            services.AddDatabase(options =>
+            {
+                string hash = Configuration.GetConnectionString("SqlConnection");
+                string connectionString = StringConverter.GetString(hash);
+                options.ConnectionString = connectionString;
             });
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -121,6 +151,8 @@ namespace BackendGestionaleBar
             services.AddHostedService<AuthenticationStartupTask>();
 
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IOrderService, OrderService>();
 
             services.AddAuthorization(options =>
             {
@@ -130,6 +162,10 @@ namespace BackendGestionaleBar
             });
 
             services.AddAutoMapper(typeof(ProductMapperProfile).Assembly);
+            services.AddFluentValidation(options =>
+            {
+                options.RegisterValidatorsFromAssemblyContaining<SaveOrderValidator>();
+            });
 
             T Configure<T>(string sectionName) where T : class
             {

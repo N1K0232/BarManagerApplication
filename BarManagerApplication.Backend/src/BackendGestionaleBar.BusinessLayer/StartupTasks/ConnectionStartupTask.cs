@@ -1,11 +1,7 @@
-﻿using BackendGestionaleBar.DataAccessLayer;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.BusinessLayer.StartupTasks
 {
@@ -21,10 +17,10 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             using var scope = serviceProvider.CreateScope();
-            using var database = scope.ServiceProvider.GetRequiredService<IDataContext>();
-            using var connection = database.Connection;
+            using var connection = scope.ServiceProvider.GetService<SqlConnection>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<ConnectionStartupTask>>();
 
+            Exception e = null;
             try
             {
                 await connection.OpenAsync(cancellationToken);
@@ -32,11 +28,16 @@ namespace BackendGestionaleBar.BusinessLayer.StartupTasks
             }
             catch (SqlException ex)
             {
-                logger.LogError(ex, "An error occurred while connecting to the database");
+                e = ex;
             }
             catch (InvalidOperationException ex)
             {
-                logger.LogError(ex, "An error occurred while connecting to the database");
+                e = ex;
+            }
+
+            if (e != null)
+            {
+                logger.LogError(e, "Can't connect to the database");
             }
         }
 

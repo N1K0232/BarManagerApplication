@@ -1,18 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
+		<PropertyGroup>
+				<TargetFramework>net6.0</TargetFramework>
+				<ImplicitUsings>enable</ImplicitUsings>
+		</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="11.0.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-  </ItemGroup>
+		<ItemGroup>
+				<PackageReference Include="AutoMapper" Version="11.0.1" />
+				<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+				<PackageReference Include="FluentValidation" Version="10.4.0" />
+				<PackageReference Include="FluentValidation.AspNetCore" Version="10.4.0" />
+		</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BackendGestionaleBar.Authentication\BackendGestionaleBar.Authentication.csproj" />
-    <ProjectReference Include="..\BackendGestionaleBar.DataAccessLayer\BackendGestionaleBar.DataAccessLayer.csproj" />
-    <ProjectReference Include="..\BackendGestionaleBar.Shared\BackendGestionaleBar.Shared.csproj" />
-  </ItemGroup>
+		<ItemGroup>
+				<ProjectReference Include="..\BackendGestionaleBar.DataAccessLayer\BackendGestionaleBar.DataAccessLayer.csproj" />
+		</ItemGroup>
 
 </Project>
