@@ -11,12 +11,14 @@ namespace BackendGestionaleBar.BusinessLayer.Services
 {
     public class OrderService : IOrderService
     {
+        private readonly IIdentityService identityService;
         private readonly IDataContext dataContext;
         private readonly IDatabase database;
         private readonly IMapper mapper;
 
-        public OrderService(IDataContext dataContext, IDatabase database, IMapper mapper)
+        public OrderService(IIdentityService identityService, IDataContext dataContext, IDatabase database, IMapper mapper)
         {
+            this.identityService = identityService;
             this.dataContext = dataContext;
             this.database = database;
             this.mapper = mapper;
@@ -71,7 +73,9 @@ namespace BackendGestionaleBar.BusinessLayer.Services
         public async Task<Order> GetOrderAsync(Guid id)
         {
             var dbOrder = await dataContext.GetAsync<ApplicationOrder>(id);
+            var user = await identityService.GetUserAsync(dbOrder.IdUser);
             var order = mapper.Map<Order>(dbOrder);
+            order.User = user;
             var totalPrice = await database.GetPriceAsync(id);
             order.TotalPrice = totalPrice;
             return order;
