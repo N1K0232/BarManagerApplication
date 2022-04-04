@@ -12,8 +12,6 @@ namespace BackendGestionaleBar.DataAccessLayer.Entities
 
         public DateTime OrderDate { get; set; }
 
-        public TimeSpan OrderTime { get; set; }
-
         public OrderStatus OrderStatus { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }

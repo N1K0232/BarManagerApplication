@@ -23,7 +23,7 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations
                 .HasMaxLength(50)
                 .IsRequired();
 
-            builder.Property(o => o.OrderTime)
+            builder.Property(o => o.OrderDate)
                 .IsRequired();
         }
     }
