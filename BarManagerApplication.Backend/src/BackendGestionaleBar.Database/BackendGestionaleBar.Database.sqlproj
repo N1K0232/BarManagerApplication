@@ -73,6 +73,7 @@
     <Build Include="dbo\Tables\Categories.sql" />
     <Build Include="dbo\Tables\Products.sql" />
     <Build Include="dbo\Views\ViewMenu.sql" />
-    <Build Include="dbo\Tables\Reservations.sql" />
+    <Build Include="dbo\Tables\Orders.sql" />
+    <Build Include="dbo\Tables\OrderDetails.sql" />
   </ItemGroup>
 </Project>
