@@ -1,20 +1,18 @@
-﻿using BackendGestionaleBar.Authentication;
+﻿using AutoMapper;
+using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authentication.Extensions;
 using BackendGestionaleBar.BusinessLayer.Settings;
+using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.BusinessLayer.Services
 {
@@ -24,15 +22,24 @@ namespace BackendGestionaleBar.BusinessLayer.Services
         private readonly JwtSettings jwtSettings;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly IMapper mapper;
 
-        public IdentityService(IOptions<JwtSettings> jwtSettingOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public IdentityService(IOptions<JwtSettings> jwtSettingOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IMapper mapper)
         {
             generator = RandomNumberGenerator.Create();
             jwtSettings = jwtSettingOptions.Value;
+
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.mapper = mapper;
         }
 
+        public async Task<User> GetUserAsync(Guid id)
+        {
+            var dbUser = await userManager.FindByIdAsync(id.ToString());
+            var user = mapper.Map<User>(dbUser);
+            return user;
+        }
         public async Task<AuthResponse> LoginAsync(LoginRequest request)
         {
             var signInResult = await signInManager.PasswordSignInAsync(request.UserName, request.Password, false, false);

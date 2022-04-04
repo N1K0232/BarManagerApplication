@@ -1,11 +1,12 @@
-﻿using BackendGestionaleBar.Shared.Models.Requests;
+﻿using BackendGestionaleBar.Shared.Models;
+using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;
-using System.Threading.Tasks;
 
 namespace BackendGestionaleBar.BusinessLayer.Services
 {
     public interface IIdentityService
     {
+        Task<User> GetUserAsync(Guid id);
         Task<AuthResponse> LoginAsync(LoginRequest request);
         Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request);
         Task<RegisterResponse> RegisterClienteAsync(RegisterUserRequest request);
