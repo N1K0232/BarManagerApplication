@@ -14,7 +14,7 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations
             builder.ToTable("Orders");
 
             builder.HasOne(o => o.User)
-                .WithMany()
+                .WithMany(u => u.Orders)
                 .HasForeignKey(o => o.IdUser)
                 .IsRequired();
 

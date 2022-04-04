@@ -15,7 +15,7 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations
 
             builder.HasOne(od => od.Order)
                 .WithMany(o => o.OrderDetails)
-                .HasForeignKey(od => od.Order)
+                .HasForeignKey(od => od.IdOrder)
                 .IsRequired();
 
             builder.HasOne(od => od.Product)
