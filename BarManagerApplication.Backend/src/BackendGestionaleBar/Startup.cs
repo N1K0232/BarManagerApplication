@@ -1,5 +1,3 @@
-using BackendGestionaleBar.Authentication;
-using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authentication.Requirements;
 using BackendGestionaleBar.BusinessLayer.MapperConfigurations;
 using BackendGestionaleBar.BusinessLayer.Services;
@@ -7,6 +5,7 @@ using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
 using BackendGestionaleBar.BusinessLayer.Validators;
 using BackendGestionaleBar.DataAccessLayer;
+using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection;
 using BackendGestionaleBar.Helpers;
 using FluentValidation.AspNetCore;
