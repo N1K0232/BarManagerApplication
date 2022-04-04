@@ -45,7 +45,31 @@ namespace BackendGestionaleBar.BusinessLayer.Services
                 await dataContext.SaveAsync();
             }
         }
-        public async Task<DataTable> GetMenuAsync() => await database.GetMenuAsync();
+        public async Task<List<Menu>> GetMenuAsync()
+        {
+            List<Menu> menu;
+            DataTable dataTable = await database.GetMenuAsync();
+            if (dataTable == null || dataTable.Rows.Count == 0)
+            {
+                menu = null;
+            }
+            else
+            {
+                menu = new List<Menu>();
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    menu.Add(new Menu
+                    {
+                        Name = Convert.ToString(row["Name"]),
+                        Price = Convert.ToDecimal(row["Price"]),
+                        Quantity = Convert.ToInt32(row["Quantity"]),
+                        Category = Convert.ToString(row["Category"])
+                    });
+                }
+            }
+
+            return menu;
+        }
         public async Task<Product> GetProductAsync(Guid id)
         {
             var dbProduct = await dataContext.GetAsync<ApplicationProduct>(id);

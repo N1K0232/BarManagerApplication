@@ -1,6 +1,5 @@
 ﻿using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Models.Requests;
-using System.Data;
 
 namespace BackendGestionaleBar.BusinessLayer.Services
 {
@@ -8,7 +7,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
     {
         Task DeleteProductAsync(Guid id);
         Task DeleteProductsAsync();
-        Task<DataTable> GetMenuAsync();
+        Task<List<Menu>> GetMenuAsync();
         Task<Product> GetProductAsync(Guid id);
         Task<Product> SaveProductAsync(SaveProductRequest request);
     }
