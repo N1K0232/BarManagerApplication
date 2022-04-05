@@ -45,7 +45,7 @@ namespace BackendGestionaleBar.Controllers
                 return Ok(response);
             }
 
-            return BadRequest();
+            return BadRequest("errors during refreshing the token");
         }
 
         [HttpPost("RegisterCliente")]
@@ -61,7 +61,7 @@ namespace BackendGestionaleBar.Controllers
             }
             else
             {
-                return BadRequest(response.Errors);
+                return BadRequest(response);
             }
         }
 
@@ -78,7 +78,7 @@ namespace BackendGestionaleBar.Controllers
             }
             else
             {
-                return BadRequest(response.Errors);
+                return BadRequest(response);
             }
         }
 
