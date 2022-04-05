@@ -73,7 +73,7 @@ namespace BackendGestionaleBar.BusinessLayer.Services
         public async Task<Product> GetProductAsync(Guid id)
         {
             var dbProduct = await dataContext.GetAsync<ApplicationProduct>(id);
-            var category = await categoryService.GetCategoryAsync(dbProduct.IdCategory);
+            var category = mapper.Map<Category>(dbProduct?.Category);
             var product = mapper.Map<Product>(dbProduct);
             product.Category = category;
             return product;
