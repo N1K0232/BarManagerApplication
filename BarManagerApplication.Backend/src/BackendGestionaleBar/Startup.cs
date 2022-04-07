@@ -7,7 +7,6 @@ using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection;
 using BackendGestionaleBar.DataAccessLayer.Requirements;
-using BackendGestionaleBar.Helpers;
 using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -26,12 +25,14 @@ namespace BackendGestionaleBar
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -80,18 +81,14 @@ namespace BackendGestionaleBar
 
             services.AddDbContext<AuthenticationDataContext>(options =>
             {
-                string hash = Configuration.GetConnectionString("SqlConnection");
-                string connectionString = StringConverter.GetString(hash);
-                options.UseSqlServer(connectionString, dbOptions =>
+                options.UseSqlServer(GetConnectionString(), dbOptions =>
                 {
                     dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
                 });
             });
             services.AddDbContext<DataContext>(options =>
             {
-                string hash = Configuration.GetConnectionString("SqlConnection");
-                string connectionString = StringConverter.GetString(hash);
-                options.UseSqlServer(connectionString, dbOptions =>
+                options.UseSqlServer(GetConnectionString(), dbOptions =>
                 {
                     dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
                 });
@@ -106,9 +103,7 @@ namespace BackendGestionaleBar
             });
             services.AddDatabase(options =>
             {
-                string hash = Configuration.GetConnectionString("SqlConnection");
-                string connectionString = StringConverter.GetString(hash);
-                options.ConnectionString = connectionString;
+                options.ConnectionString = GetConnectionString();
             });
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -175,24 +170,33 @@ namespace BackendGestionaleBar
             }
         }
 
+        private string GetConnectionString()
+        {
+            string hash;
+
+            if (Environment.IsDevelopment())
+            {
+                hash = Configuration.GetConnectionString("SqlConnection");
+            }
+            else
+            {
+                hash = Configuration.GetConnectionString("AzureConnection");
+            }
+
+            var bytes = Convert.FromBase64String(hash);
+            return Encoding.UTF8.GetString(bytes);
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseProblemDetails();
-
-            if (env.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BackendGestionaleBar v1"));
-            }
-
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BackendGestionaleBar v1"));
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
