@@ -3,7 +3,6 @@ using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authentication.Extensions;
 using BackendGestionaleBar.BusinessLayer.Settings;
-using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;
 using Microsoft.AspNetCore.Identity;
@@ -34,12 +33,6 @@ public class AuthenticationService : IAuthenticationService
         this.mapper = mapper;
     }
 
-    public async Task<User> GetUserAsync(Guid id)
-    {
-        var dbUser = await userManager.FindByIdAsync(id.ToString());
-        var user = mapper.Map<User>(dbUser);
-        return user;
-    }
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
         var signInResult = await signInManager.PasswordSignInAsync(request.UserName, request.Password, false, false);
@@ -73,55 +66,27 @@ public class AuthenticationService : IAuthenticationService
     }
     public async Task<RegisterResponse> RegisterClienteAsync(RegisterUserRequest request)
     {
-        var user = new ApplicationUser
-        {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            BirthDate = request.BirthDate,
-            Email = request.Email,
-            UserName = request.UserName,
-            PhoneNumber = request.PhoneNumber
-        };
+        var result = await RegisterAsync(request);
 
-        var result = await userManager.CreateAsync(user, request.Password);
         if (result.Succeeded)
         {
+            var user = await userManager.FindByNameAsync(request.UserName);
             result = await userManager.AddToRoleAsync(user, RoleNames.Cliente);
         }
 
-        var response = new RegisterResponse
-        {
-            Succeeded = result.Succeeded,
-            Errors = result.Errors.Select(e => e.Description)
-        };
-
-        return response;
+        return new RegisterResponse(result.Succeeded, result.Errors.Select(e => e.Description));
     }
     public async Task<RegisterResponse> RegisterStaffAsync(RegisterUserRequest request)
     {
-        var user = new ApplicationUser
-        {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            BirthDate = request.BirthDate,
-            Email = request.Email,
-            UserName = request.UserName,
-            PhoneNumber = request.PhoneNumber
-        };
+        var result = await RegisterAsync(request);
 
-        var result = await userManager.CreateAsync(user, request.Password);
         if (result.Succeeded)
         {
+            var user = await userManager.FindByIdAsync(request.UserName);
             result = await userManager.AddToRoleAsync(user, RoleNames.Staff);
         }
 
-        var response = new RegisterResponse
-        {
-            Succeeded = result.Succeeded,
-            Errors = result.Errors.Select(e => e.Description)
-        };
-
-        return response;
+        return new(result.Succeeded, result.Errors.Select(e => e.Description));
     }
     public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request)
     {
@@ -154,37 +119,20 @@ public class AuthenticationService : IAuthenticationService
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
-            return new RegisterResponse
-            {
-                Succeeded = false,
-                Errors = new List<string>
-                {
-                    "Utente non esistente"
-                }
-            };
+            return new(false, new List<string> { "User not found" });
         }
 
         var result = await userManager.ChangePasswordAsync(user, user.PasswordHash, request.NewPassword);
-        return new RegisterResponse
-        {
-            Succeeded = result.Succeeded,
-            Errors = result.Errors.Select(e => e.Description)
-        };
+        return new(result.Succeeded, result.Errors.Select(e => e.Description));
     }
-    private AuthResponse CreateToken(IEnumerable<Claim> claims)
+
+    private Task<IdentityResult> RegisterAsync(RegisterUserRequest request)
     {
-        string accessToken = GenerateAccessToken(claims);
-        string refreshToken = GenerateRefreshToken();
-
-        var response = new AuthResponse
-        {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken
-        };
-
-        return response;
+        var user = mapper.Map<ApplicationUser>(request);
+        return userManager.CreateAsync(user, request.Password);
     }
-    private string GenerateAccessToken(IEnumerable<Claim> claims)
+    private AuthResponse CreateToken(IEnumerable<Claim> claims) => new(GetAccessToken(claims), GetRefreshToken());
+    private string GetAccessToken(IEnumerable<Claim> claims)
     {
         byte[] bytes = Encoding.UTF8.GetBytes(jwtSettings.SecurityKey);
         SymmetricSecurityKey symmetricSecurityKey = new(bytes);
@@ -199,9 +147,9 @@ public class AuthenticationService : IAuthenticationService
         JwtSecurityTokenHandler handler = new();
         return handler.WriteToken(jwtSecurityToken);
     }
-    private string GenerateRefreshToken()
+    private string GetRefreshToken()
     {
-        var randomNumber = new byte[256];
+        byte[] randomNumber = new byte[256];
         generator.GetBytes(randomNumber);
         generator.Dispose();
         return Convert.ToBase64String(randomNumber);

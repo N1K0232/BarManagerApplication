@@ -2,7 +2,12 @@
 
 public class RegisterResponse
 {
-    public bool Succeeded { get; set; }
+    public RegisterResponse(bool succeeded, IEnumerable<string> errors)
+    {
+        Succeeded = succeeded;
+        Errors = errors;
+    }
 
-    public IEnumerable<string> Errors { get; set; }
+    public bool Succeeded { get; }
+    public IEnumerable<string> Errors { get; }
 }

@@ -3,9 +3,9 @@ using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Models.Requests;
 using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 
-namespace BackendGestionaleBar.BusinessLayer.MapperConfigurations;
+namespace BackendGestionaleBar.BusinessLayer.MapperProfiles;
 
-public class ProductMapperProfile : Profile
+internal class ProductMapperProfile : Profile
 {
     public ProductMapperProfile()
     {
