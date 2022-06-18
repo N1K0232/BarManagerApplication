@@ -18,6 +18,35 @@ public class ProductService : IProductService
 		this.mapper = mapper;
 	}
 
+	public async Task DeleteAsync(Guid id)
+	{
+		var dbProduct = await dataContext.GetAsync<Entities.Product>(id);
+		dataContext.Delete(dbProduct);
+		await dataContext.SaveAsync();
+	}
+
+	public async Task<IEnumerable<Product>> GetAsync(string name)
+	{
+		var query = dataContext.GetData<Entities.Product>();
+
+		if (!string.IsNullOrWhiteSpace(name))
+		{
+			query = query.Where(p => p.Name.Contains(name));
+		}
+
+		var dbProducts = await query.Include(p => p.Category).ToListAsync();
+		var products = new List<Product>();
+
+		foreach (var dbProduct in dbProducts)
+		{
+			var product = mapper.Map<Product>(dbProduct);
+			product.Category = mapper.Map<Category>(dbProduct.Category);
+			products.Add(product);
+		}
+
+		return products;
+	}
+
 	public async Task<Product> SaveAsync(SaveProductRequest request)
 	{
 		var query = dataContext.GetData<Entities.Product>(trackingChanges: true);

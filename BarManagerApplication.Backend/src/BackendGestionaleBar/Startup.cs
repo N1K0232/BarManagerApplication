@@ -141,6 +141,7 @@ public class Startup
         services.AddHostedService<AuthenticationStartupTask>();
 
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IProductService, ProductService>();
     }
 
     private T Configure<T>(string sectionName) where T : class
