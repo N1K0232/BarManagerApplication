@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using BackendGestionaleBar.Authentication;
+using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authentication.Extensions;
 using BackendGestionaleBar.BusinessLayer.Settings;
-using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Models.Requests;
 using BackendGestionaleBar.Shared.Models.Responses;

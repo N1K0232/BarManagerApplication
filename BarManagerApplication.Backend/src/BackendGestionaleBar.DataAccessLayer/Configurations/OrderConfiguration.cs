@@ -13,10 +13,10 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations
 
             builder.ToTable("Orders");
 
-            builder.HasOne(o => o.User)
-                .WithMany(u => u.Orders)
-                .HasForeignKey(o => o.IdUser)
-                .IsRequired();
+            //builder.HasOne(o => o.User)
+            //    .WithMany(u => u.Orders)
+            //    .HasForeignKey(o => o.IdUser)
+            //    .IsRequired();
 
             builder.Property(o => o.OrderStatus)
                 .HasConversion<string>()

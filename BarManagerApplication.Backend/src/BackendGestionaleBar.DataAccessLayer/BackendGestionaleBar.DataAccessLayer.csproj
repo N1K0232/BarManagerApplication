@@ -6,14 +6,12 @@
 		</PropertyGroup>
 
 		<ItemGroup>
-				<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
-				<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
-				<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+				<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.6" />
 		</ItemGroup>
 
 		<ItemGroup>
-				<ProjectReference Include="..\BackendGestionaleBar.Authentication\BackendGestionaleBar.Authentication.csproj" />
-				<ProjectReference Include="..\BackendGestionaleBar.Helpers\BackendGestionaleBar.Helpers.csproj" />
+				<ProjectReference Include="..\BackendGestionaleBar.Authorization\BackendGestionaleBar.Authorization.csproj" />
+				<ProjectReference Include="..\BackendGestionaleBar.Contracts\BackendGestionaleBar.Contracts.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.Shared\BackendGestionaleBar.Shared.csproj" />
 		</ItemGroup>
 

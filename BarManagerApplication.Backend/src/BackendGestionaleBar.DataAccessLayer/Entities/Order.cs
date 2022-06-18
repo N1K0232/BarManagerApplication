@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+﻿using BackendGestionaleBar.Authentication.Entities;
+using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using BackendGestionaleBar.Shared.Models.Enums;
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities

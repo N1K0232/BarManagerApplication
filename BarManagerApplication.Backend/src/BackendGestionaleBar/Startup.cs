@@ -1,12 +1,15 @@
+using BackendGestionaleBar.Authentication;
+using BackendGestionaleBar.Authentication.Entities;
+using BackendGestionaleBar.Authorization.Handlers;
+using BackendGestionaleBar.Authorization.Requirements;
 using BackendGestionaleBar.BusinessLayer.MapperConfigurations;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
 using BackendGestionaleBar.BusinessLayer.Validators;
+using BackendGestionaleBar.Contracts;
 using BackendGestionaleBar.DataAccessLayer;
-using BackendGestionaleBar.DataAccessLayer.Entities;
-using BackendGestionaleBar.DataAccessLayer.Extensions.DependencyInjection;
-using BackendGestionaleBar.DataAccessLayer.Requirements;
+using BackendGestionaleBar.Services;
 using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -17,190 +20,156 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 using System.Text.Json.Serialization;
 using TinyHelpers.Json.Serialization;
 
-namespace BackendGestionaleBar
+namespace BackendGestionaleBar;
+
+public class Startup
 {
-    public class Startup
+    private readonly IServiceCollection services;
+    private readonly IConfiguration configuration;
+    private readonly IHostBuilder host;
+
+    public Startup(IServiceCollection services, IConfiguration configuration, IHostBuilder host)
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+        this.services = services;
+        this.configuration = configuration;
+        this.host = host;
+    }
+
+    public void ConfigureServices()
+    {
+        host.UseSerilog((hostingContext, loggerConfiguration) =>
         {
-            Configuration = configuration;
-            Environment = environment;
-        }
+            loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
+        });
 
-        public IConfiguration Configuration { get; }
-        public IWebHostEnvironment Environment { get; }
+        var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));
-
-            services.AddProblemDetails();
-            services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
-                    options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
-
-            services.AddSwaggerGen(options =>
+        services.AddProblemDetails();
+        services.AddControllers()
+            .AddJsonOptions(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "BackendGestionaleBar", Version = "v1" });
-                options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Description = "Insert the bearer token",
-                    Name = HeaderNames.Authorization,
-                    Type = SecuritySchemeType.ApiKey
-                });
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+                options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "BackendGestionaleBar", Version = "v1" });
+            options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Insert the bearer token",
+                Name = HeaderNames.Authorization,
+                Type = SecuritySchemeType.ApiKey
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
                 {
+                    new OpenApiSecurityScheme
                     {
-                        new OpenApiSecurityScheme
+                        Reference = new OpenApiReference
                         {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = JwtBearerDefaults.AuthenticationScheme
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
-            })
-            .AddFluentValidationRulesToSwagger(options =>
-            {
-                options.SetNotNullableIfMinLengthGreaterThenZero = true;
+                            Type = ReferenceType.SecurityScheme,
+                            Id = JwtBearerDefaults.AuthenticationScheme
+                        }
+                    },
+                    Array.Empty<string>()
+                }
             });
-
-            services.AddDbContext<AuthenticationDataContext>(options =>
-            {
-                options.UseSqlServer(GetConnectionString(), dbOptions =>
-                {
-                    dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
-                });
-            });
-            services.AddDbContext<DataContext>(options =>
-            {
-                options.UseSqlServer(GetConnectionString(), dbOptions =>
-                {
-                    dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(3), null);
-                });
-            });
-            services.AddScoped<IReadOnlyDataContext>(serviceProvider =>
-            {
-                return serviceProvider.GetRequiredService<DataContext>();
-            });
-            services.AddScoped<IDataContext>(serviceProvider =>
-            {
-                return serviceProvider.GetRequiredService<DataContext>();
-            });
-            services.AddDatabase(options =>
-            {
-                options.ConnectionString = GetConnectionString();
-            });
-
-            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireUppercase = true;
-            })
-            .AddEntityFrameworkStores<AuthenticationDataContext>()
-            .AddDefaultTokenProviders();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtSettings.Issuer,
-                    ValidateAudience = true,
-                    ValidAudience = jwtSettings.Audience,
-                    ValidateLifetime = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)),
-                    RequireExpirationTime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
-
-            services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
-            services.AddScoped<IIdentityService, IdentityService>();
-
-            services.AddHostedService<ConnectionStartupTask>();
-            services.AddHostedService<AuthenticationStartupTask>();
-
-            services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IOrderService, OrderService>();
-
-            services.AddAuthorization(options =>
-            {
-                var policyBuilder = new AuthorizationPolicyBuilder().RequireAuthenticatedUser();
-                policyBuilder.Requirements.Add(new UserActiveRequirement());
-                options.FallbackPolicy = options.DefaultPolicy = policyBuilder.Build();
-            });
-
-            services.AddAutoMapper(typeof(ProductMapperProfile).Assembly);
-            services.AddFluentValidation(options =>
-            {
-                options.RegisterValidatorsFromAssemblyContaining<SaveOrderValidator>();
-            });
-
-            T Configure<T>(string sectionName) where T : class
-            {
-                var section = Configuration.GetSection(sectionName);
-                var settings = section.Get<T>();
-                services.Configure<T>(section);
-                return settings;
-            }
-        }
-
-        private string GetConnectionString()
+        })
+        .AddFluentValidationRulesToSwagger(options =>
         {
-            string hash;
+            options.SetNotNullableIfMinLengthGreaterThenZero = true;
+        });
 
-            if (Environment.IsDevelopment())
-            {
-                hash = Configuration.GetConnectionString("SqlConnection");
-            }
-            else
-            {
-                hash = Configuration.GetConnectionString("AzureConnection");
-            }
+        string connectionString = configuration.GetConnectionString("SqlConnection");
+        services.AddSqlServer<AuthenticationDataContext>(connectionString);
+        services.AddSqlServer<DataContext>(connectionString);
+        services.AddScoped<IDataContext>(sp => sp.GetRequiredService<DataContext>());
 
-            var bytes = Convert.FromBase64String(hash);
-            return Encoding.UTF8.GetString(bytes);
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
         {
-            app.UseProblemDetails();
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BackendGestionaleBar v1"));
-            app.UseHttpsRedirection();
-            app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
+            options.User.RequireUniqueEmail = true;
+            options.Password.RequiredLength = 8;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+        })
+        .AddEntityFrameworkStores<AuthenticationDataContext>()
+        .AddDefaultTokenProviders();
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                endpoints.MapControllers();
-            });
-        }
+                ValidateIssuer = true,
+                ValidIssuer = jwtSettings.Issuer,
+                ValidateAudience = true,
+                ValidAudience = jwtSettings.Audience,
+                ValidateLifetime = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey)),
+                RequireExpirationTime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+        });
+
+        services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
+        services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<IUserService, HttpUserService>();
+
+        services.AddHostedService<AuthenticationStartupTask>();
+
+        services.AddAuthorization(options =>
+        {
+            var policyBuilder = new AuthorizationPolicyBuilder().RequireAuthenticatedUser();
+            policyBuilder.Requirements.Add(new UserActiveRequirement());
+            options.FallbackPolicy = options.DefaultPolicy = policyBuilder.Build();
+        });
+
+        services.AddAutoMapper(typeof(ProductMapperProfile).Assembly);
+        services.AddFluentValidation(options =>
+        {
+            options.RegisterValidatorsFromAssemblyContaining<SaveOrderValidator>();
+        });
+    }
+
+    private T Configure<T>(string sectionName) where T : class
+    {
+        var section = configuration.GetSection(sectionName);
+        var settings = section.Get<T>();
+        services.Configure<T>(section);
+        return settings;
+    }
+
+    public void Configure(IApplicationBuilder app)
+    {
+        app.UseProblemDetails();
+        app.UseSwagger();
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BackendGestionaleBar v1"));
+        app.UseSerilogRequestLogging(options =>
+        {
+            options.IncludeQueryInRequestPath = true;
+        });
+        app.UseHttpsRedirection();
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 }
