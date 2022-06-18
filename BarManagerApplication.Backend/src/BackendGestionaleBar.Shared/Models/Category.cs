@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.Shared.Models
 {
-    public class Category : BaseModel
+    public class Category : BaseObject
     {
         public string Name { get; set; }
 

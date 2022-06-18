@@ -2,15 +2,13 @@ using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authorization.Handlers;
 using BackendGestionaleBar.Authorization.Requirements;
-using BackendGestionaleBar.BusinessLayer.MapperConfigurations;
+using BackendGestionaleBar.BusinessLayer.Extensions;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.BusinessLayer.StartupTasks;
-using BackendGestionaleBar.BusinessLayer.Validators;
 using BackendGestionaleBar.Contracts;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Services;
-using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -50,6 +48,8 @@ public class Startup
         var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));
 
         services.AddProblemDetails();
+        services.AddMapperProfiles();
+        services.AddValidators();
         services.AddControllers()
             .AddJsonOptions(options =>
             {
@@ -92,7 +92,7 @@ public class Startup
         string connectionString = configuration.GetConnectionString("SqlConnection");
         services.AddSqlServer<AuthenticationDataContext>(connectionString);
         services.AddSqlServer<DataContext>(connectionString);
-        services.AddScoped<IDataContext>(sp => sp.GetRequiredService<DataContext>());
+        services.AddScoped<IDataContext>(services => services.GetRequiredService<DataContext>());
 
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
         {
@@ -125,13 +125,6 @@ public class Startup
                 ClockSkew = TimeSpan.Zero
             };
         });
-
-        services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
-        services.AddScoped<IIdentityService, IdentityService>();
-        services.AddScoped<IUserService, HttpUserService>();
-
-        services.AddHostedService<AuthenticationStartupTask>();
-
         services.AddAuthorization(options =>
         {
             var policyBuilder = new AuthorizationPolicyBuilder().RequireAuthenticatedUser();
@@ -139,11 +132,11 @@ public class Startup
             options.FallbackPolicy = options.DefaultPolicy = policyBuilder.Build();
         });
 
-        services.AddAutoMapper(typeof(ProductMapperProfile).Assembly);
-        services.AddFluentValidation(options =>
-        {
-            options.RegisterValidatorsFromAssemblyContaining<SaveOrderValidator>();
-        });
+        services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IUserService, HttpUserService>();
+
+        services.AddHostedService<AuthenticationStartupTask>();
     }
 
     private T Configure<T>(string sectionName) where T : class

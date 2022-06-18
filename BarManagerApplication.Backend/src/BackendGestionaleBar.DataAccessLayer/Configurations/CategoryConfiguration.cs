@@ -3,23 +3,22 @@ using BackendGestionaleBar.DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BackendGestionaleBar.DataAccessLayer.Configurations
+namespace BackendGestionaleBar.DataAccessLayer.Configurations;
+
+internal class CategoryConfiguration : BaseEntityConfiguration<Category>
 {
-    internal class CategoryConfiguration : BaseEntityConfiguration<Category>
+    public override void Configure(EntityTypeBuilder<Category> builder)
     {
-        public override void Configure(EntityTypeBuilder<Category> builder)
-        {
-            base.Configure(builder);
+        base.Configure(builder);
 
-            builder.ToTable("Categories");
+        builder.ToTable("Categories");
 
-            builder.Property(c => c.Name)
-                .HasMaxLength(256)
-                .IsRequired();
+        builder.Property(c => c.Name)
+            .HasMaxLength(256)
+            .IsRequired();
 
-            builder.Property(c => c.Description)
-                .HasMaxLength(512)
-                .IsRequired(false);
-        }
+        builder.Property(c => c.Description)
+            .HasMaxLength(512)
+            .IsRequired(false);
     }
 }

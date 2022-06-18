@@ -2,18 +2,17 @@
 using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using BackendGestionaleBar.Shared.Models.Enums;
 
-namespace BackendGestionaleBar.DataAccessLayer.Entities
+namespace BackendGestionaleBar.DataAccessLayer.Entities;
+
+public class Order : BaseEntity
 {
-    public class Order : BaseEntity
-    {
-        public Guid IdUser { get; set; }
+    public Guid IdUser { get; set; }
 
-        public ApplicationUser User { get; set; }
+    public ApplicationUser User { get; set; }
 
-        public DateTime OrderDate { get; set; }
+    public DateTime OrderDate { get; set; }
 
-        public OrderStatus OrderStatus { get; set; }
+    public OrderStatus OrderStatus { get; set; }
 
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-    }
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 }

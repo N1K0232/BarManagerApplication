@@ -3,7 +3,7 @@ using BackendGestionaleBar.Shared.Models.Enums;
 
 namespace BackendGestionaleBar.Shared.Models
 {
-    public class Order : BaseModel
+    public class Order : BaseObject
     {
         public User User { get; set; }
 

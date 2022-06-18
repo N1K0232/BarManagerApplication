@@ -1,17 +1,15 @@
 ﻿using AutoMapper;
 using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Models.Requests;
-using ApplicationCategory = BackendGestionaleBar.DataAccessLayer.Entities.Category;
+using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 
-namespace BackendGestionaleBar.BusinessLayer.MapperProfile
+namespace BackendGestionaleBar.BusinessLayer.MapperProfile;
+
+internal class CategoryMapperProfile : Profile
 {
-    public class CategoryMapperProfile : Profile
+    public CategoryMapperProfile()
     {
-        public CategoryMapperProfile()
-        {
-            CreateMap<ApplicationCategory, Category>();
-
-            CreateMap<SaveCategoryRequest, ApplicationCategory>();
-        }
+        CreateMap<Entities.Category, Category>();
+        CreateMap<SaveCategoryRequest, Entities.Category>();
     }
 }

@@ -1,11 +1,10 @@
-﻿namespace BackendGestionaleBar.Shared.Models.Requests
+﻿namespace BackendGestionaleBar.Shared.Models.Requests;
+
+public class SaveOrderRequest
 {
-    public class SaveOrderRequest
-    {
-        public Guid? Id { get; set; }
+    public Guid? Id { get; set; }
 
-        public Guid IdProduct { get; set; }
+    public Guid IdProduct { get; set; }
 
-        public Guid IdUser { get; set; }
-    }
+    public Guid IdUser { get; set; }
 }

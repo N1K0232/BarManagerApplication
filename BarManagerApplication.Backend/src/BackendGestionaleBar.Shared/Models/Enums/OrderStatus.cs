@@ -1,10 +1,9 @@
-﻿namespace BackendGestionaleBar.Shared.Models.Enums
+﻿namespace BackendGestionaleBar.Shared.Models.Enums;
+
+public enum OrderStatus
 {
-    public enum OrderStatus
-    {
-        New,
-        InProgress,
-        Completed,
-        Canceled
-    }
+    New,
+    InProgress,
+    Completed,
+    Canceled
 }

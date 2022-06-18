@@ -3,7 +3,7 @@ using System;
 
 namespace BackendGestionaleBar.Shared.Models
 {
-    public class User : BaseModel
+    public class User : BaseObject
     {
         public string FirstName { get; set; }
 

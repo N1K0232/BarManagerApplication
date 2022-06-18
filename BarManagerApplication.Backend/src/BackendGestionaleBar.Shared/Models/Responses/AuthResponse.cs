@@ -1,8 +1,7 @@
-﻿namespace BackendGestionaleBar.Shared.Models.Responses
+﻿namespace BackendGestionaleBar.Shared.Models.Responses;
+
+public class AuthResponse
 {
-    public class AuthResponse
-    {
-        public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
-    }
+    public string AccessToken { get; set; }
+    public string RefreshToken { get; set; }
 }
