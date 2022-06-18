@@ -50,7 +50,7 @@ public class AuthenticationService : IAuthenticationService
             new Claim(ClaimTypes.Name, user.UserName),
             new Claim(ClaimTypes.GivenName, user.FirstName),
             new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
-            new Claim(ClaimTypes.DateOfBirth, user.BirthDate.ToString()),
+            new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
         }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));

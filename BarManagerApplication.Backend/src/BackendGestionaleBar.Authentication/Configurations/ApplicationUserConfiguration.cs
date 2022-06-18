@@ -10,6 +10,6 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
     {
         builder.Property(user => user.FirstName).HasMaxLength(256).IsRequired();
         builder.Property(user => user.LastName).HasMaxLength(256).IsRequired();
-        builder.Property(user => user.BirthDate).IsRequired();
+        builder.Property(user => user.DateOfBirth).IsRequired();
     }
 }

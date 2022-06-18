@@ -36,7 +36,7 @@ public class AuthenticationStartupTask : IHostedService
         {
             FirstName = "Nicola",
             LastName = "Silvestri",
-            BirthDate = DateTime.Parse("22/10/2002"),
+            DateOfBirth = DateTime.Parse("22/10/2002"),
             Email = "ns.nicolasilvestri@gmail.com",
             UserName = "N1K0232",
             PhoneNumber = "3319907702"

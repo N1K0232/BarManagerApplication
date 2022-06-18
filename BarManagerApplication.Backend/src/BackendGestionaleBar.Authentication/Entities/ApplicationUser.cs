@@ -8,7 +8,7 @@ public class ApplicationUser : IdentityUser<Guid>
 
     public string LastName { get; set; }
 
-    public DateTime? BirthDate { get; set; }
+    public DateTime DateOfBirth { get; set; }
 
     public string RefreshToken { get; set; }
 

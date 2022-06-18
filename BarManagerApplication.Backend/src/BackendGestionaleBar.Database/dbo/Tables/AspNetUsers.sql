@@ -4,7 +4,7 @@
     [NormalizedUserName]         NVARCHAR (256)     NULL,
     [FirstName]                  NVARCHAR (256)     NOT NULL,
     [LastName]                   NVARCHAR (256)     NOT NULL,
-    [BirthDate]                  DATETIME           NOT NULL,
+    [DateOfBirth]                DATE               NOT NULL,
     [Email]                      NVARCHAR (256)     NULL,
     [NormalizedEmail]            NVARCHAR (256)     NULL,
     [EmailConfirmed]             BIT                NOT NULL,
