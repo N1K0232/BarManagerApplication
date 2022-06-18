@@ -56,12 +56,7 @@ public class AuthenticationService : IAuthenticationService
         }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var response = CreateToken(claims);
-
-        user.RefreshToken = response.RefreshToken;
-        user.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
-
-        await userManager.UpdateAsync(user);
-
+        await SaveRefreshTokenAsync(user, response.RefreshToken);
         return response;
     }
     public async Task<RegisterResponse> RegisterClienteAsync(RegisterUserRequest request)
@@ -102,13 +97,7 @@ public class AuthenticationService : IAuthenticationService
             }
 
             var response = CreateToken(user.Claims);
-
-            dbUser.RefreshToken = response.RefreshToken;
-            var expirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
-            dbUser.RefreshTokenExpirationDate = expirationDate;
-
-            await userManager.UpdateAsync(dbUser);
-
+            await SaveRefreshTokenAsync(dbUser, response.RefreshToken);
             return response;
         }
 
@@ -131,7 +120,12 @@ public class AuthenticationService : IAuthenticationService
         var user = mapper.Map<ApplicationUser>(request);
         return userManager.CreateAsync(user, request.Password);
     }
-    private AuthResponse CreateToken(IEnumerable<Claim> claims) => new(GetAccessToken(claims), GetRefreshToken());
+    private AuthResponse CreateToken(IEnumerable<Claim> claims)
+    {
+        string accessToken = GetAccessToken(claims);
+        string refreshToken = GetRefreshToken();
+        return new AuthResponse(accessToken, refreshToken);
+    }
     private string GetAccessToken(IEnumerable<Claim> claims)
     {
         byte[] bytes = Encoding.UTF8.GetBytes(jwtSettings.SecurityKey);
@@ -184,5 +178,11 @@ public class AuthenticationService : IAuthenticationService
         }
 
         return null;
+    }
+    private Task SaveRefreshTokenAsync(ApplicationUser user, string refreshToken)
+    {
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
+        return userManager.UpdateAsync(user);
     }
 }
