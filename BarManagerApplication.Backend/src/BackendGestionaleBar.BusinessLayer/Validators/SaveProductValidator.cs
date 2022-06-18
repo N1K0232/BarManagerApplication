@@ -8,9 +8,14 @@ internal class SaveProductValidator : AbstractValidator<SaveProductRequest>
     public SaveProductValidator()
     {
         RuleFor(o => o.Name)
-            .NotEmpty()
             .NotNull()
+            .NotEmpty()
             .WithMessage("can't save a product with no name");
+
+        RuleFor(o => o.CategoryName)
+            .NotNull()
+            .NotEmpty()
+            .WithMessage("you must specify the category");
 
         RuleFor(o => o.ExpirationDate)
             .NotNull()
@@ -21,7 +26,8 @@ internal class SaveProductValidator : AbstractValidator<SaveProductRequest>
             .WithMessage("can't save a product with negative or 0 price");
 
         RuleFor(o => o.Quantity)
-            .GreaterThan(-1)
+            .NotNull()
+            .GreaterThan(0)
             .WithMessage("can't save a product with negative quantity");
     }
 }
