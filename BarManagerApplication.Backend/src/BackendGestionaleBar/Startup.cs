@@ -89,7 +89,9 @@ public class Startup
             options.SetNotNullableIfMinLengthGreaterThenZero = true;
         });
 
-        string connectionString = configuration.GetConnectionString("SqlConnection");
+        string hash = configuration.GetConnectionString("SqlConnection");
+        byte[] bytes = Convert.FromBase64String(hash);
+        string connectionString = Encoding.UTF8.GetString(bytes);
         services.AddSqlServer<AuthenticationDataContext>(connectionString);
         services.AddSqlServer<DataContext>(connectionString);
         services.AddScoped<IDataContext>(services => services.GetRequiredService<DataContext>());

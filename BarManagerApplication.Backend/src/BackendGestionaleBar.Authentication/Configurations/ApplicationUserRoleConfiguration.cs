@@ -8,7 +8,7 @@ internal class ApplicationUserRoleConfiguration : IEntityTypeConfiguration<Appli
 {
     public void Configure(EntityTypeBuilder<ApplicationUserRole> builder)
     {
-        builder.HasKey(userRole => new[] { userRole.UserId, userRole.RoleId });
+        builder.HasKey(userRole => new { userRole.UserId, userRole.RoleId });
 
         builder.HasOne(userRole => userRole.User)
             .WithMany(user => user.UserRoles)
