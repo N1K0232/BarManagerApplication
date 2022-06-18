@@ -1,11 +1,9 @@
-﻿namespace BackendGestionaleBar.Shared.Models.Requests;
+﻿using BackendGestionaleBar.Shared.Models.Common;
 
-public class SaveProductRequest
+namespace BackendGestionaleBar.Shared.Models.Requests;
+
+public class SaveProductRequest : BaseRequestObject
 {
-    public Guid? Id { get; set; }
-
-    public Guid IdCategory { get; set; }
-
     public string Name { get; set; }
 
     public DateTime? ExpirationDate { get; set; }

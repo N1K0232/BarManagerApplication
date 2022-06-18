@@ -1,9 +1,9 @@
-﻿namespace BackendGestionaleBar.Shared.Models.Requests;
+﻿using BackendGestionaleBar.Shared.Models.Common;
 
-public class SaveOrderRequest
+namespace BackendGestionaleBar.Shared.Models.Requests;
+
+public class SaveOrderRequest : BaseRequestObject
 {
-    public Guid? Id { get; set; }
-
     public Guid IdProduct { get; set; }
 
     public Guid IdUser { get; set; }

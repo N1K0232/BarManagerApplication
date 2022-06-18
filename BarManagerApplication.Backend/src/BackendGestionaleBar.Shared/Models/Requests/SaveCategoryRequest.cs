@@ -1,9 +1,9 @@
-﻿namespace BackendGestionaleBar.Shared.Models.Requests;
+﻿using BackendGestionaleBar.Shared.Models.Common;
 
-public class SaveCategoryRequest
+namespace BackendGestionaleBar.Shared.Models.Requests;
+
+public class SaveCategoryRequest : BaseRequestObject
 {
-    public Guid? Id { get; set; }
-
     public string Name { get; set; }
 
     public string Description { get; set; }
