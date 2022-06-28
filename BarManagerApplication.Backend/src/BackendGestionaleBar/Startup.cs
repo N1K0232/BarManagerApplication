@@ -1,7 +1,7 @@
 using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Entities;
-using BackendGestionaleBar.Authentication.Handlers;
-using BackendGestionaleBar.Authentication.Requirements;
+using BackendGestionaleBar.Authorization.Handlers;
+using BackendGestionaleBar.Authorization.Requirements;
 using BackendGestionaleBar.BusinessLayer.Extensions;
 using BackendGestionaleBar.BusinessLayer.Services;
 using BackendGestionaleBar.BusinessLayer.Settings;
@@ -135,11 +135,11 @@ public class Startup
         });
 
         services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
-        services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IUserService, HttpUserService>();
 
         services.AddHostedService<AuthenticationStartupTask>();
 
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IProductService, ProductService>();
     }

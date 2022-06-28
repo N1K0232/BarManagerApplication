@@ -1,5 +1,6 @@
 ﻿using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Extensions;
+using BackendGestionaleBar.Authorization;
 using BackendGestionaleBar.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
