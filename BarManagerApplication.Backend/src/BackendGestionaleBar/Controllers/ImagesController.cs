@@ -1,4 +1,6 @@
-﻿using BackendGestionaleBar.BusinessLayer.Services.Common;
+﻿using BackendGestionaleBar.Authentication;
+using BackendGestionaleBar.Authorization;
+using BackendGestionaleBar.BusinessLayer.Services.Common;
 using BackendGestionaleBar.Extensions;
 using BackendGestionaleBar.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +20,7 @@ public class ImagesController : ControllerBase
 	}
 
 	[HttpDelete("Delete")]
+	[RoleAuthorize(RoleNames.Administrator)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> Delete(Guid id)
@@ -27,6 +30,7 @@ public class ImagesController : ControllerBase
 	}
 
 	[HttpGet("GetImages")]
+	[RoleAuthorize(RoleNames.Administrator)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> Get(string path = null)
@@ -36,6 +40,7 @@ public class ImagesController : ControllerBase
 	}
 
 	[HttpGet("GetImage/{id:guid}")]
+	[RoleAuthorize(RoleNames.Administrator)]
 	public async Task<IActionResult> Get(Guid id)
 	{
 		var stream = await imageService.GetAsync(id);
@@ -43,6 +48,7 @@ public class ImagesController : ControllerBase
 	}
 
 	[HttpPost("Upload")]
+	[RoleAuthorize(RoleNames.Administrator)]
 	[Consumes("multipart/form-data")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<IActionResult> Upload([FromForm] UploadImageRequest request)
