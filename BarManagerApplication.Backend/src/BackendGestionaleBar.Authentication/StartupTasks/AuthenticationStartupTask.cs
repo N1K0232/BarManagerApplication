@@ -1,10 +1,9 @@
-﻿using BackendGestionaleBar.Authentication;
-using BackendGestionaleBar.Authentication.Entities;
+﻿using BackendGestionaleBar.Authentication.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace BackendGestionaleBar.BusinessLayer.StartupTasks;
+namespace BackendGestionaleBar.Authentication.StartupTasks;
 
 public class AuthenticationStartupTask : IHostedService
 {

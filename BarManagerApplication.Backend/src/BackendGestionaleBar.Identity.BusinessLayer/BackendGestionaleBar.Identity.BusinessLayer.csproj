@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BackendGestionaleBar.Authentication\BackendGestionaleBar.Authentication.csproj" />
+    <ProjectReference Include="..\BackendGestionaleBar.Authorization\BackendGestionaleBar.Authorization.csproj" />
+    <ProjectReference Include="..\BackendGestionaleBar.Shared\BackendGestionaleBar.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

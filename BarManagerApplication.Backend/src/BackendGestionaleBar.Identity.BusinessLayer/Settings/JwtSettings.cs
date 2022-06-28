@@ -1,4 +1,4 @@
-﻿namespace BackendGestionaleBar.BusinessLayer.Settings;
+﻿namespace BackendGestionaleBar.Identity.BusinessLayer.Settings;
 
 public class JwtSettings
 {

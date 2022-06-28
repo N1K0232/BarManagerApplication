@@ -1,8 +1,7 @@
 ﻿using BackendGestionaleBar.Shared.Requests;
 using BackendGestionaleBar.Shared.Responses;
 
-namespace BackendGestionaleBar.BusinessLayer.Services.Common;
-
+namespace BackendGestionaleBar.Identity.BusinessLayer.Services.Common;
 public interface IAuthenticationService
 {
     Task<AuthResponse> LoginAsync(LoginRequest request);

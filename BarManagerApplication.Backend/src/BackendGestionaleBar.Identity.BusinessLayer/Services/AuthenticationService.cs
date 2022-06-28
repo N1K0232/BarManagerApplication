@@ -1,9 +1,8 @@
-﻿using AutoMapper;
-using BackendGestionaleBar.Authentication;
+﻿using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authentication.Extensions;
-using BackendGestionaleBar.BusinessLayer.Services.Common;
-using BackendGestionaleBar.BusinessLayer.Settings;
+using BackendGestionaleBar.Identity.BusinessLayer.Services.Common;
+using BackendGestionaleBar.Identity.BusinessLayer.Settings;
 using BackendGestionaleBar.Shared.Requests;
 using BackendGestionaleBar.Shared.Responses;
 using Microsoft.AspNetCore.Identity;
@@ -14,24 +13,22 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BackendGestionaleBar.BusinessLayer.Services;
+namespace BackendGestionaleBar.Identity.BusinessLayer.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
-    private readonly RandomNumberGenerator generator;
     private readonly JwtSettings jwtSettings;
     private readonly UserManager<ApplicationUser> userManager;
     private readonly SignInManager<ApplicationUser> signInManager;
-    private readonly IMapper mapper;
+    private readonly RandomNumberGenerator generator;
 
-    public AuthenticationService(IOptions<JwtSettings> jwtSettingOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IMapper mapper)
+    public AuthenticationService(IOptions<JwtSettings> jwtSettingsOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
     {
         generator = RandomNumberGenerator.Create();
-        jwtSettings = jwtSettingOptions.Value;
+        jwtSettings = jwtSettingsOptions.Value;
 
         this.userManager = userManager;
         this.signInManager = signInManager;
-        this.mapper = mapper;
     }
 
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
@@ -46,15 +43,15 @@ public class AuthenticationService : IAuthenticationService
         var roles = await userManager.GetRolesAsync(user);
 
         var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.GivenName, user.FirstName),
-            new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
-            new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
-        }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.GivenName, user.FirstName),
+        new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
+        new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString()),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
+    }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var response = CreateToken(claims);
         await SaveRefreshTokenAsync(user, response.RefreshToken);
@@ -116,10 +113,19 @@ public class AuthenticationService : IAuthenticationService
         return new(result.Succeeded, result.Errors.Select(e => e.Description));
     }
 
-    private Task<IdentityResult> RegisterAsync(RegisterUserRequest request)
+    private async Task<IdentityResult> RegisterAsync(RegisterUserRequest request)
     {
-        var user = mapper.Map<ApplicationUser>(request);
-        return userManager.CreateAsync(user, request.Password);
+        var user = new ApplicationUser
+        {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            DateOfBirth = request.DateOfBirth,
+            PhoneNumber = request.PhoneNumber,
+            Email = request.Email,
+            UserName = request.UserName
+        };
+        var result = await userManager.CreateAsync(user, request.Password);
+        return result;
     }
     private AuthResponse CreateToken(IEnumerable<Claim> claims)
     {
