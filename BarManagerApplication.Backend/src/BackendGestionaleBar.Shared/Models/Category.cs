@@ -1,11 +1,10 @@
-﻿using BackendGestionaleBar.Shared.Models.Common;
+﻿using BackendGestionaleBar.Shared.Common;
 
-namespace BackendGestionaleBar.Shared.Models
+namespace BackendGestionaleBar.Shared.Models;
+
+public class Category : BaseObject
 {
-    public class Category : BaseModel
-    {
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        public string Description { get; set; }
-    }
+    public string Description { get; set; }
 }

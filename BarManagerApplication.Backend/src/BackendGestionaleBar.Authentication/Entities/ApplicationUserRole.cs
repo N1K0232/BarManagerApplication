@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
 
-namespace BackendGestionaleBar.Authentication.Entities
+namespace BackendGestionaleBar.Authentication.Entities;
+
+public sealed class ApplicationUserRole : IdentityUserRole<Guid>
 {
-    public class ApplicationUserRole : IdentityUserRole<Guid>
-    {
-        public virtual ApplicationUser User { get; set; }
+    public ApplicationUser User { get; set; }
 
-        public virtual ApplicationRole Role { get; set; }
-    }
+    public ApplicationRole Role { get; set; }
 }

@@ -3,25 +3,24 @@ using BackendGestionaleBar.DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BackendGestionaleBar.DataAccessLayer.Configurations
+namespace BackendGestionaleBar.DataAccessLayer.Configurations;
+
+internal class OrderDetailConfiguration : BaseEntityConfiguration<OrderDetail>
 {
-    internal class OrderDetailConfiguration : BaseEntityConfiguration<OrderDetail>
+    public override void Configure(EntityTypeBuilder<OrderDetail> builder)
     {
-        public override void Configure(EntityTypeBuilder<OrderDetail> builder)
-        {
-            builder.ToTable("OrderDetails");
+        builder.ToTable("OrderDetails");
 
-            builder.HasKey(od => new { od.IdOrder, od.IdProduct });
+        builder.HasKey(od => new { od.OrderId, od.ProductId });
 
-            builder.HasOne(od => od.Order)
-                .WithMany(o => o.OrderDetails)
-                .HasForeignKey(od => od.Order)
-                .IsRequired();
+        builder.HasOne(od => od.Order)
+            .WithMany(o => o.OrderDetails)
+            .HasForeignKey(od => od.OrderId)
+            .IsRequired();
 
-            builder.HasOne(od => od.Product)
-                .WithMany(p => p.OrderDetails)
-                .HasForeignKey(od => od.IdProduct)
-                .IsRequired();
-        }
+        builder.HasOne(od => od.Product)
+            .WithMany(p => p.OrderDetails)
+            .HasForeignKey(od => od.ProductId)
+            .IsRequired();
     }
 }

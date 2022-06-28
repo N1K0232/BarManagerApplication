@@ -1,16 +1,22 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation.AspNetCore;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
-namespace BackendGestionaleBar.BusinessLayer.Extensions
+namespace BackendGestionaleBar.BusinessLayer.Extensions;
+
+public static class ServicesExtensions
 {
-    public static class ServicesExtensions
+    public static IServiceCollection AddMapperProfiles(this IServiceCollection services)
     {
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        return services;
+    }
+    public static IServiceCollection AddValidators(this IServiceCollection services)
+    {
+        services.AddFluentValidation(options =>
         {
-            return services;
-        }
-        public static IServiceCollection AddHostedServices(this IServiceCollection services)
-        {
-            return services;
-        }
+            options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        });
+        return services;
     }
 }

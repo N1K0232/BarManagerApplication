@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="3777e84e-0cda-461b-9421-29a350a179a9" ChangeDateTime="06/18/2022 22:58:31">
+    <Property Name="ElementName" Value="[dbo].[AspNetUsers].[BirthDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[AspNetUsers]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DateOfBirth" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="dd4fd6a5-4f45-45e4-8366-949d9625cafe" ChangeDateTime="06/28/2022 19:11:29">
+    <Property Name="ElementName" Value="[dbo].[Orders].[IdUser]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Orders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UserId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="74f5f373-879c-484d-9796-edb2af7c5ca0" ChangeDateTime="06/28/2022 19:11:39">
+    <Property Name="ElementName" Value="[dbo].[OrderDetails].[IdOrder]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[OrderDetails]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="OrderId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="dbb8f341-881d-4e20-a1dc-cf18bfb76c79" ChangeDateTime="06/28/2022 19:11:42">
+    <Property Name="ElementName" Value="[dbo].[OrderDetails].[IdProduct]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[OrderDetails]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ProductId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="daac4336-db35-49ce-b5a1-3c783956fe6b" ChangeDateTime="06/28/2022 19:11:50">
+    <Property Name="ElementName" Value="[dbo].[Products].[IdCategory]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Products]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CategoryId" />
+  </Operation>
+</Operations>

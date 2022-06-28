@@ -1,20 +1,18 @@
-﻿using BackendGestionaleBar.Shared.Models.Common;
-using System;
+﻿using BackendGestionaleBar.Shared.Common;
 
-namespace BackendGestionaleBar.Shared.Models
+namespace BackendGestionaleBar.Shared.Models;
+
+public class User : BaseObject
 {
-    public class User : BaseModel
-    {
-        public string FirstName { get; set; }
+    public string FirstName { get; set; }
 
-        public string LastName { get; set; }
+    public string LastName { get; set; }
 
-        public DateTime BirthDate { get; set; }
+    public DateTime BirthDate { get; set; }
 
-        public string Email { get; set; }
+    public string Email { get; set; }
 
-        public string UserName { get; set; }
+    public string UserName { get; set; }
 
-        public string PhoneNumber { get; set; }
-    }
+    public string PhoneNumber { get; set; }
 }

@@ -1,77 +1,73 @@
 ﻿using AutoMapper;
+using BackendGestionaleBar.BusinessLayer.Services.Common;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Shared.Models;
-using BackendGestionaleBar.Shared.Models.Requests;
+using BackendGestionaleBar.Shared.Requests;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
-using ApplicationProduct = BackendGestionaleBar.DataAccessLayer.Entities.Product;
+using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 
-namespace BackendGestionaleBar.BusinessLayer.Services
+namespace BackendGestionaleBar.BusinessLayer.Services;
+
+public class ProductService : IProductService
 {
-    public class ProductService : IProductService
-    {
-        private readonly ICategoryService categoryService;
-        private readonly IDataContext dataContext;
-        private readonly IDatabase database;
-        private readonly IMapper mapper;
+	private readonly IDataContext dataContext;
+	private readonly IMapper mapper;
 
-        public ProductService(ICategoryService categoryService, IDataContext dataContext, IDatabase database, IMapper mapper)
-        {
-            this.categoryService = categoryService;
-            this.dataContext = dataContext;
-            this.database = database;
-            this.mapper = mapper;
-        }
+	public ProductService(IDataContext dataContext, IMapper mapper)
+	{
+		this.dataContext = dataContext;
+		this.mapper = mapper;
+	}
 
-        public async Task DeleteProductAsync(Guid id)
-        {
-            var product = await dataContext.GetAsync<ApplicationProduct>(id);
-            if (product != null)
-            {
-                dataContext.Delete(product);
-                await dataContext.SaveAsync();
-            }
-        }
+	public async Task DeleteAsync(Guid id)
+	{
+		var dbProduct = await dataContext.GetAsync<Entities.Product>(id);
+		dataContext.Delete(dbProduct);
+		await dataContext.SaveAsync();
+	}
 
-        public async Task DeleteProductsAsync()
-        {
-            var products = await dataContext.GetData<ApplicationProduct>()
-                .Where(p => p.ExpirationDate < DateTime.UtcNow)
-                .ToListAsync();
+	public async Task<IEnumerable<Product>> GetAsync(string name)
+	{
+		var query = dataContext.GetData<Entities.Product>();
 
-            if (products != null)
-            {
-                dataContext.Delete(products);
-                await dataContext.SaveAsync();
-            }
-        }
-        public async Task<DataTable> GetMenuAsync() => await database.GetMenuAsync();
-        public async Task<Product> GetProductAsync(Guid id)
-        {
-            var dbProduct = await dataContext.GetAsync<ApplicationProduct>(id);
-            var category = await categoryService.GetCategoryAsync(dbProduct.IdCategory);
-            var product = mapper.Map<Product>(dbProduct);
-            product.Category = category;
-            return product;
-        }
-        public async Task<Product> SaveProductAsync(SaveProductRequest request)
-        {
-            var dbProduct = request.Id != null ?
-                await dataContext.GetAsync<ApplicationProduct>(request.Id.Value) :
-                null;
+		if (!string.IsNullOrWhiteSpace(name))
+		{
+			query = query.Where(p => p.Name.Contains(name));
+		}
 
-            if (dbProduct == null)
-            {
-                dbProduct = mapper.Map<ApplicationProduct>(request);
-                dataContext.Insert(dbProduct);
-            }
-            else
-            {
-                dbProduct.LastModifiedDate = DateTime.UtcNow;
-            }
+		var dbProducts = await query.Include(p => p.Category).ToListAsync();
+		var products = new List<Product>();
 
-            await dataContext.SaveAsync();
-            return mapper.Map<Product>(dbProduct);
-        }
-    }
+		foreach (var dbProduct in dbProducts)
+		{
+			var product = mapper.Map<Product>(dbProduct);
+			product.Category = mapper.Map<Category>(dbProduct.Category);
+			products.Add(product);
+		}
+
+		return products;
+	}
+
+	public async Task<Product> SaveAsync(SaveProductRequest request)
+	{
+		var query = dataContext.GetData<Entities.Product>(trackingChanges: true);
+		var dbProduct = request.Id != null ? await query.FirstOrDefaultAsync(p => p.Id == request.Id) : null;
+
+		if (dbProduct == null)
+		{
+			dbProduct = mapper.Map<Entities.Product>(request);
+			dbProduct.Category = await dataContext.GetData<Entities.Category>().FirstOrDefaultAsync(c => c.Name == request.CategoryName);
+			dataContext.Insert(dbProduct);
+		}
+		else
+		{
+			mapper.Map(request, dbProduct);
+			dbProduct.Category = await dataContext.GetData<Entities.Category>().FirstOrDefaultAsync(c => c.Name == request.CategoryName);
+			dataContext.Edit(dbProduct);
+		}
+
+		await dataContext.SaveAsync();
+
+		return mapper.Map<Product>(dbProduct);
+	}
 }

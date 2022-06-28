@@ -1,18 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 
-namespace BackendGestionaleBar.Authentication.Entities
+namespace BackendGestionaleBar.Authentication.Entities;
+
+public sealed class ApplicationRole : IdentityRole<Guid>
 {
-    public class ApplicationRole : IdentityRole<Guid>
+    public ApplicationRole()
     {
-        public ApplicationRole()
-        {
-        }
-        public ApplicationRole(string roleName) : base(roleName)
-        {
-        }
-
-        public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
     }
+    public ApplicationRole(string roleName) : base(roleName)
+    {
+    }
+
+    public List<ApplicationUserRole> UserRoles { get; set; }
 }

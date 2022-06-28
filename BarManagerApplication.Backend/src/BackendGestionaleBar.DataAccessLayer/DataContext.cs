@@ -1,58 +1,114 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+﻿using BackendGestionaleBar.Authentication;
+using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.Reflection;
 
-namespace BackendGestionaleBar.DataAccessLayer
+namespace BackendGestionaleBar.DataAccessLayer;
+
+public class DataContext : AuthenticationDataContext, IDataContext
 {
-    public class DataContext : DbContext, IDataContext, IReadOnlyDataContext
+    public DataContext(DbContextOptions<AuthenticationDataContext> options) : base(options)
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
+    }
+
+    public void Delete<T>(T entity) where T : BaseEntity
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
+        DbSet<T> set = Set<T>();
+        set.Remove(entity);
+    }
+    public void Delete<T>(IEnumerable<T> entities) where T : BaseEntity
+    {
+        ArgumentNullException.ThrowIfNull(entities, nameof(entities));
+
+        DbSet<T> set = Set<T>();
+        set.RemoveRange(entities);
+    }
+    public void Edit<T>(T entity) where T : BaseEntity
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
+        DbSet<T> set = Set<T>();
+        set.Update(entity);
+    }
+    public void Edit<T>(IEnumerable<T> entities) where T : BaseEntity
+    {
+        ArgumentNullException.ThrowIfNull(entities, nameof(entities));
+
+        DbSet<T> set = Set<T>();
+        set.UpdateRange(entities);
+    }
+    public ValueTask<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity
+    {
+        DbSet<T> set = Set<T>();
+        return set.FindAsync(keyValues);
+    }
+    public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
+    {
+        IQueryable<T> set = Set<T>().AsQueryable<T>();
+
+        if (ignoreQueryFilters)
         {
+            set = set.IgnoreQueryFilters();
         }
 
-        public void Delete<T>(T entity) where T : BaseEntity
-        {
-            var set = Set<T>();
-            set.Remove(entity);
-        }
-        public void Delete<T>(IEnumerable<T> entities) where T : BaseEntity
-        {
-            var set = Set<T>();
-            set.RemoveRange(entities);
-        }
-        public async Task<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity
-        {
-            var set = Set<T>();
-            var entity = await set.FindAsync(keyValues);
-            return entity;
-        }
-        public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
-        {
-            var set = Set<T>().AsQueryable<T>();
+        return trackingChanges ?
+            set.AsTracking() :
+            set.AsNoTrackingWithIdentityResolution();
+    }
+    public void Insert<T>(T entity) where T : BaseEntity
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
 
-            if (ignoreQueryFilters)
+        DbSet<T> set = Set<T>();
+        set.Add(entity);
+    }
+    public void Insert<T>(IEnumerable<T> entities) where T : BaseEntity
+    {
+        ArgumentNullException.ThrowIfNull(entities, nameof(entities));
+
+        DbSet<T> set = Set<T>();
+        set.AddRange(entities);
+    }
+    public Task<int> SaveAsync() => SaveChangesAsync();
+    public Task ExecuteTransactionAsync(Func<Task> action)
+    {
+        IExecutionStrategy strategy = Database.CreateExecutionStrategy();
+
+        Task task = strategy.ExecuteAsync(async () =>
+        {
+            using var transaction = await Database.BeginTransactionAsync().ConfigureAwait(false);
+            await action.Invoke().ConfigureAwait(false);
+            await transaction.CommitAsync().ConfigureAwait(false);
+        });
+        return task;
+    }
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var entries = ChangeTracker.Entries()
+            .Where(e => e.Entity.GetType().IsSubclassOf(typeof(BaseEntity))).ToList();
+
+        foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified))
+        {
+            BaseEntity entity = (BaseEntity)entry.Entity;
+            if (entry.State == EntityState.Added)
             {
-                set = set.IgnoreQueryFilters();
+                entity.CreatedDate = DateTime.UtcNow;
+                entity.LastModifiedDate = null;
             }
+            if (entry.State == EntityState.Modified)
+            {
+                entity.LastModifiedDate = DateTime.UtcNow;
+            }
+        }
 
-            return trackingChanges ?
-                set.AsTracking() :
-                set.AsNoTracking();
-        }
-        public void Insert<T>(T entity) where T : BaseEntity
-        {
-            entity.CreatedDate = DateTime.UtcNow;
-            var set = Set<T>();
-            set.Add(entity);
-        }
-        public async Task SaveAsync() => await SaveChangesAsync();
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            Type currentType = typeof(DataContext);
-            Assembly currentAssembly = currentType.Assembly;
-            modelBuilder.ApplyConfigurationsFromAssembly(currentAssembly);
-            base.OnModelCreating(modelBuilder);
-        }
+        return base.SaveChangesAsync(cancellationToken);
+    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(modelBuilder);
     }
 }

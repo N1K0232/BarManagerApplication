@@ -75,5 +75,12 @@
     <Build Include="dbo\Views\ViewMenu.sql" />
     <Build Include="dbo\Tables\Orders.sql" />
     <Build Include="dbo\Tables\OrderDetails.sql" />
+    <Build Include="dbo\Tables\Images.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BackendGestionaleBar.Database.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="BackendGestionaleBar.Database.refactorlog" />
   </ItemGroup>
 </Project>
