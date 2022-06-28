@@ -1,7 +1,7 @@
 ﻿using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authorization;
-using BackendGestionaleBar.BusinessLayer.Services;
-using BackendGestionaleBar.Shared.Models.Requests;
+using BackendGestionaleBar.BusinessLayer.Services.Common;
+using BackendGestionaleBar.Shared.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendGestionaleBar.Controllers;

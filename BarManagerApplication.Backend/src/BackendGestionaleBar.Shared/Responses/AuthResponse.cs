@@ -1,4 +1,4 @@
-﻿namespace BackendGestionaleBar.Shared.Models.Responses;
+﻿namespace BackendGestionaleBar.Shared.Responses;
 
 public class AuthResponse
 {

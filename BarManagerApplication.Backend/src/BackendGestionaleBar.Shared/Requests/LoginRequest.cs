@@ -1,4 +1,4 @@
-﻿namespace BackendGestionaleBar.Shared.Models.Requests;
+﻿namespace BackendGestionaleBar.Shared.Requests;
 
 public class LoginRequest
 {

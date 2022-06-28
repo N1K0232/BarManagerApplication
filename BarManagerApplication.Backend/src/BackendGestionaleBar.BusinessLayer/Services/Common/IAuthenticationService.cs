@@ -1,7 +1,7 @@
-﻿using BackendGestionaleBar.Shared.Models.Requests;
-using BackendGestionaleBar.Shared.Models.Responses;
+﻿using BackendGestionaleBar.Shared.Requests;
+using BackendGestionaleBar.Shared.Responses;
 
-namespace BackendGestionaleBar.BusinessLayer.Services;
+namespace BackendGestionaleBar.BusinessLayer.Services.Common;
 
 public interface IAuthenticationService
 {

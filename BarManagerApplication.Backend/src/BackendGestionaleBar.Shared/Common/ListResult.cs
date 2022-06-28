@@ -1,4 +1,4 @@
-﻿namespace BackendGestionaleBar.Shared.Models.Common;
+﻿namespace BackendGestionaleBar.Shared.Common;
 
 public sealed class ListResult<T>
 {

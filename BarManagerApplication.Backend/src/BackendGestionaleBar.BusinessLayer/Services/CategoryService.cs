@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using BackendGestionaleBar.BusinessLayer.Services.Common;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Shared.Models;
-using BackendGestionaleBar.Shared.Models.Requests;
+using BackendGestionaleBar.Shared.Requests;
 using Microsoft.EntityFrameworkCore;
 using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 

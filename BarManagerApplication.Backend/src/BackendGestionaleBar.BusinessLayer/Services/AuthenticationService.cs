@@ -2,9 +2,10 @@
 using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authentication.Extensions;
+using BackendGestionaleBar.BusinessLayer.Services.Common;
 using BackendGestionaleBar.BusinessLayer.Settings;
-using BackendGestionaleBar.Shared.Models.Requests;
-using BackendGestionaleBar.Shared.Models.Responses;
+using BackendGestionaleBar.Shared.Requests;
+using BackendGestionaleBar.Shared.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

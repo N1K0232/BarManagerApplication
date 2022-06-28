@@ -1,6 +1,6 @@
-﻿using BackendGestionaleBar.Shared.Models.Common;
+﻿using BackendGestionaleBar.Shared.Common;
 
-namespace BackendGestionaleBar.Shared.Models.Requests;
+namespace BackendGestionaleBar.Shared.Requests;
 
 public class SaveOrderRequest : BaseRequestObject
 {

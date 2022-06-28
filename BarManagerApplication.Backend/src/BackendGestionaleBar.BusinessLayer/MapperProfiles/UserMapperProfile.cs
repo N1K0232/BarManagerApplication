@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BackendGestionaleBar.Authentication.Entities;
-using BackendGestionaleBar.Shared.Models.Requests;
+using BackendGestionaleBar.Shared.Requests;
 
 namespace BackendGestionaleBar.BusinessLayer.MapperProfiles;
 

@@ -1,4 +1,4 @@
-﻿namespace BackendGestionaleBar.Shared.Models.Enums;
+﻿namespace BackendGestionaleBar.Shared.Enums;
 
 public enum OrderStatus
 {

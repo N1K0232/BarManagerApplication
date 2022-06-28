@@ -1,18 +1,17 @@
-﻿using BackendGestionaleBar.Shared.Models.Common;
-using BackendGestionaleBar.Shared.Models.Enums;
+﻿using BackendGestionaleBar.Shared.Common;
+using BackendGestionaleBar.Shared.Enums;
 
-namespace BackendGestionaleBar.Shared.Models
+namespace BackendGestionaleBar.Shared.Models;
+
+public class Order : BaseObject
 {
-    public class Order : BaseObject
-    {
-        public User User { get; set; }
+    public User User { get; set; }
 
-        public DateTime OrderDate { get; set; }
+    public DateTime OrderDate { get; set; }
 
-        public TimeSpan OrderTime { get; set; }
+    public TimeSpan OrderTime { get; set; }
 
-        public OrderStatus OrderStatus { get; set; }
+    public OrderStatus OrderStatus { get; set; }
 
-        public decimal TotalPrice { get; set; }
-    }
+    public decimal TotalPrice { get; set; }
 }

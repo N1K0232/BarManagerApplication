@@ -1,4 +1,4 @@
-﻿using BackendGestionaleBar.Shared.Models.Requests;
+﻿using BackendGestionaleBar.Shared.Requests;
 using FluentValidation;
 
 namespace BackendGestionaleBar.BusinessLayer.Validators;
