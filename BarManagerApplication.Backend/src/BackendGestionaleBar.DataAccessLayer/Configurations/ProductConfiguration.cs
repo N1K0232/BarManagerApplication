@@ -15,7 +15,7 @@ internal class ProductConfiguration : BaseEntityConfiguration<Product>
 
         builder.HasOne(p => p.Category)
             .WithMany(c => c.Products)
-            .HasForeignKey(p => p.IdCategory)
+            .HasForeignKey(p => p.CategoryId)
             .IsRequired();
 
         builder.Property(p => p.Name)

@@ -11,16 +11,16 @@ internal class OrderDetailConfiguration : BaseEntityConfiguration<OrderDetail>
     {
         builder.ToTable("OrderDetails");
 
-        builder.HasKey(od => new { od.IdOrder, od.IdProduct });
+        builder.HasKey(od => new { od.OrderId, od.ProductId });
 
         builder.HasOne(od => od.Order)
             .WithMany(o => o.OrderDetails)
-            .HasForeignKey(od => od.IdOrder)
+            .HasForeignKey(od => od.OrderId)
             .IsRequired();
 
         builder.HasOne(od => od.Product)
             .WithMany(p => p.OrderDetails)
-            .HasForeignKey(od => od.IdProduct)
+            .HasForeignKey(od => od.ProductId)
             .IsRequired();
     }
 }
