@@ -1,0 +1,10 @@
+﻿CREATE TABLE [dbo].[Images]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL DEFAULT newid(),
+	[Path] NVARCHAR(256) NOT NULL,
+	[Length] INTEGER NOT NULL,
+	[CreatedDate] DATETIME NOT NULL,
+	[LastModifiedDate] DATETIME NOT NULL,
+
+	PRIMARY KEY(Id)
+)

@@ -12,6 +12,7 @@ using BackendGestionaleBar.Identity.BusinessLayer.Services;
 using BackendGestionaleBar.Identity.BusinessLayer.Services.Common;
 using BackendGestionaleBar.Identity.BusinessLayer.Settings;
 using BackendGestionaleBar.Services;
+using BackendGestionaleBar.StorageProviders.Extensions;
 using Hellang.Middleware.ProblemDetails;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -134,6 +135,12 @@ builder.Services.AddHostedService<AuthenticationStartupTask>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IImageService, ImageService>();
+
+builder.Services.AddFileSystemStorageProvider(options =>
+{
+    options.StorageFolder = builder.Configuration.GetValue<string>("AppSettings:StorageFolder");
+});
 
 T Configure<T>(string sectionName) where T : class
 {
