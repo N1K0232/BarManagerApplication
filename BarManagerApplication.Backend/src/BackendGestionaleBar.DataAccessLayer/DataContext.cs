@@ -1,42 +1,53 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+﻿using BackendGestionaleBar.Authentication;
+using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.Reflection;
 
 namespace BackendGestionaleBar.DataAccessLayer;
 
-public class DataContext : DbContext, IDataContext
+public class DataContext : AuthenticationDataContext, IDataContext
 {
-    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    public DataContext(DbContextOptions<AuthenticationDataContext> options) : base(options)
     {
     }
 
     public void Delete<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-        Set<T>().Remove(entity);
+
+        DbSet<T> set = Set<T>();
+        set.Remove(entity);
     }
     public void Delete<T>(IEnumerable<T> entities) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
-        Set<T>().RemoveRange(entities);
+
+        DbSet<T> set = Set<T>();
+        set.RemoveRange(entities);
     }
     public void Edit<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-        Set<T>().Update(entity);
+
+        DbSet<T> set = Set<T>();
+        set.Update(entity);
     }
     public void Edit<T>(IEnumerable<T> entities) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
-        Set<T>().UpdateRange(entities);
+
+        DbSet<T> set = Set<T>();
+        set.UpdateRange(entities);
     }
     public ValueTask<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity
     {
-        return Set<T>().FindAsync(keyValues);
+        DbSet<T> set = Set<T>();
+        return set.FindAsync(keyValues);
     }
     public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
     {
-        var set = Set<T>().AsQueryable<T>();
+        IQueryable<T> set = Set<T>().AsQueryable<T>();
 
         if (ignoreQueryFilters)
         {
@@ -50,17 +61,21 @@ public class DataContext : DbContext, IDataContext
     public void Insert<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-        Set<T>().Add(entity);
+
+        DbSet<T> set = Set<T>();
+        set.Add(entity);
     }
     public void Insert<T>(IEnumerable<T> entities) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
-        Set<T>().AddRange(entities);
+
+        DbSet<T> set = Set<T>();
+        set.AddRange(entities);
     }
     public Task<int> SaveAsync() => SaveChangesAsync();
     public Task ExecuteTransactionAsync(Func<Task> action)
     {
-        var strategy = Database.CreateExecutionStrategy();
+        IExecutionStrategy strategy = Database.CreateExecutionStrategy();
 
         Task task = strategy.ExecuteAsync(async () =>
         {
@@ -93,7 +108,7 @@ public class DataContext : DbContext, IDataContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

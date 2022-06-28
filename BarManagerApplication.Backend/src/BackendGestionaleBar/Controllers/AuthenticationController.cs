@@ -11,11 +11,11 @@ namespace BackendGestionaleBar.Controllers;
 [Produces("application/json")]
 public class AuthenticationController : ControllerBase
 {
-    private readonly IAuthenticationService identityService;
+    private readonly IAuthenticationService authenticationService;
 
-    public AuthenticationController(IAuthenticationService identityService)
+    public AuthenticationController(IAuthenticationService authenticationService)
     {
-        this.identityService = identityService;
+        this.authenticationService = authenticationService;
     }
 
     [HttpPost("Login")]
@@ -24,7 +24,7 @@ public class AuthenticationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var response = await identityService.LoginAsync(request);
+        var response = await authenticationService.LoginAsync(request);
         if (response != null)
         {
             return Ok(response);
@@ -39,7 +39,7 @@ public class AuthenticationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Refresh(RefreshTokenRequest request)
     {
-        var response = await identityService.RefreshTokenAsync(request);
+        var response = await authenticationService.RefreshTokenAsync(request);
         if (response != null)
         {
             return Ok(response);
@@ -54,7 +54,7 @@ public class AuthenticationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RegisterCliente([FromBody] RegisterUserRequest request)
     {
-        var response = await identityService.RegisterClienteAsync(request);
+        var response = await authenticationService.RegisterClienteAsync(request);
         if (response.Succeeded)
         {
             return Ok("Utente registrato con successo");
@@ -71,7 +71,7 @@ public class AuthenticationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RegisterStaff([FromBody] RegisterUserRequest request)
     {
-        var response = await identityService.RegisterStaffAsync(request);
+        var response = await authenticationService.RegisterStaffAsync(request);
         if (response.Succeeded)
         {
             return Ok("Utente registrato con successo");
@@ -88,7 +88,7 @@ public class AuthenticationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
     {
-        var response = await identityService.UpdatePasswordAsync(request);
+        var response = await authenticationService.UpdatePasswordAsync(request);
         if (response.Succeeded)
         {
             return Ok("password cambiata con successo");

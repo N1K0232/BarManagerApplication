@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace BackendGestionaleBar.Authorization;
+namespace BackendGestionaleBar.Authentication;
 
 public class RoleAuthorizeAttribute : AuthorizeAttribute
 {

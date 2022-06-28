@@ -15,9 +15,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BackendGestionaleBar.Databa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Authentication", "BackendGestionaleBar.Authentication\BackendGestionaleBar.Authentication.csproj", "{B3FE3021-706B-4A8D-8266-A613D0CD1CF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Contracts", "BackendGestionaleBar.Contracts\BackendGestionaleBar.Contracts.csproj", "{39A1E265-4F1B-4B5E-A6B6-25BF6238ACCA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Authorization", "BackendGestionaleBar.Authorization\BackendGestionaleBar.Authorization.csproj", "{ADCB73DF-5F33-483D-AD55-F4247F0BC7BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Contracts", "BackendGestionaleBar.Contracts\BackendGestionaleBar.Contracts.csproj", "{39A1E265-4F1B-4B5E-A6B6-25BF6238ACCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +53,6 @@ Global
 		{39A1E265-4F1B-4B5E-A6B6-25BF6238ACCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39A1E265-4F1B-4B5E-A6B6-25BF6238ACCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39A1E265-4F1B-4B5E-A6B6-25BF6238ACCA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ADCB73DF-5F33-483D-AD55-F4247F0BC7BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ADCB73DF-5F33-483D-AD55-F4247F0BC7BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ADCB73DF-5F33-483D-AD55-F4247F0BC7BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ADCB73DF-5F33-483D-AD55-F4247F0BC7BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

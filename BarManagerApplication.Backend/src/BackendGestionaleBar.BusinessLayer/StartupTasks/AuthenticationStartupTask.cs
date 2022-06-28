@@ -49,11 +49,10 @@ public class AuthenticationStartupTask : IHostedService
             var dbUser = await userManager.FindByNameAsync(user.UserName);
             if (dbUser == null)
             {
-                dbUser = user;
-                var result = await userManager.CreateAsync(dbUser, password);
+                var result = await userManager.CreateAsync(user, password);
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRolesAsync(dbUser, roles);
+                    await userManager.AddToRolesAsync(user, roles);
                 }
             }
         }

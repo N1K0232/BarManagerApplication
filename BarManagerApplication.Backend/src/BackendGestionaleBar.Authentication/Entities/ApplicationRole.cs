@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.Authentication.Entities;
 
-public class ApplicationRole : IdentityRole<Guid>
+public sealed class ApplicationRole : IdentityRole<Guid>
 {
     public ApplicationRole()
     {
@@ -11,5 +11,5 @@ public class ApplicationRole : IdentityRole<Guid>
     {
     }
 
-    public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
+    public List<ApplicationUserRole> UserRoles { get; set; }
 }

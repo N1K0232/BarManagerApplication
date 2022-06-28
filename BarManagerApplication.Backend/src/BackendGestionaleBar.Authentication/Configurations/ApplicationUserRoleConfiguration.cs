@@ -16,7 +16,7 @@ internal class ApplicationUserRoleConfiguration : IEntityTypeConfiguration<Appli
             .IsRequired();
 
         builder.HasOne(userRole => userRole.Role)
-            .WithMany(user => user.UserRoles)
+            .WithMany(role => role.UserRoles)
             .HasForeignKey(userRole => userRole.RoleId)
             .IsRequired();
     }

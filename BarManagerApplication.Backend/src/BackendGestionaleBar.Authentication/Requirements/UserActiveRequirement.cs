@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace BackendGestionaleBar.Authorization.Requirements;
+namespace BackendGestionaleBar.Authentication.Requirements;
 
 public class UserActiveRequirement : IAuthorizationRequirement
 {
