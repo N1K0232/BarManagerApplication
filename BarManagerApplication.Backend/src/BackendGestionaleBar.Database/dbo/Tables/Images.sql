@@ -4,7 +4,7 @@
 	[Path] NVARCHAR(256) NOT NULL,
 	[Length] INTEGER NOT NULL,
 	[CreatedDate] DATETIME NOT NULL,
-	[LastModifiedDate] DATETIME NOT NULL,
+	[LastModifiedDate] DATETIME NULL,
 
 	PRIMARY KEY(Id)
 )

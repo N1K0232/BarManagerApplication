@@ -6,7 +6,7 @@ public class Image : BaseObject
 {
     public string Path { get; set; }
 
-    public int Length { get; set; }
+    public long Length { get; set; }
 
     public string ContentType { get; set; }
 }
