@@ -7,7 +7,7 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations;
 
 internal class OrderConfiguration : BaseEntityConfiguration<Order>
 {
-    protected override void OnConfigure(EntityTypeBuilder<Order> builder)
+    public override void Configure(EntityTypeBuilder<Order> builder)
     {
         base.Configure(builder);
         builder.ToTable("Orders");

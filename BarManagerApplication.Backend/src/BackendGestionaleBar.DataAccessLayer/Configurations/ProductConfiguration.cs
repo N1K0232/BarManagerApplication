@@ -7,9 +7,9 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations;
 
 internal class ProductConfiguration : BaseEntityConfiguration<Product>
 {
-    protected override void OnConfigure(EntityTypeBuilder<Product> builder)
+    public override void Configure(EntityTypeBuilder<Product> builder)
     {
-        base.OnConfigure(builder);
+        base.Configure(builder);
         builder.ToTable("Products");
         builder.Property(p => p.Name).HasMaxLength(256).IsRequired();
         builder.Property(p => p.Quantity).IsRequired();
