@@ -7,18 +7,11 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations;
 
 internal class CategoryConfiguration : BaseEntityConfiguration<Category>
 {
-    public override void Configure(EntityTypeBuilder<Category> builder)
+    protected override void OnConfigure(EntityTypeBuilder<Category> builder)
     {
-        base.Configure(builder);
-
+        base.OnConfigure(builder);
         builder.ToTable("Categories");
-
-        builder.Property(c => c.Name)
-            .HasMaxLength(256)
-            .IsRequired();
-
-        builder.Property(c => c.Description)
-            .HasMaxLength(512)
-            .IsRequired(false);
+        builder.Property(c => c.Name).HasMaxLength(256).IsRequired();
+        builder.Property(c => c.Description).HasMaxLength(512).IsRequired(false);
     }
 }

@@ -7,12 +7,10 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations;
 
 internal class ImageConfiguration : BaseEntityConfiguration<Image>
 {
-    public override void Configure(EntityTypeBuilder<Image> builder)
+    protected override void OnConfigure(EntityTypeBuilder<Image> builder)
     {
-        base.Configure(builder);
-
+        base.OnConfigure(builder);
         builder.ToTable("Images");
-
         builder.Property(i => i.Path).HasMaxLength(256).IsRequired();
         builder.Property(i => i.Length).IsRequired();
     }

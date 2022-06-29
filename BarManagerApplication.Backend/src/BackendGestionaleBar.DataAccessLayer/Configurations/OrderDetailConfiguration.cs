@@ -7,12 +7,11 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations;
 
 internal class OrderDetailConfiguration : BaseEntityConfiguration<OrderDetail>
 {
-    public override void Configure(EntityTypeBuilder<OrderDetail> builder)
+    protected override void OnConfigure(EntityTypeBuilder<OrderDetail> builder)
     {
+        base.OnConfigure(builder);
         builder.ToTable("OrderDetails");
-
         builder.HasKey(od => new { od.OrderId, od.ProductId });
-
         builder.HasOne(od => od.Order)
             .WithMany(o => o.OrderDetails)
             .HasForeignKey(od => od.OrderId)

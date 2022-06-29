@@ -7,23 +7,11 @@ namespace BackendGestionaleBar.DataAccessLayer.Configurations;
 
 internal class OrderConfiguration : BaseEntityConfiguration<Order>
 {
-    public override void Configure(EntityTypeBuilder<Order> builder)
+    protected override void OnConfigure(EntityTypeBuilder<Order> builder)
     {
         base.Configure(builder);
-
         builder.ToTable("Orders");
-
-        //builder.HasOne(o => o.User)
-        //    .WithMany(u => u.Orders)
-        //    .HasForeignKey(o => o.IdUser)
-        //    .IsRequired();
-
-        builder.Property(o => o.OrderStatus)
-            .HasConversion<string>()
-            .HasMaxLength(50)
-            .IsRequired();
-
-        builder.Property(o => o.OrderDate)
-            .IsRequired();
+        builder.Property(o => o.OrderStatus).HasConversion<string>().HasMaxLength(50).IsRequired();
+        builder.Property(o => o.OrderDate).IsRequired();
     }
 }
