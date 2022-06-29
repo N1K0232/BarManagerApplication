@@ -2,8 +2,8 @@
 (
 	[OrderId] UNIQUEIDENTIFIER NOT NULL,
 	[ProductId] UNIQUEIDENTIFIER NOT NULL,
-	[CreatedDate] DATE NOT NULL,
-	[LastModifiedDate] DATE NULL,
+	[CreatedDate] DATETIME NOT NULL,
+	[LastModifiedDate] DATETIME NULL,
 	
 	PRIMARY KEY([OrderId],[ProductId]),
 	FOREIGN KEY([OrderId]) REFERENCES Orders(Id),
