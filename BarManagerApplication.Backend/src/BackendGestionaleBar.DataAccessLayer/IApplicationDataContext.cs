@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.DataAccessLayer;
 
-public interface IDataContext
+public interface IApplicationDataContext
 {
     void Delete<T>(T entity) where T : BaseEntity;
     void Delete<T>(IEnumerable<T> entities) where T : BaseEntity;

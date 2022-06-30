@@ -82,10 +82,10 @@ string hash = builder.Configuration.GetConnectionString("SqlConnection");
 byte[] bytes = Convert.FromBase64String(hash);
 string connectionString = Encoding.UTF8.GetString(bytes);
 builder.Services.AddSqlServer<AuthenticationDataContext>(connectionString);
-builder.Services.AddSqlServer<DataContext>(connectionString);
-builder.Services.AddScoped<IDataContext>(services =>
+builder.Services.AddSqlServer<ApplicationDataContext>(connectionString);
+builder.Services.AddScoped<IApplicationDataContext>(services =>
 {
-    return services.GetRequiredService<DataContext>();
+    return services.GetRequiredService<ApplicationDataContext>();
 });
 
 

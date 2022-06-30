@@ -13,11 +13,11 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public class OrderService : IOrderService
 {
-	private readonly IDataContext dataContext;
+	private readonly IApplicationDataContext dataContext;
 	private readonly IUserService userService;
 	private readonly IMapper mapper;
 
-	public OrderService(IDataContext dataContext, IUserService userService, IMapper mapper)
+	public OrderService(IApplicationDataContext dataContext, IUserService userService, IMapper mapper)
 	{
 		this.dataContext = dataContext;
 		this.userService = userService;
