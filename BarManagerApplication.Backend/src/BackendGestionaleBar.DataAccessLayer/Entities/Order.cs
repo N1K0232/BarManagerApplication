@@ -14,5 +14,5 @@ public class Order : BaseEntity
 
     public ApplicationUser User { get; set; }
 
-    public ICollection<OrderDetail> OrderDetails { get; set; }
+    public List<OrderDetail> OrderDetails { get; set; }
 }
