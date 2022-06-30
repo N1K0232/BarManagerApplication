@@ -10,8 +10,10 @@ internal class OrderDetailConfiguration : BaseEntityConfiguration<OrderDetail>
     public override void Configure(EntityTypeBuilder<OrderDetail> builder)
     {
         base.Configure(builder);
+
         builder.ToTable("OrderDetails");
         builder.HasKey(od => new { od.OrderId, od.ProductId });
+
         builder.HasOne(od => od.Order)
             .WithMany(o => o.OrderDetails)
             .HasForeignKey(od => od.OrderId)
@@ -21,5 +23,9 @@ internal class OrderDetailConfiguration : BaseEntityConfiguration<OrderDetail>
             .WithMany(p => p.OrderDetails)
             .HasForeignKey(od => od.ProductId)
             .IsRequired();
+
+        builder.Property(od => od.Price).IsRequired();
+
+        builder.Property(od => od.OrderedQuantity).IsRequired();
     }
 }

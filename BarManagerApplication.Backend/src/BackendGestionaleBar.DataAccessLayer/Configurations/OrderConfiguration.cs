@@ -11,7 +11,9 @@ internal class OrderConfiguration : BaseEntityConfiguration<Order>
     {
         base.Configure(builder);
         builder.ToTable("Orders");
+
         builder.Property(o => o.OrderStatus).HasConversion<string>().HasMaxLength(50).IsRequired();
         builder.Property(o => o.OrderDate).IsRequired();
+        builder.Property(o => o.UserId).IsRequired();
     }
 }
