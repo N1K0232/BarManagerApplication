@@ -22,7 +22,7 @@ public class MeController : ControllerBase
             Id = User.GetId(),
             FirstName = User.GetFirstName(),
             LastName = User.GetLastName(),
-            BirthDate = User.GetBirthDate(),
+            DateOfBirth = User.GetDateOfBirth(),
             Email = User.GetEmail(),
             UserName = User.GetUserName(),
             PhoneNumber = User.GetPhoneNumber()

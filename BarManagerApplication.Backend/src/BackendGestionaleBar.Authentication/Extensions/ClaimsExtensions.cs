@@ -21,7 +21,7 @@ public static class ClaimsExtensions
         return GetClaimValueInternal(user, ClaimTypes.Surname);
     }
 
-    public static DateTime GetBirthDate(this IPrincipal user)
+    public static DateTime GetDateOfBirth(this IPrincipal user)
     {
         string value = GetClaimValueInternal(user, ClaimTypes.DateOfBirth);
         return DateTime.Parse(value);
