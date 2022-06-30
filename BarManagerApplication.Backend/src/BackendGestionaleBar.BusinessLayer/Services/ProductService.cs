@@ -35,7 +35,7 @@ public class ProductService : IProductService
 			query = query.Where(p => p.Name.Contains(name));
 		}
 
-		var dbProducts = await query.Include(p => p.Category).ToListAsync();
+		var dbProducts = await query.OrderBy(p => p.Name).Include(p => p.Category).ToListAsync();
 		var products = new List<Product>();
 
 		foreach (var dbProduct in dbProducts)
@@ -55,19 +55,18 @@ public class ProductService : IProductService
 
 		if (dbProduct == null)
 		{
+			var dbCategory = await dataContext.GetData<Entities.Category>().FirstOrDefaultAsync(c => c.Name == request.CategoryName);
 			dbProduct = mapper.Map<Entities.Product>(request);
-			dbProduct.Category = await dataContext.GetData<Entities.Category>().FirstOrDefaultAsync(c => c.Name == request.CategoryName);
+			dbProduct.CategoryId = dbCategory.Id;
 			dataContext.Insert(dbProduct);
 		}
 		else
 		{
 			mapper.Map(request, dbProduct);
-			dbProduct.Category = await dataContext.GetData<Entities.Category>().FirstOrDefaultAsync(c => c.Name == request.CategoryName);
 			dataContext.Edit(dbProduct);
 		}
 
 		await dataContext.SaveAsync();
-
 		return mapper.Map<Product>(dbProduct);
 	}
 }
