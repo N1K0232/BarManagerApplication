@@ -12,6 +12,6 @@ public interface IDataContext
     ValueTask<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity;
     void Insert<T>(T entity) where T : BaseEntity;
     void Insert<T>(IEnumerable<T> entities) where T : BaseEntity;
-    Task<int> SaveAsync();
+    Task SaveAsync();
     Task ExecuteTransactionAsync(Func<Task> action);
 }

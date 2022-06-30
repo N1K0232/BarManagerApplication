@@ -6,26 +6,49 @@ namespace BackendGestionaleBar.Authentication.Extensions;
 public static class ClaimsExtensions
 {
     public static Guid GetId(this IPrincipal user)
-        => Guid.Parse(GetClaimValue(user, ClaimTypes.NameIdentifier));
+    {
+        string value = GetClaimValueInternal(user, ClaimTypes.NameIdentifier);
+        return Guid.Parse(value);
+    }
 
     public static string GetFirstName(this IPrincipal user)
-        => GetClaimValue(user, ClaimTypes.GivenName);
+    {
+        return GetClaimValueInternal(user, ClaimTypes.GivenName);
+    }
 
     public static string GetLastName(this IPrincipal user)
-        => GetClaimValue(user, ClaimTypes.Surname);
-
-    public static string GetEmail(this IPrincipal user)
-        => GetClaimValue(user, ClaimTypes.Email);
-
-    public static string GetUserName(this IPrincipal user)
-        => GetClaimValue(user, ClaimTypes.Name);
-
-    public static string GetPhoneNumber(this IPrincipal user)
-        => GetClaimValue(user, ClaimTypes.MobilePhone);
+    {
+        return GetClaimValueInternal(user, ClaimTypes.Surname);
+    }
 
     public static DateTime GetBirthDate(this IPrincipal user)
-        => DateTime.Parse(GetClaimValue(user, ClaimTypes.DateOfBirth));
+    {
+        string value = GetClaimValueInternal(user, ClaimTypes.DateOfBirth);
+        return DateTime.Parse(value);
+    }
 
-    private static string GetClaimValue(IPrincipal user, string claimType)
-        => ((ClaimsPrincipal)user).FindFirst(claimType)?.Value;
+    public static string GetEmail(this IPrincipal user)
+    {
+        return GetClaimValueInternal(user, ClaimTypes.Email);
+    }
+
+    public static string GetUserName(this IPrincipal user)
+    {
+        return GetClaimValueInternal(user, ClaimTypes.Name);
+    }
+
+    public static string GetPhoneNumber(this IPrincipal user)
+    {
+        return GetClaimValueInternal(user, ClaimTypes.MobilePhone);
+    }
+
+    public static string GetClaimValue(this IPrincipal user, string claimType)
+    {
+        return GetClaimValueInternal(user, claimType);
+    }
+
+    private static string GetClaimValueInternal(IPrincipal user, string claimType)
+    {
+        return ((ClaimsPrincipal)user).FindFirst(claimType)?.Value;
+    }
 }

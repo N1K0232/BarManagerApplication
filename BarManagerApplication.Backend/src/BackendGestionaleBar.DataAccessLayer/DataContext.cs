@@ -72,7 +72,7 @@ public class DataContext : AuthenticationDataContext, IDataContext
         DbSet<T> set = Set<T>();
         set.AddRange(entities);
     }
-    public Task<int> SaveAsync() => SaveChangesAsync();
+    public Task SaveAsync() => SaveChangesAsync();
     public Task ExecuteTransactionAsync(Func<Task> action)
     {
         IExecutionStrategy strategy = Database.CreateExecutionStrategy();

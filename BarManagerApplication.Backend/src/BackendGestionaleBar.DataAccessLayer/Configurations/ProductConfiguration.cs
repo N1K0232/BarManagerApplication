@@ -10,26 +10,14 @@ internal class ProductConfiguration : BaseEntityConfiguration<Product>
     public override void Configure(EntityTypeBuilder<Product> builder)
     {
         base.Configure(builder);
-
         builder.ToTable("Products");
-
+        builder.Property(p => p.Name).HasMaxLength(256).IsRequired();
+        builder.Property(p => p.Quantity).IsRequired();
+        builder.Property(p => p.ExpirationDate).IsRequired();
+        builder.Property(p => p.Price).HasPrecision(10, 2).IsRequired();
         builder.HasOne(p => p.Category)
             .WithMany(c => c.Products)
             .HasForeignKey(p => p.CategoryId)
-            .IsRequired();
-
-        builder.Property(p => p.Name)
-            .HasMaxLength(256)
-            .IsRequired();
-
-        builder.Property(p => p.Quantity)
-            .IsRequired();
-
-        builder.Property(p => p.ExpirationDate)
-            .IsRequired();
-
-        builder.Property(p => p.Price)
-            .HasPrecision(10, 2)
             .IsRequired();
     }
 }

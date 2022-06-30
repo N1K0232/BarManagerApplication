@@ -12,11 +12,9 @@ internal class CategoryConfiguration : BaseEntityConfiguration<Category>
         base.Configure(builder);
 
         builder.ToTable("Categories");
-
         builder.Property(c => c.Name)
             .HasMaxLength(256)
             .IsRequired();
-
         builder.Property(c => c.Description)
             .HasMaxLength(512)
             .IsRequired(false);
