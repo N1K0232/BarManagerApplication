@@ -12,8 +12,8 @@ public class SaveOrderValidator : AbstractValidator<SaveOrderRequest>
             .GreaterThan(0)
             .WithMessage("you must specify the quantity");
 
-        RuleFor(o => o.ProductIds)
+        RuleFor(o => o.Products)
             .NotNull()
-            .WithMessage("Can't save an order without the products");
+            .WithMessage("You must specify at least one product");
     }
 }

@@ -67,24 +67,31 @@ public class OrderService : IOrderService
 			{
 				UserId = userService.GetId(),
 				OrderDate = DateTime.UtcNow,
-				OrderStatus = OrderStatus.New
+				OrderStatus = OrderStatus.New,
+				OrderDetails = new List<Entities.OrderDetail>()
 			};
 
-			dbOrder.OrderDetails = new List<Entities.OrderDetail>();
-
-			foreach (var productId in request.ProductIds)
+			foreach (var product in request.Products)
 			{
-				var dbProduct = await dataContext.GetAsync<Entities.Product>(productId);
+				var dbProduct = await dataContext.GetAsync<Entities.Product>(product.Id);
 
-				dbOrder.OrderDetails.Add(new Entities.OrderDetail
+				if (dbProduct.Quantity < request.OrderedQuantity)
+				{
+					throw new Exception($"you can order a maximum of {dbProduct.Quantity}");
+				}
+
+				var orderDetail = new Entities.OrderDetail
 				{
 					OrderId = dbOrder.Id,
 					ProductId = dbProduct.Id,
 					Price = dbProduct.Price,
 					OrderedQuantity = request.OrderedQuantity
-				});
+				};
+
+				dbOrder.OrderDetails.Add(orderDetail);
 
 				dbProduct.Quantity -= request.OrderedQuantity;
+				dataContext.Edit(dbProduct);
 			}
 
 			dataContext.Insert(dbOrder);
