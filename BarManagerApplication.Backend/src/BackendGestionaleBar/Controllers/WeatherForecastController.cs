@@ -1,6 +1,5 @@
 ﻿using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authorization;
-using BackendGestionaleBar.Shared.Requests;
 using BackendGestionaleBar.WeatherClient;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,9 +22,9 @@ public class WeatherForecastController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	public async Task<IActionResult> GetWeather(WeatherForecastRequest request)
+	public async Task<IActionResult> GetWeather(string city)
 	{
-		var response = await weatherForecastService.GetAsync(request);
+		var response = await weatherForecastService.GetAsync(city);
 		return response != null ? Ok(response) : NotFound("not valid city");
 	}
 }
