@@ -6,9 +6,9 @@ using System.Reflection;
 
 namespace BackendGestionaleBar.DataAccessLayer;
 
-public class DataContext : AuthenticationDataContext, IDataContext
+public class ApplicationDataContext : AuthenticationDataContext, IApplicationDataContext
 {
-    public DataContext(DbContextOptions<AuthenticationDataContext> options) : base(options)
+    public ApplicationDataContext(DbContextOptions<AuthenticationDataContext> options) : base(options)
     {
     }
 

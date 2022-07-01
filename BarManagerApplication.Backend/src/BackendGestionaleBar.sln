@@ -17,11 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Authen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Contracts", "BackendGestionaleBar.Contracts\BackendGestionaleBar.Contracts.csproj", "{39A1E265-4F1B-4B5E-A6B6-25BF6238ACCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Authorization", "BackendGestionaleBar.Authorization\BackendGestionaleBar.Authorization.csproj", "{5BBDB2EF-574F-422E-B7F9-4B97EBC9A1AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Authorization", "BackendGestionaleBar.Authorization\BackendGestionaleBar.Authorization.csproj", "{5BBDB2EF-574F-422E-B7F9-4B97EBC9A1AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.StorageProviders", "BackendGestionaleBar.StorageProviders\BackendGestionaleBar.StorageProviders.csproj", "{F510378E-3C1D-4FBA-9B42-297415057738}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.StorageProviders", "BackendGestionaleBar.StorageProviders\BackendGestionaleBar.StorageProviders.csproj", "{F510378E-3C1D-4FBA-9B42-297415057738}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.Identity.BusinessLayer", "BackendGestionaleBar.Identity.BusinessLayer\BackendGestionaleBar.Identity.BusinessLayer.csproj", "{8193F5AD-5040-4C1B-AE65-0A9F31CBF01F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Identity.BusinessLayer", "BackendGestionaleBar.Identity.BusinessLayer\BackendGestionaleBar.Identity.BusinessLayer.csproj", "{8193F5AD-5040-4C1B-AE65-0A9F31CBF01F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.WeatherClient", "BackendGestionaleBar.WeatherClient\BackendGestionaleBar.WeatherClient.csproj", "{143C8CAB-C608-42F7-BEDF-57DA4DD0A0E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{8193F5AD-5040-4C1B-AE65-0A9F31CBF01F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8193F5AD-5040-4C1B-AE65-0A9F31CBF01F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8193F5AD-5040-4C1B-AE65-0A9F31CBF01F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{143C8CAB-C608-42F7-BEDF-57DA4DD0A0E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{143C8CAB-C608-42F7-BEDF-57DA4DD0A0E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{143C8CAB-C608-42F7-BEDF-57DA4DD0A0E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{143C8CAB-C608-42F7-BEDF-57DA4DD0A0E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

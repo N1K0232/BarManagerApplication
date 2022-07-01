@@ -1,16 +1,13 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Configurations.Common;
-using BackendGestionaleBar.DataAccessLayer.Entities;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.DataAccessLayer.Configurations;
 
-internal class OrderDetailConfiguration : BaseEntityConfiguration<OrderDetail>
+internal class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
 {
-    public override void Configure(EntityTypeBuilder<OrderDetail> builder)
+    public void Configure(EntityTypeBuilder<OrderDetail> builder)
     {
-        base.Configure(builder);
-
         builder.ToTable("OrderDetails");
         builder.HasKey(od => new { od.OrderId, od.ProductId });
 

@@ -10,10 +10,10 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class CategoryService : ICategoryService
 {
-	private readonly IDataContext dataContext;
+	private readonly IApplicationDataContext dataContext;
 	private readonly IMapper mapper;
 
-	public CategoryService(IDataContext dataContext, IMapper mapper)
+	public CategoryService(IApplicationDataContext dataContext, IMapper mapper)
 	{
 		this.dataContext = dataContext;
 		this.mapper = mapper;

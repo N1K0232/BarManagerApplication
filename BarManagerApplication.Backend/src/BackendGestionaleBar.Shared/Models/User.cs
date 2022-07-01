@@ -8,7 +8,7 @@ public class User : BaseObject
 
     public string LastName { get; set; }
 
-    public DateTime BirthDate { get; set; }
+    public DateTime DateOfBirth { get; set; }
 
     public string Email { get; set; }
 

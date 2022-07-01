@@ -13,6 +13,7 @@ using BackendGestionaleBar.Identity.BusinessLayer.Services.Common;
 using BackendGestionaleBar.Identity.BusinessLayer.Settings;
 using BackendGestionaleBar.Services;
 using BackendGestionaleBar.StorageProviders.Extensions;
+using BackendGestionaleBar.WeatherClient.DependencyInjection;
 using Hellang.Middleware.ProblemDetails;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -82,10 +83,10 @@ string hash = builder.Configuration.GetConnectionString("SqlConnection");
 byte[] bytes = Convert.FromBase64String(hash);
 string connectionString = Encoding.UTF8.GetString(bytes);
 builder.Services.AddSqlServer<AuthenticationDataContext>(connectionString);
-builder.Services.AddSqlServer<DataContext>(connectionString);
-builder.Services.AddScoped<IDataContext>(services =>
+builder.Services.AddSqlServer<ApplicationDataContext>(connectionString);
+builder.Services.AddScoped<IApplicationDataContext>(services =>
 {
-    return services.GetRequiredService<DataContext>();
+    return services.GetRequiredService<ApplicationDataContext>();
 });
 
 
@@ -132,11 +133,17 @@ builder.Services.AddScoped<IUserService, HttpUserService>();
 
 builder.Services.AddHostedService<AuthenticationStartupTask>();
 
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+builder.Services.AddWeatherService(options =>
+{
+    options.BaseUrl = builder.Configuration.GetValue<string>("WeatherClientSettings:BaseUrl");
+    options.ApiKey = builder.Configuration.GetValue<string>("WeatherClientSettings:ApiKey");
+});
 
 builder.Services.AddFileSystemStorageProvider(options =>
 {
