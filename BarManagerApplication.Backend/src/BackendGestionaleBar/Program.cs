@@ -133,7 +133,7 @@ builder.Services.AddScoped<IUserService, HttpUserService>();
 
 builder.Services.AddHostedService<AuthenticationStartupTask>();
 
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();

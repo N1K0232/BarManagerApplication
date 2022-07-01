@@ -9,11 +9,11 @@ namespace BackendGestionaleBar.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
-public class AuthenticationController : ControllerBase
+public class AuthController : ControllerBase
 {
-    private readonly IAuthenticationService authenticationService;
+    private readonly IIdentityService authenticationService;
 
-    public AuthenticationController(IAuthenticationService authenticationService)
+    public AuthController(IIdentityService authenticationService)
     {
         this.authenticationService = authenticationService;
     }

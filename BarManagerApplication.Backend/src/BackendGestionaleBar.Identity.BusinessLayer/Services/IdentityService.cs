@@ -15,14 +15,14 @@ using System.Text;
 
 namespace BackendGestionaleBar.Identity.BusinessLayer.Services;
 
-public class AuthenticationService : IAuthenticationService
+public class IdentityService : IIdentityService
 {
     private readonly JwtSettings jwtSettings;
     private readonly UserManager<ApplicationUser> userManager;
     private readonly SignInManager<ApplicationUser> signInManager;
     private readonly RandomNumberGenerator generator;
 
-    public AuthenticationService(IOptions<JwtSettings> jwtSettingsOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    public IdentityService(IOptions<JwtSettings> jwtSettingsOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
     {
         generator = RandomNumberGenerator.Create();
         jwtSettings = jwtSettingsOptions.Value;

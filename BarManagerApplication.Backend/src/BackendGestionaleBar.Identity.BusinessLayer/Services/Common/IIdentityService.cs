@@ -2,7 +2,7 @@
 using BackendGestionaleBar.Shared.Responses;
 
 namespace BackendGestionaleBar.Identity.BusinessLayer.Services.Common;
-public interface IAuthenticationService
+public interface IIdentityService
 {
     Task<AuthResponse> LoginAsync(LoginRequest request);
     Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request);
