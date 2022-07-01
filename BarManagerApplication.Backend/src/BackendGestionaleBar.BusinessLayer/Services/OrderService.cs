@@ -50,7 +50,7 @@ public class OrderService : IOrderService
 
 		foreach (var orderDetail in dbOrder.OrderDetails)
 		{
-			totalPrice += orderDetail.Price;
+			totalPrice += orderDetail.Price * orderDetail.OrderedQuantity;
 		}
 
 		return totalPrice;
@@ -72,15 +72,19 @@ public class OrderService : IOrderService
 
 			dbOrder.OrderDetails = new List<Entities.OrderDetail>();
 
-			foreach (var product in request.Products)
+			foreach (var productId in request.ProductIds)
 			{
+				var dbProduct = await dataContext.GetAsync<Entities.Product>(productId);
+
 				dbOrder.OrderDetails.Add(new Entities.OrderDetail
 				{
 					OrderId = dbOrder.Id,
-					ProductId = product.Id,
-					Price = product.Price,
+					ProductId = dbProduct.Id,
+					Price = dbProduct.Price,
 					OrderedQuantity = request.OrderedQuantity
 				});
+
+				dbProduct.Quantity -= request.OrderedQuantity;
 			}
 
 			dataContext.Insert(dbOrder);

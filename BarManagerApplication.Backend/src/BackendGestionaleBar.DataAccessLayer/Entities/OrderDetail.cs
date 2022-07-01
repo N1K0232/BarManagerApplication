@@ -1,8 +1,6 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+﻿namespace BackendGestionaleBar.DataAccessLayer.Entities;
 
-namespace BackendGestionaleBar.DataAccessLayer.Entities;
-
-public class OrderDetail : BaseEntity
+public class OrderDetail
 {
     public Guid OrderId { get; set; }
 
