@@ -13,6 +13,7 @@ using BackendGestionaleBar.Identity.BusinessLayer.Services.Common;
 using BackendGestionaleBar.Identity.BusinessLayer.Settings;
 using BackendGestionaleBar.Services;
 using BackendGestionaleBar.StorageProviders.Extensions;
+using BackendGestionaleBar.WeatherClient.DependencyInjection;
 using Hellang.Middleware.ProblemDetails;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -137,6 +138,12 @@ builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+builder.Services.AddWeatherService(options =>
+{
+    options.BaseUrl = builder.Configuration.GetValue<string>("WeatherClientSettings:BaseUrl");
+    options.ApiKey = builder.Configuration.GetValue<string>("WeatherClientSettings:ApiKey");
+});
 
 builder.Services.AddFileSystemStorageProvider(options =>
 {
