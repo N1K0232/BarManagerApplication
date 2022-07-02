@@ -15,7 +15,7 @@ using System.Text;
 
 namespace BackendGestionaleBar.Identity.BusinessLayer.Services;
 
-public class IdentityService : IIdentityService
+public sealed class IdentityService : IIdentityService
 {
     private readonly JwtSettings jwtSettings;
     private readonly UserManager<ApplicationUser> userManager;

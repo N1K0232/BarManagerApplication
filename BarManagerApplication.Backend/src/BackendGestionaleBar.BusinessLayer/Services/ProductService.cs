@@ -8,7 +8,7 @@ using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 
 namespace BackendGestionaleBar.BusinessLayer.Services;
 
-public class ProductService : IProductService
+public sealed class ProductService : IProductService
 {
 	private readonly IApplicationDataContext dataContext;
 	private readonly IMapper mapper;

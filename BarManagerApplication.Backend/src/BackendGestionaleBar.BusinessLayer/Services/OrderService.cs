@@ -11,7 +11,7 @@ using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 
 namespace BackendGestionaleBar.BusinessLayer.Services;
 
-public class OrderService : IOrderService
+public sealed class OrderService : IOrderService
 {
 	private readonly IApplicationDataContext dataContext;
 	private readonly IUserService userService;

@@ -11,7 +11,7 @@ using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 
 namespace BackendGestionaleBar.BusinessLayer.Services;
 
-public class ImageService : IImageService
+public sealed class ImageService : IImageService
 {
 	private readonly IApplicationDataContext dataContext;
 	private readonly IStorageProvider storageProvider;
@@ -29,9 +29,9 @@ public class ImageService : IImageService
 		var dbImage = await dataContext.GetAsync<Entities.Image>(id);
 		if (dbImage != null)
 		{
+			await storageProvider.DeleteAsync(dbImage.Path);
 			dataContext.Delete(dbImage);
 			await dataContext.SaveAsync();
-			await storageProvider.DeleteAsync(dbImage.Path);
 		}
 	}
 

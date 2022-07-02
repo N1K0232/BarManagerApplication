@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BackendGestionaleBar.BusinessLayer.Services.Common;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Shared.Models;
@@ -19,19 +20,10 @@ public sealed class CategoryService : ICategoryService
 		this.mapper = mapper;
 	}
 
-	public async Task DeleteAsync(Guid? id)
+	public async Task DeleteAsync(Guid id)
 	{
-		if (id == null)
-		{
-			var dbCategories = await dataContext.GetData<Entities.Category>().ToListAsync();
-			dataContext.Delete(dbCategories);
-		}
-		else
-		{
-			var dbCategory = await dataContext.GetAsync<Entities.Category>(id);
-			dataContext.Delete(dbCategory);
-		}
-
+		var dbCategories = await dataContext.GetData<Entities.Category>().ToListAsync();
+		dataContext.Delete(dbCategories);
 		await dataContext.SaveAsync();
 	}
 
@@ -44,8 +36,10 @@ public sealed class CategoryService : ICategoryService
 			query = query.Where(c => c.Name.Contains(name));
 		}
 
-		var dbCategories = await query.OrderBy(c => c.Name).ToListAsync();
-		var categories = mapper.Map<List<Category>>(dbCategories);
+		var categories = await query.OrderBy(c => c.Name)
+			.ProjectTo<Category>(mapper.ConfigurationProvider)
+			.ToListAsync();
+
 		return categories;
 	}
 

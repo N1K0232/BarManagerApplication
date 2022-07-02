@@ -23,7 +23,7 @@ public class CategoriesController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-	public async Task<IActionResult> Delete(Guid? id = null)
+	public async Task<IActionResult> Delete(Guid id)
 	{
 		await categoryService.DeleteAsync(id);
 		return Ok("categories successfully deleted");
