@@ -22,8 +22,8 @@ public sealed class CategoryService : ICategoryService
 
 	public async Task DeleteAsync(Guid id)
 	{
-		var dbCategories = await dataContext.GetData<Entities.Category>().ToListAsync();
-		dataContext.Delete(dbCategories);
+		var dbCategory = await dataContext.GetAsync<Entities.Category>(id);
+		dataContext.Delete(dbCategory);
 		await dataContext.SaveAsync();
 	}
 
