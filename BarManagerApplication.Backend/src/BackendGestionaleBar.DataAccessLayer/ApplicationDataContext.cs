@@ -33,13 +33,6 @@ public class ApplicationDataContext : AuthenticationDataContext, IApplicationDat
         DbSet<T> set = Set<T>();
         set.Update(entity);
     }
-    public void Edit<T>(IEnumerable<T> entities) where T : BaseEntity
-    {
-        ArgumentNullException.ThrowIfNull(entities, nameof(entities));
-
-        DbSet<T> set = Set<T>();
-        set.UpdateRange(entities);
-    }
     public ValueTask<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity
     {
         DbSet<T> set = Set<T>();
@@ -64,13 +57,6 @@ public class ApplicationDataContext : AuthenticationDataContext, IApplicationDat
 
         DbSet<T> set = Set<T>();
         set.Add(entity);
-    }
-    public void Insert<T>(IEnumerable<T> entities) where T : BaseEntity
-    {
-        ArgumentNullException.ThrowIfNull(entities, nameof(entities));
-
-        DbSet<T> set = Set<T>();
-        set.AddRange(entities);
     }
     public Task SaveAsync() => SaveChangesAsync();
     public Task ExecuteTransactionAsync(Func<Task> action)
