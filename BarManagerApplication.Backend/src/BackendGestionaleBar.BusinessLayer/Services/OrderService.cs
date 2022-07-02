@@ -11,23 +11,35 @@ using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 
 namespace BackendGestionaleBar.BusinessLayer.Services;
 
-public class OrderService : IOrderService
+public sealed class OrderService : IOrderService
 {
-	private readonly IApplicationDataContext dataContext;
+	private readonly IDataContext dataContext;
 	private readonly IUserService userService;
 	private readonly IMapper mapper;
 
-	public OrderService(IApplicationDataContext dataContext, IUserService userService, IMapper mapper)
+	public OrderService(IDataContext dataContext, IUserService userService, IMapper mapper)
 	{
 		this.dataContext = dataContext;
 		this.userService = userService;
 		this.mapper = mapper;
 	}
 
-	public async Task DeleteAsync(Guid id)
+	public async Task DeleteAsync(Guid? id)
 	{
-		var order = await dataContext.GetAsync<Entities.Order>(id);
-		dataContext.Delete(order);
+		if (id == null)
+		{
+			var dbOrders = await dataContext.GetData<Entities.Order>()
+				.Where(o => o.OrderStatus == OrderStatus.Canceled)
+				.ToListAsync();
+
+			dataContext.Delete(dbOrders);
+		}
+		else
+		{
+			var dbOrder = await dataContext.GetAsync<Entities.Order>(id.Value);
+			dataContext.Delete(dbOrder);
+		}
+
 		await dataContext.SaveAsync();
 	}
 
@@ -40,11 +52,11 @@ public class OrderService : IOrderService
 		return orders;
 	}
 
-	public async Task<decimal> GetTotalPriceAsync(DateTime orderDate)
+	public async Task<decimal> GetTotalPriceAsync()
 	{
 		var dbOrder = await dataContext.GetData<Entities.Order>()
 			.Include(o => o.OrderDetails)
-			.FirstOrDefaultAsync(o => o.UserId == userService.GetId() && o.OrderDate == orderDate);
+			.FirstOrDefaultAsync(o => o.UserId == userService.GetId() && o.OrderDate == DateTime.Today);
 
 		decimal totalPrice = 0;
 
@@ -67,31 +79,38 @@ public class OrderService : IOrderService
 			{
 				UserId = userService.GetId(),
 				OrderDate = DateTime.UtcNow,
-				OrderStatus = OrderStatus.New
+				OrderStatus = OrderStatus.New,
+				OrderDetails = new List<Entities.OrderDetail>()
 			};
 
-			dbOrder.OrderDetails = new List<Entities.OrderDetail>();
-
-			foreach (var productId in request.ProductIds)
+			foreach (var product in request.Products)
 			{
-				var dbProduct = await dataContext.GetAsync<Entities.Product>(productId);
+				var dbProduct = await dataContext.GetAsync<Entities.Product>(product.Id);
 
-				dbOrder.OrderDetails.Add(new Entities.OrderDetail
+				if (dbProduct.Quantity < request.OrderedQuantity)
+				{
+					throw new Exception($"you can order a maximum of {dbProduct.Quantity}");
+				}
+
+				var orderDetail = new Entities.OrderDetail
 				{
 					OrderId = dbOrder.Id,
 					ProductId = dbProduct.Id,
 					Price = dbProduct.Price,
 					OrderedQuantity = request.OrderedQuantity
-				});
+				};
+
+				dbOrder.OrderDetails.Add(orderDetail);
 
 				dbProduct.Quantity -= request.OrderedQuantity;
+				dataContext.Edit(dbProduct);
 			}
 
 			dataContext.Insert(dbOrder);
 		}
 		else
 		{
-			dbOrder.OrderStatus = request.Status.Value;
+			mapper.Map(request, dbOrder);
 			dataContext.Edit(dbOrder);
 		}
 

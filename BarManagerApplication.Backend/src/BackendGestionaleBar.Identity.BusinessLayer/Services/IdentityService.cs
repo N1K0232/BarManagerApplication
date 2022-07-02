@@ -15,7 +15,7 @@ using System.Text;
 
 namespace BackendGestionaleBar.Identity.BusinessLayer.Services;
 
-public class IdentityService : IIdentityService
+public sealed class IdentityService : IIdentityService
 {
     private readonly JwtSettings jwtSettings;
     private readonly UserManager<ApplicationUser> userManager;
@@ -43,15 +43,15 @@ public class IdentityService : IIdentityService
         var roles = await userManager.GetRolesAsync(user);
 
         var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Name, user.UserName),
-        new Claim(ClaimTypes.GivenName, user.FirstName),
-        new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
-        new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString()),
-        new Claim(ClaimTypes.Email, user.Email),
-        new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty)
-    }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.GivenName, user.FirstName),
+            new Claim(ClaimTypes.Surname, user.LastName),
+            new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
+        }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var response = CreateToken(claims);
         await SaveRefreshTokenAsync(user, response.RefreshToken);

@@ -11,6 +11,7 @@ using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Identity.BusinessLayer.Services;
 using BackendGestionaleBar.Identity.BusinessLayer.Services.Common;
 using BackendGestionaleBar.Identity.BusinessLayer.Settings;
+using BackendGestionaleBar.Security;
 using BackendGestionaleBar.Services;
 using BackendGestionaleBar.StorageProviders.Extensions;
 using BackendGestionaleBar.WeatherClient.DependencyInjection;
@@ -79,14 +80,12 @@ builder.Services.AddSwaggerGen(options =>
     options.SetNotNullableIfMinLengthGreaterThenZero = true;
 });
 
-string hash = builder.Configuration.GetConnectionString("SqlConnection");
-byte[] bytes = Convert.FromBase64String(hash);
-string connectionString = Encoding.UTF8.GetString(bytes);
+string connectionString = StringConverter.GetString(builder.Configuration.GetConnectionString("SqlConnection"));
 builder.Services.AddSqlServer<AuthenticationDataContext>(connectionString);
-builder.Services.AddSqlServer<ApplicationDataContext>(connectionString);
-builder.Services.AddScoped<IApplicationDataContext>(services =>
+builder.Services.AddSqlServer<DataContext>(connectionString);
+builder.Services.AddScoped<IDataContext>(services =>
 {
-    return services.GetRequiredService<ApplicationDataContext>();
+    return services.GetRequiredService<DataContext>();
 });
 
 

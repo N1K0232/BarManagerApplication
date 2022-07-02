@@ -17,6 +17,7 @@
 		<ItemGroup>
 				<ProjectReference Include="..\BackendGestionaleBar.BusinessLayer\BackendGestionaleBar.BusinessLayer.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.Identity.BusinessLayer\BackendGestionaleBar.Identity.BusinessLayer.csproj" />
+				<ProjectReference Include="..\BackendGestionaleBar.Security\BackendGestionaleBar.Security.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.WeatherClient\BackendGestionaleBar.WeatherClient.csproj" />
 		</ItemGroup>
 
