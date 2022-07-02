@@ -10,10 +10,10 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class ProductService : IProductService
 {
-	private readonly IApplicationDataContext dataContext;
+	private readonly IDataContext dataContext;
 	private readonly IMapper mapper;
 
-	public ProductService(IApplicationDataContext dataContext, IMapper mapper)
+	public ProductService(IDataContext dataContext, IMapper mapper)
 	{
 		this.dataContext = dataContext;
 		this.mapper = mapper;
