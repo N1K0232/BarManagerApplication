@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.Shared.Responses;
+﻿using BackendGestionaleBar.Security;
+using BackendGestionaleBar.Shared.Responses;
 using BackendGestionaleBar.WeatherClient.Models;
 using BackendGestionaleBar.WeatherClient.Settings;
 using Newtonsoft.Json.Linq;
@@ -26,7 +27,9 @@ internal class WeatherForecastService : IWeatherForecastService, IDisposable
 
 	private void CreateUrl()
 	{
-		url = $"{weatherClientSettings.BaseUrl}{weatherClientSettings.ApiKey}";
+		string baseUrl = StringConverter.GetString(weatherClientSettings.BaseUrl);
+		string apiKey = StringConverter.GetString(weatherClientSettings.ApiKey);
+		url = $"{baseUrl}{apiKey}";
 	}
 
 	public async Task<WeatherForecastResponse> GetAsync(string city)

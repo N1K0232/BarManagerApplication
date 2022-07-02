@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Storag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Identity.BusinessLayer", "BackendGestionaleBar.Identity.BusinessLayer\BackendGestionaleBar.Identity.BusinessLayer.csproj", "{8193F5AD-5040-4C1B-AE65-0A9F31CBF01F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGestionaleBar.WeatherClient", "BackendGestionaleBar.WeatherClient\BackendGestionaleBar.WeatherClient.csproj", "{143C8CAB-C608-42F7-BEDF-57DA4DD0A0E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.WeatherClient", "BackendGestionaleBar.WeatherClient\BackendGestionaleBar.WeatherClient.csproj", "{143C8CAB-C608-42F7-BEDF-57DA4DD0A0E9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGestionaleBar.Security", "BackendGestionaleBar.Security\BackendGestionaleBar.Security.csproj", "{172F6230-A54D-4816-9F7E-6FE8DD8D0323}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{143C8CAB-C608-42F7-BEDF-57DA4DD0A0E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{143C8CAB-C608-42F7-BEDF-57DA4DD0A0E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{143C8CAB-C608-42F7-BEDF-57DA4DD0A0E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{172F6230-A54D-4816-9F7E-6FE8DD8D0323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{172F6230-A54D-4816-9F7E-6FE8DD8D0323}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{172F6230-A54D-4816-9F7E-6FE8DD8D0323}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{172F6230-A54D-4816-9F7E-6FE8DD8D0323}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
