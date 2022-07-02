@@ -52,7 +52,7 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpPost("Save")]
-	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Cliente)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
