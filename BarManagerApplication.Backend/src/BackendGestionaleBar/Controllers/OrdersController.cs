@@ -23,7 +23,7 @@ public class OrdersController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-	public async Task<IActionResult> Delete(Guid id)
+	public async Task<IActionResult> Delete(Guid? id = null)
 	{
 		await orderService.DeleteAsync(id);
 		return Ok("order deleted successfully");
@@ -45,12 +45,11 @@ public class OrdersController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-	public async Task<IActionResult> GetTotalPrice(DateTime orderDate)
+	public async Task<IActionResult> GetTotalPrice()
 	{
-		var totalPrice = await orderService.GetTotalPriceAsync(orderDate);
+		var totalPrice = await orderService.GetTotalPriceAsync();
 		return Ok($"you have to pay {totalPrice}€");
 	}
-
 
 	[HttpPost("Save")]
 	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]

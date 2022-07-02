@@ -4,8 +4,8 @@ using BackendGestionaleBar.Shared.Requests;
 namespace BackendGestionaleBar.BusinessLayer.Services.Common;
 public interface IOrderService
 {
-    Task DeleteAsync(Guid id);
+    Task DeleteAsync(Guid? id);
     Task<IEnumerable<Order>> GetAsync();
-    Task<decimal> GetTotalPriceAsync(DateTime orderDate);
+    Task<decimal> GetTotalPriceAsync();
     Task<Order> SaveAsync(SaveOrderRequest request);
 }

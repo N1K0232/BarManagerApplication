@@ -24,10 +24,22 @@ public sealed class OrderService : IOrderService
 		this.mapper = mapper;
 	}
 
-	public async Task DeleteAsync(Guid id)
+	public async Task DeleteAsync(Guid? id)
 	{
-		var order = await dataContext.GetAsync<Entities.Order>(id);
-		dataContext.Delete(order);
+		if (id == null)
+		{
+			var dbOrders = await dataContext.GetData<Entities.Order>()
+				.Where(o => o.OrderStatus == OrderStatus.Canceled)
+				.ToListAsync();
+
+			dataContext.Delete(dbOrders);
+		}
+		else
+		{
+			var dbOrder = await dataContext.GetAsync<Entities.Order>(id.Value);
+			dataContext.Delete(dbOrder);
+		}
+
 		await dataContext.SaveAsync();
 	}
 
@@ -40,11 +52,11 @@ public sealed class OrderService : IOrderService
 		return orders;
 	}
 
-	public async Task<decimal> GetTotalPriceAsync(DateTime orderDate)
+	public async Task<decimal> GetTotalPriceAsync()
 	{
 		var dbOrder = await dataContext.GetData<Entities.Order>()
 			.Include(o => o.OrderDetails)
-			.FirstOrDefaultAsync(o => o.UserId == userService.GetId() && o.OrderDate == orderDate);
+			.FirstOrDefaultAsync(o => o.UserId == userService.GetId() && o.OrderDate == DateTime.Today);
 
 		decimal totalPrice = 0;
 
@@ -98,7 +110,7 @@ public sealed class OrderService : IOrderService
 		}
 		else
 		{
-			dbOrder.OrderStatus = request.Status.Value;
+			mapper.Map(request, dbOrder);
 			dataContext.Edit(dbOrder);
 		}
 
