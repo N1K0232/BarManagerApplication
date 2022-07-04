@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.DataAccessLayer.Configurations;
 
-internal class ProductConfiguration : BaseEntityConfiguration<Product>
+internal class ProductConfiguration : DeletableEntityConfiguration<Product>
 {
     public override void Configure(EntityTypeBuilder<Product> builder)
     {

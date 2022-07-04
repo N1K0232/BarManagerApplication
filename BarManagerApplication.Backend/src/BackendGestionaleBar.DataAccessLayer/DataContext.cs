@@ -8,6 +8,10 @@ namespace BackendGestionaleBar.DataAccessLayer;
 
 public class DataContext : AuthenticationDataContext, IDataContext
 {
+    private static readonly MethodInfo setQueryFilter = typeof(DataContext)
+        .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+        .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
+
     public DataContext(DbContextOptions<AuthenticationDataContext> options) : base(options)
     {
     }
@@ -76,17 +80,31 @@ public class DataContext : AuthenticationDataContext, IDataContext
         var entries = ChangeTracker.Entries()
             .Where(e => e.Entity.GetType().IsSubclassOf(typeof(BaseEntity))).ToList();
 
-        foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified))
+        foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
         {
-            BaseEntity entity = (BaseEntity)entry.Entity;
+            BaseEntity baseEntity = (BaseEntity)entry.Entity;
             if (entry.State == EntityState.Added)
             {
-                entity.CreatedDate = DateTime.UtcNow;
-                entity.LastModifiedDate = null;
+                if (baseEntity is DeletableEntity deletableEntity)
+                {
+                    deletableEntity.IsDeleted = false;
+                    deletableEntity.DeletedDate = null;
+                }
+                baseEntity.CreatedDate = DateTime.UtcNow;
+                baseEntity.LastModifiedDate = null;
             }
             if (entry.State == EntityState.Modified)
             {
-                entity.LastModifiedDate = DateTime.UtcNow;
+                baseEntity.LastModifiedDate = DateTime.UtcNow;
+            }
+            if (entry.State == EntityState.Deleted)
+            {
+                if (baseEntity is DeletableEntity deletableEntity)
+                {
+                    entry.State = EntityState.Modified;
+                    deletableEntity.IsDeleted = true;
+                    deletableEntity.DeletedDate = DateTime.UtcNow;
+                }
             }
         }
 
@@ -95,6 +113,35 @@ public class DataContext : AuthenticationDataContext, IDataContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        var entities = modelBuilder.Model.GetEntityTypes()
+            .Where(t => typeof(DeletableEntity).IsAssignableFrom(t.ClrType)).ToList();
+
+        foreach (var type in entities.Select(t => t.ClrType))
+        {
+            var methods = SetGlobalQueryMethods(type);
+
+            foreach (var method in methods)
+            {
+                var genericMethod = method.MakeGenericMethod(type);
+                genericMethod.Invoke(this, new object[] { modelBuilder });
+            }
+        }
+
         base.OnModelCreating(modelBuilder);
+    }
+    private void SetQueryFilter<T>(ModelBuilder modelBuilder) where T : DeletableEntity
+    {
+        modelBuilder.Entity<T>().HasQueryFilter(x => !x.IsDeleted && x.DeletedDate == null);
+    }
+    private static IEnumerable<MethodInfo> SetGlobalQueryMethods(Type type)
+    {
+        var result = new List<MethodInfo>();
+
+        if (typeof(DeletableEntity).IsAssignableFrom(type))
+        {
+            result.Add(setQueryFilter);
+        }
+
+        return result;
     }
 }

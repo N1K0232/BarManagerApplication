@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities;
 
-public class Product : BaseEntity
+public class Product : DeletableEntity
 {
     public Guid CategoryId { get; set; }
 

@@ -4,7 +4,7 @@ using BackendGestionaleBar.Shared.Enums;
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities;
 
-public class Order : BaseEntity
+public class Order : DeletableEntity
 {
     public Guid UserId { get; set; }
 
