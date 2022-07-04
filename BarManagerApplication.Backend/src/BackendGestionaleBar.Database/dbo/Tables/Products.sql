@@ -7,6 +7,8 @@
     [Quantity]       INT              NOT NULL,
     [CreatedDate]    DATETIME         NOT NULL,
     [LastModifiedDate] DATETIME       NULL,
+    [IsDeleted]        BIT            NOT NULL,
+    [DeletedDate]      DATETIME       NULL,
 
     PRIMARY KEY CLUSTERED ([Id] ASC),
     FOREIGN KEY ([CategoryId]) REFERENCES [dbo].[Categories] ([Id])
