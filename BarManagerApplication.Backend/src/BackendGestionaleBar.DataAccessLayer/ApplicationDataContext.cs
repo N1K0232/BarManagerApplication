@@ -1,7 +1,6 @@
 ﻿using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Reflection;
 
 namespace BackendGestionaleBar.DataAccessLayer;
@@ -19,32 +18,29 @@ public class ApplicationDataContext : AuthenticationDataContext, IDataContext
     public void Delete<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-
-        DbSet<T> set = Set<T>();
+        var set = Set<T>();
         set.Remove(entity);
     }
     public void Delete<T>(IEnumerable<T> entities) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
-
-        DbSet<T> set = Set<T>();
+        var set = Set<T>();
         set.RemoveRange(entities);
     }
     public void Edit<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-
-        DbSet<T> set = Set<T>();
+        var set = Set<T>();
         set.Update(entity);
     }
     public ValueTask<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity
     {
-        DbSet<T> set = Set<T>();
+        var set = Set<T>();
         return set.FindAsync(keyValues);
     }
     public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
     {
-        IQueryable<T> set = Set<T>().AsQueryable<T>();
+        var set = Set<T>().AsQueryable<T>();
 
         if (ignoreQueryFilters)
         {
@@ -58,14 +54,13 @@ public class ApplicationDataContext : AuthenticationDataContext, IDataContext
     public void Insert<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-
-        DbSet<T> set = Set<T>();
+        var set = Set<T>();
         set.Add(entity);
     }
     public Task SaveAsync() => SaveChangesAsync();
     public Task ExecuteTransactionAsync(Func<Task> action)
     {
-        IExecutionStrategy strategy = Database.CreateExecutionStrategy();
+        var strategy = Database.CreateExecutionStrategy();
 
         Task task = strategy.ExecuteAsync(async () =>
         {
@@ -73,6 +68,7 @@ public class ApplicationDataContext : AuthenticationDataContext, IDataContext
             await action.Invoke().ConfigureAwait(false);
             await transaction.CommitAsync().ConfigureAwait(false);
         });
+
         return task;
     }
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -113,6 +109,7 @@ public class ApplicationDataContext : AuthenticationDataContext, IDataContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
         var entities = modelBuilder.Model.GetEntityTypes()
             .Where(t => typeof(DeletableEntity).IsAssignableFrom(t.ClrType)).ToList();
 
