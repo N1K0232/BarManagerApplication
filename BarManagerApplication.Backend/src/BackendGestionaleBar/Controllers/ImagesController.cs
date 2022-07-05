@@ -48,12 +48,13 @@ public class ImagesController : ControllerBase
 	}
 
 	[HttpPost("Upload")]
-	[RoleAuthorize(RoleNames.Administrator)]
 	[Consumes("multipart/form-data")]
-	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff)]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> Upload([FromForm] UploadImageRequest request)
 	{
-		await imageService.UploadAsync(request.ToStreamFileContent());
-		return NoContent();
+		var savedImage = await imageService.UploadAsync(request.ToStreamFileContent());
+		return Ok(savedImage);
 	}
 }

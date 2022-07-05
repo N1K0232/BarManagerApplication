@@ -11,12 +11,12 @@
 				<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.6" />
 				<PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
 				<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
-				<PackageReference Include="TinyHelpers" Version="1.5.26" />
+				<PackageReference Include="TinyHelpers" Version="1.5.28" />
 		</ItemGroup>
 
 		<ItemGroup>
+				<ProjectReference Include="..\BackendGestionaleBar.Authorization\BackendGestionaleBar.Authorization.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.BusinessLayer\BackendGestionaleBar.BusinessLayer.csproj" />
-				<ProjectReference Include="..\BackendGestionaleBar.Identity.BusinessLayer\BackendGestionaleBar.Identity.BusinessLayer.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.Security\BackendGestionaleBar.Security.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.WeatherClient\BackendGestionaleBar.WeatherClient.csproj" />
 		</ItemGroup>

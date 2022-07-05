@@ -40,6 +40,16 @@ public class OrdersController : ControllerBase
 		return orders != null ? Ok(orders) : NotFound("no order found");
 	}
 
+	[HttpGet("YourOrder")]
+	[RoleAuthorize(RoleNames.Cliente)]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	public Task<IActionResult> YourOrder()
+	{
+		return Task.FromResult<IActionResult>(NoContent());
+	}
+
 	[HttpGet("GetTotalPrice")]
 	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
