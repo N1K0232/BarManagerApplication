@@ -39,8 +39,7 @@ var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));
 builder.Services.AddProblemDetails();
 builder.Services.AddMapperProfiles();
 builder.Services.AddValidators();
-builder.Services.AddControllers()
-.AddJsonOptions(options =>
+builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
     options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
@@ -57,7 +56,6 @@ builder.Services.AddSwaggerGen(options =>
         Name = HeaderNames.Authorization,
         Type = SecuritySchemeType.ApiKey
     });
-
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -72,20 +70,20 @@ builder.Services.AddSwaggerGen(options =>
             Array.Empty<string>()
         }
     });
-})
-.AddFluentValidationRulesToSwagger(options =>
+}).AddFluentValidationRulesToSwagger(options =>
 {
     options.SetNotNullableIfMinLengthGreaterThenZero = true;
 });
 
 string connectionString = StringConverter.GetString(builder.Configuration.GetConnectionString("SqlConnection"));
 builder.Services.AddSqlServer<AuthenticationDataContext>(connectionString);
-builder.Services.AddSqlServer<BarManagerDataContext>(connectionString);
-builder.Services.AddScoped<IBarManagerDataContext>(services =>
+builder.Services.AddDbContext<IBarManagerDataContext, BarManagerDataContext>(options =>
 {
-    return services.GetRequiredService<BarManagerDataContext>();
+    options.UseSqlServer(connectionString, dbOptions =>
+    {
+        dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(2), null);
+    });
 });
-
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {
@@ -95,16 +93,12 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
-})
-.AddEntityFrameworkStores<AuthenticationDataContext>()
-.AddDefaultTokenProviders();
-
+}).AddEntityFrameworkStores<AuthenticationDataContext>().AddDefaultTokenProviders();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
+}).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -125,11 +119,10 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = options.DefaultPolicy = policyBuilder.Build();
 });
 
-builder.Services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
-builder.Services.AddScoped<IUserService, HttpUserService>();
-
 builder.Services.AddHostedService<AuthenticationStartupTask>();
 
+builder.Services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
+builder.Services.AddScoped<IUserService, HttpUserService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -141,7 +134,6 @@ builder.Services.AddWeatherService(options =>
     options.BaseUrl = builder.Configuration.GetValue<string>("WeatherClientSettings:BaseUrl");
     options.ApiKey = builder.Configuration.GetValue<string>("WeatherClientSettings:ApiKey");
 });
-
 builder.Services.AddFileSystemStorageProvider(options =>
 {
     options.StorageFolder = builder.Configuration.GetValue<string>("AppSettings:StorageFolder");
