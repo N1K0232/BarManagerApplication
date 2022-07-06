@@ -5,13 +5,13 @@ using System.Reflection;
 
 namespace BackendGestionaleBar.DataAccessLayer;
 
-public class ApplicationDataContext : AuthenticationDataContext, IDataContext
+public class DataContext : AuthenticationDataContext, IDataContext
 {
-    private static readonly MethodInfo setQueryFilter = typeof(ApplicationDataContext)
+    private static readonly MethodInfo setQueryFilter = typeof(DataContext)
         .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
         .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
 
-    public ApplicationDataContext(DbContextOptions<AuthenticationDataContext> options) : base(options)
+    public DataContext(DbContextOptions<AuthenticationDataContext> options) : base(options)
     {
     }
 
