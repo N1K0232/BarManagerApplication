@@ -2,7 +2,11 @@
 
 public abstract class DeletableEntity : BaseEntity
 {
-    public bool IsDeleted { get; internal set; }
+    protected DeletableEntity() : base()
+    {
+    }
 
-    public DateTime? DeletedDate { get; internal set; }
+    internal bool IsDeleted { get; set; }
+
+    internal DateTime? DeletedDate { get; set; }
 }
