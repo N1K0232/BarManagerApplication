@@ -80,10 +80,10 @@ builder.Services.AddSwaggerGen(options =>
 
 string connectionString = StringConverter.GetString(builder.Configuration.GetConnectionString("SqlConnection"));
 builder.Services.AddSqlServer<AuthenticationDataContext>(connectionString);
-builder.Services.AddSqlServer<DataContext>(connectionString);
-builder.Services.AddScoped<IDataContext>(services =>
+builder.Services.AddSqlServer<BarManagerDataContext>(connectionString);
+builder.Services.AddScoped<IBarManagerDataContext>(services =>
 {
-    return services.GetRequiredService<DataContext>();
+    return services.GetRequiredService<BarManagerDataContext>();
 });
 
 
