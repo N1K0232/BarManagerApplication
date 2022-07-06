@@ -2,6 +2,10 @@
 
 public class OrderDetail
 {
+    public OrderDetail()
+    {
+    }
+
     public Guid OrderId { get; set; }
 
     public Guid ProductId { get; set; }

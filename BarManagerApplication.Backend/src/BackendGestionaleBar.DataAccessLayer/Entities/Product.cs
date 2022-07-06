@@ -4,6 +4,10 @@ namespace BackendGestionaleBar.DataAccessLayer.Entities;
 
 public class Product : DeletableEntity
 {
+    public Product() : base()
+    {
+    }
+
     public Guid CategoryId { get; set; }
 
     public string Name { get; set; }
