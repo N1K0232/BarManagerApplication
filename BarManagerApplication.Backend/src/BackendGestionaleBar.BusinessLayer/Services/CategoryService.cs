@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using BackendGestionaleBar.BusinessLayer.Services.Common;
+using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Requests;

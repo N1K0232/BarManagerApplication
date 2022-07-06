@@ -1,7 +1,7 @@
 ﻿using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authentication.Extensions;
-using BackendGestionaleBar.BusinessLayer.Services.Common;
+using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.Shared.Requests;
 using BackendGestionaleBar.Shared.Responses;

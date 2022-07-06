@@ -1,7 +1,7 @@
 ﻿using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Requests;
 
-namespace BackendGestionaleBar.BusinessLayer.Services.Common;
+namespace BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 
 public interface ICategoryService
 {
