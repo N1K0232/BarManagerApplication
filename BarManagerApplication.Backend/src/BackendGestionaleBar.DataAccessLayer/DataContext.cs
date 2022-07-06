@@ -1,6 +1,7 @@
 ﻿using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Reflection;
 
 namespace BackendGestionaleBar.DataAccessLayer;
@@ -109,6 +110,18 @@ public class DataContext : AuthenticationDataContext, IDataContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        var trimStringConverter = new ValueConverter<string, string>(v => v.Trim(), v => v.Trim());
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType == typeof(string))
+                {
+                    modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion(trimStringConverter);
+                }
+            }
+        }
 
         var entities = modelBuilder.Model.GetEntityTypes()
             .Where(t => typeof(DeletableEntity).IsAssignableFrom(t.ClrType)).ToList();
