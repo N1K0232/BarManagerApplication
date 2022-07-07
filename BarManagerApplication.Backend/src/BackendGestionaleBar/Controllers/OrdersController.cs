@@ -19,7 +19,7 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpDelete("Delete")]
-	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -41,7 +41,7 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpGet("YourOrder")]
-	[RoleAuthorize(RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -51,7 +51,7 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpGet("GetTotalPrice")]
-	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -62,7 +62,7 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpPost("Save")]
-	[RoleAuthorize(RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]

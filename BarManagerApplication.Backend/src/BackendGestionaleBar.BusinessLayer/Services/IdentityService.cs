@@ -64,7 +64,7 @@ public sealed class IdentityService : IIdentityService
         if (result.Succeeded)
         {
             var user = await userManager.FindByNameAsync(request.UserName);
-            result = await userManager.AddToRoleAsync(user, RoleNames.Cliente);
+            result = await userManager.AddToRoleAsync(user, RoleNames.Customer);
         }
 
         return new RegisterResponse(result.Succeeded, result.Errors.Select(e => e.Description));

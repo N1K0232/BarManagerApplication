@@ -18,7 +18,7 @@ public class WeatherForecastController : ControllerBase
 	}
 
 	[HttpGet("GetWeather")]
-	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]

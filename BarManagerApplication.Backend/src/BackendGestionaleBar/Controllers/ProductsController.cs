@@ -30,7 +30,7 @@ public class ProductsController : ControllerBase
 	}
 
 	[HttpGet("Get")]
-	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,7 +41,7 @@ public class ProductsController : ControllerBase
 	}
 
 	[HttpPost("Save")]
-	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
