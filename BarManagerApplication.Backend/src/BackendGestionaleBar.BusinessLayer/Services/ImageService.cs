@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BackendGestionaleBar.BusinessLayer.Models;
-using BackendGestionaleBar.BusinessLayer.Services.Common;
+using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.StorageProviders.Common;
@@ -13,11 +13,11 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class ImageService : IImageService
 {
-	private readonly IDataContext dataContext;
+	private readonly IBarManagerDataContext dataContext;
 	private readonly IStorageProvider storageProvider;
 	private readonly IMapper mapper;
 
-	public ImageService(IDataContext dataContext, IStorageProvider storageProvider, IMapper mapper)
+	public ImageService(IBarManagerDataContext dataContext, IStorageProvider storageProvider, IMapper mapper)
 	{
 		this.dataContext = dataContext;
 		this.storageProvider = storageProvider;
@@ -29,9 +29,9 @@ public sealed class ImageService : IImageService
 		var dbImage = await dataContext.GetAsync<Entities.Image>(id);
 		if (dbImage != null)
 		{
-			await storageProvider.DeleteAsync(dbImage.Path);
 			dataContext.Delete(dbImage);
 			await dataContext.SaveAsync();
+			await storageProvider.DeleteAsync(dbImage.Path);
 		}
 	}
 
@@ -67,7 +67,6 @@ public sealed class ImageService : IImageService
 	public async Task<Image> UploadAsync(StreamFileContent content)
 	{
 		string path = GetFullPath(content.FileName);
-		await storageProvider.SaveAsync(path, content.Content);
 
 		var dbImage = new Entities.Image
 		{
@@ -77,13 +76,14 @@ public sealed class ImageService : IImageService
 
 		dataContext.Insert(dbImage);
 		await dataContext.SaveAsync();
+		await storageProvider.SaveAsync(path, content.Content);
 
 		return mapper.Map<Image>(dbImage);
 	}
 
 	private static string GetFullPath(string fileName)
 	{
-		string date = $"{DateTime.UtcNow.Day}/{DateTime.UtcNow.Month}/{DateTime.UtcNow.Year}";
+		string date = $"{DateTime.UtcNow.Day}-{DateTime.UtcNow.Month}-{DateTime.UtcNow.Year}";
 		return Path.Combine(date, fileName);
 	}
 }

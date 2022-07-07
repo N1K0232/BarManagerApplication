@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BackendGestionaleBar.BusinessLayer.Services.Common;
+using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Requests;
@@ -10,10 +10,10 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class ProductService : IProductService
 {
-	private readonly IDataContext dataContext;
+	private readonly IBarManagerDataContext dataContext;
 	private readonly IMapper mapper;
 
-	public ProductService(IDataContext dataContext, IMapper mapper)
+	public ProductService(IBarManagerDataContext dataContext, IMapper mapper)
 	{
 		this.dataContext = dataContext;
 		this.mapper = mapper;

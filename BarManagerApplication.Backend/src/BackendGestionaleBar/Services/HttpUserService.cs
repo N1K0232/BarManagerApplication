@@ -1,34 +1,25 @@
 ﻿using BackendGestionaleBar.Authentication.Extensions;
 using BackendGestionaleBar.Contracts;
+using System.Security.Claims;
 
 namespace BackendGestionaleBar.Services;
 
 public class HttpUserService : IUserService
 {
-	private readonly HttpContext httpContext;
+	private readonly ClaimsPrincipal user;
 
 	public HttpUserService(IHttpContextAccessor httpContextAccessor)
 	{
-		httpContext = httpContextAccessor.HttpContext;
+		user = httpContextAccessor.HttpContext.User;
 	}
 
 	public Guid GetId()
 	{
-		if (httpContext.User.Identity.IsAuthenticated)
-		{
-			return httpContext.User.GetId();
-		}
-
-		return Guid.Empty;
+		return user.Identity.IsAuthenticated ? user.GetId() : Guid.Empty;
 	}
 
 	public string GetUsername()
 	{
-		if (httpContext.User.Identity.IsAuthenticated)
-		{
-			return httpContext.User.GetUserName();
-		}
-
-		return string.Empty;
+		return user.Identity.IsAuthenticated ? user.GetUserName() : string.Empty;
 	}
 }

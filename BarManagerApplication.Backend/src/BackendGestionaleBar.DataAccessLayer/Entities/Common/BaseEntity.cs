@@ -2,9 +2,13 @@
 
 public abstract class BaseEntity
 {
+    protected BaseEntity()
+    {
+    }
+
     public Guid Id { get; set; }
 
-    public DateTime CreatedDate { get; internal set; }
+    internal DateTime CreatedDate { get; set; }
 
-    public DateTime? LastModifiedDate { get; internal set; }
+    internal DateTime? LastModifiedDate { get; set; }
 }

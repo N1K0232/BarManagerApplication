@@ -1,7 +1,7 @@
 ﻿using BackendGestionaleBar.BusinessLayer.Models;
 using BackendGestionaleBar.Shared.Models;
 
-namespace BackendGestionaleBar.BusinessLayer.Services.Common;
+namespace BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 
 public interface IImageService
 {

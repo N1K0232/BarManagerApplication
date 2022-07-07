@@ -1,8 +1,8 @@
 ﻿using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authentication.Extensions;
-using BackendGestionaleBar.Identity.BusinessLayer.Services.Common;
-using BackendGestionaleBar.Identity.BusinessLayer.Settings;
+using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
+using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.Shared.Requests;
 using BackendGestionaleBar.Shared.Responses;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +13,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BackendGestionaleBar.Identity.BusinessLayer.Services;
+namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class IdentityService : IIdentityService
 {

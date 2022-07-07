@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using BackendGestionaleBar.BusinessLayer.Services.Common;
+using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.Contracts;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Shared.Enums;
@@ -13,11 +13,11 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class OrderService : IOrderService
 {
-	private readonly IDataContext dataContext;
+	private readonly IBarManagerDataContext dataContext;
 	private readonly IUserService userService;
 	private readonly IMapper mapper;
 
-	public OrderService(IDataContext dataContext, IUserService userService, IMapper mapper)
+	public OrderService(IBarManagerDataContext dataContext, IUserService userService, IMapper mapper)
 	{
 		this.dataContext = dataContext;
 		this.userService = userService;

@@ -4,8 +4,12 @@ using BackendGestionaleBar.Shared.Enums;
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities;
 
-public class Order : BaseEntity
+public class Order : DeletableEntity
 {
+    public Order() : base()
+    {
+    }
+
     public Guid UserId { get; set; }
 
     public DateTime OrderDate { get; set; }

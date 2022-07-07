@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using BackendGestionaleBar.BusinessLayer.Services.Common;
+using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Requests;
@@ -11,10 +11,10 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class CategoryService : ICategoryService
 {
-	private readonly IDataContext dataContext;
+	private readonly IBarManagerDataContext dataContext;
 	private readonly IMapper mapper;
 
-	public CategoryService(IDataContext dataContext, IMapper mapper)
+	public CategoryService(IBarManagerDataContext dataContext, IMapper mapper)
 	{
 		this.dataContext = dataContext;
 		this.mapper = mapper;
