@@ -22,7 +22,7 @@ public class CategoriesController : ControllerBase
 	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Delete(Guid id)
 	{
 		await categoryService.DeleteAsync(id);
@@ -32,7 +32,7 @@ public class CategoriesController : ControllerBase
 	[HttpGet("Get")]
 	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> Get(string name = null)
 	{
@@ -44,7 +44,7 @@ public class CategoriesController : ControllerBase
 	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Save([FromBody] SaveCategoryRequest request)
 	{
 		var savedCategory = await categoryService.SaveAsync(request);

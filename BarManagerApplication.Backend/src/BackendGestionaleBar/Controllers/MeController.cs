@@ -13,7 +13,7 @@ public class MeController : ControllerBase
 {
     [HttpGet("GetMe")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
     public IActionResult GetMe()
     {
