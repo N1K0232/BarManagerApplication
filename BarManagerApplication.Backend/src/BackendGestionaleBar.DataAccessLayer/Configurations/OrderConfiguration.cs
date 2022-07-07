@@ -15,5 +15,6 @@ internal class OrderConfiguration : DeletableEntityConfiguration<Order>
         builder.Property(o => o.OrderStatus).HasConversion<string>().HasMaxLength(50).IsRequired();
         builder.Property(o => o.OrderDate).IsRequired();
         builder.Property(o => o.UserId).IsRequired();
+        builder.HasOne(o => o.Umbrella).WithMany(u => u.Orders).HasForeignKey(o => o.UmbrellaId).IsRequired();
     }
 }
