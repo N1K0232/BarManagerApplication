@@ -3,12 +3,8 @@ using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.Authentication.StartupTasks;
 using BackendGestionaleBar.Authorization.Handlers;
 using BackendGestionaleBar.Authorization.Requirements;
-using BackendGestionaleBar.BusinessLayer.Services;
-using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.BusinessLayer.Settings;
-using BackendGestionaleBar.Contracts;
 using BackendGestionaleBar.DataAccessLayer;
-using BackendGestionaleBar.Services;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -119,19 +115,7 @@ public static class HostBuilderExtensions
         });
 
         services.AddHostedService<AuthenticationStartupTask>();
-
-        return services;
-    }
-
-    public static IServiceCollection AddServices(this IServiceCollection services)
-    {
         services.AddScoped<IAuthorizationHandler, UserActiveHandler>();
-        services.AddScoped<IUserService, HttpUserService>();
-        services.AddScoped<IIdentityService, IdentityService>();
-        services.AddScoped<IImageService, ImageService>();
-        services.AddScoped<ICategoryService, CategoryService>();
-        services.AddScoped<IProductService, ProductService>();
-        services.AddScoped<IOrderService, OrderService>();
 
         return services;
     }
