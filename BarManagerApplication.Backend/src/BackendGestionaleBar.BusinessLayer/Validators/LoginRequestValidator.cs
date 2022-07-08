@@ -16,10 +16,5 @@ internal class LoginRequestValidator : AbstractValidator<LoginRequest>
 			.NotNull()
 			.NotEmpty()
 			.WithMessage("the password is required");
-
-		RuleFor(l => l.Umbrella)
-			.NotNull()
-			.NotEmpty()
-			.WithMessage("the umbrella is required");
 	}
 }
