@@ -46,8 +46,7 @@ public sealed class IdentityService : IIdentityService
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.GivenName, user.FirstName),
-            new Claim(ClaimTypes.Surname, user.LastName),
+            new Claim(ClaimTypes.GivenName, user.Name),
             new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
@@ -117,8 +116,7 @@ public sealed class IdentityService : IIdentityService
     {
         var user = new ApplicationUser
         {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
+            Name = $"{request.FirstName} {request.LastName}",
             DateOfBirth = request.DateOfBirth,
             PhoneNumber = request.PhoneNumber,
             Email = request.Email,

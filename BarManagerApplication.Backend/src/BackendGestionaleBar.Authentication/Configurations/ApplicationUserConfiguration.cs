@@ -8,8 +8,7 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
-        builder.Property(user => user.FirstName).HasMaxLength(256).IsRequired();
-        builder.Property(user => user.LastName).HasMaxLength(256).IsRequired();
+        builder.Property(user => user.Name).HasMaxLength(256).IsRequired();
         builder.Property(user => user.DateOfBirth).IsRequired();
     }
 }

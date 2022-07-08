@@ -33,8 +33,7 @@ public class AuthenticationStartupTask : IHostedService
 
         var admin = new ApplicationUser
         {
-            FirstName = "Nicola",
-            LastName = "Silvestri",
+            Name = "Nicola Silvestri",
             DateOfBirth = DateTime.Parse("22/10/2002"),
             Email = "ns.nicolasilvestri@gmail.com",
             UserName = "N1K0232",

@@ -20,8 +20,7 @@ public class MeController : ControllerBase
         var user = new User
         {
             Id = User.GetId(),
-            FirstName = User.GetFirstName(),
-            LastName = User.GetLastName(),
+            Name = User.GetName(),
             DateOfBirth = User.GetDateOfBirth(),
             Email = User.GetEmail(),
             UserName = User.GetUserName(),
