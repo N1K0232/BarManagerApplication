@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.Authentication.Extensions;
+﻿using BackendGestionaleBar.Authentication;
+using BackendGestionaleBar.Authentication.Extensions;
 using BackendGestionaleBar.Contracts;
 using System.Security.Claims;
 
@@ -21,5 +22,10 @@ public class HttpUserService : IUserService
 	public string GetUsername()
 	{
 		return user.Identity.IsAuthenticated ? user.GetUserName() : string.Empty;
+	}
+
+	public string GetUmbrella()
+	{
+		return user.Identity.IsAuthenticated ? user.GetClaimValue(CustomClaimTypes.Umbrella) : string.Empty;
 	}
 }

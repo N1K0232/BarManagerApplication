@@ -75,9 +75,13 @@ public sealed class OrderService : IOrderService
 
 		if (dbOrder == null)
 		{
+			string umbrella = userService.GetUmbrella();
+			var dbUmbrella = await dataContext.GetData<Entities.Umbrella>().FirstOrDefaultAsync(u => u.Coordinates == umbrella);
+
 			dbOrder = new Entities.Order
 			{
 				UserId = userService.GetId(),
+				UmbrellaId = dbUmbrella.Id,
 				OrderDate = DateTime.UtcNow,
 				OrderStatus = OrderStatus.New,
 				OrderDetails = new List<Entities.OrderDetail>()

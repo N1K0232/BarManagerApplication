@@ -49,7 +49,8 @@ public sealed class IdentityService : IIdentityService
             new Claim(ClaimTypes.GivenName, user.Name),
             new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
+            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
+            new Claim(CustomClaimTypes.Umbrella, request.Umbrella)
         }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var response = CreateToken(claims);
@@ -184,10 +185,10 @@ public sealed class IdentityService : IIdentityService
 
         return null;
     }
-    private Task SaveRefreshTokenAsync(ApplicationUser user, string refreshToken)
+    private async Task SaveRefreshTokenAsync(ApplicationUser user, string refreshToken)
     {
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
-        return userManager.UpdateAsync(user);
+        await userManager.UpdateAsync(user);
     }
 }
