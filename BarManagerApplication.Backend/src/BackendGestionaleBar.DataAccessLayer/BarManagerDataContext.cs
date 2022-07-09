@@ -156,7 +156,9 @@ public class BarManagerDataContext : AuthenticationDataContext, IBarManagerDataC
     {
         var result = new List<MethodInfo>();
 
-        if (typeof(DeletableEntity).IsAssignableFrom(type))
+        Type deletableEntityType = typeof(DeletableEntity);
+
+        if (deletableEntityType.IsAssignableFrom(type))
         {
             result.Add(setQueryFilter);
         }
