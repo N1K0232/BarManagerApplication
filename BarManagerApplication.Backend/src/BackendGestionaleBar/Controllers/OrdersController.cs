@@ -19,10 +19,10 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpDelete("Delete")]
-	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Delete(Guid? id = null)
 	{
 		await orderService.DeleteAsync(id);
@@ -32,7 +32,7 @@ public class OrdersController : ControllerBase
 	[HttpGet("GetOrders")]
 	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> GetOrders()
 	{
@@ -41,9 +41,9 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpGet("YourOrder")]
-	[RoleAuthorize(RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public Task<IActionResult> YourOrder()
 	{
@@ -51,10 +51,10 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpGet("GetTotalPrice")]
-	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetTotalPrice()
 	{
 		var totalPrice = await orderService.GetTotalPriceAsync();
@@ -62,10 +62,10 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpPost("Save")]
-	[RoleAuthorize(RoleNames.Cliente)]
+	[RoleAuthorize(RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Save([FromBody] SaveOrderRequest request)
 	{
 		var savedOrder = await orderService.SaveAsync(request);

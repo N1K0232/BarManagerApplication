@@ -23,6 +23,7 @@ public class ImagesController : ControllerBase
 	[RoleAuthorize(RoleNames.Administrator)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Delete(Guid id)
 	{
 		await imageService.DeleteAsync(id);
@@ -32,6 +33,7 @@ public class ImagesController : ControllerBase
 	[HttpGet("GetImages")]
 	[RoleAuthorize(RoleNames.Administrator)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> Get(string path = null)
 	{
@@ -52,6 +54,7 @@ public class ImagesController : ControllerBase
 	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Upload([FromForm] UploadImageRequest request)
 	{
 		var savedImage = await imageService.UploadAsync(request.ToStreamFileContent());

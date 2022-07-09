@@ -4,9 +4,7 @@ namespace BackendGestionaleBar.Shared.Models;
 
 public class User : BaseObject
 {
-    public string FirstName { get; set; }
-
-    public string LastName { get; set; }
+    public string Name { get; set; }
 
     public DateTime DateOfBirth { get; set; }
 

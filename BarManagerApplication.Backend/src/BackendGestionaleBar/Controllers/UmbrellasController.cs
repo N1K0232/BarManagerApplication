@@ -9,13 +9,13 @@ namespace BackendGestionaleBar.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
-public class CategoriesController : ControllerBase
+public class UmbrellasController : ControllerBase
 {
-	private readonly ICategoryService categoryService;
+	private readonly IUmbrellaService umbrellaService;
 
-	public CategoriesController(ICategoryService categoryService)
+	public UmbrellasController(IUmbrellaService umbrellaService)
 	{
-		this.categoryService = categoryService;
+		this.umbrellaService = umbrellaService;
 	}
 
 	[HttpDelete("Delete")]
@@ -25,19 +25,19 @@ public class CategoriesController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Delete(Guid id)
 	{
-		await categoryService.DeleteAsync(id);
-		return Ok("categories successfully deleted");
+		await umbrellaService.DeleteAsync(id);
+		return Ok("Successfully deleted");
 	}
 
 	[HttpGet("Get")]
-	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff)]
+	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	public async Task<IActionResult> Get(string name = null)
+	public async Task<IActionResult> Get(string coordinates = null)
 	{
-		var category = await categoryService.GetAsync(name);
-		return category != null ? Ok(category) : NotFound("no category found");
+		var umbrellas = await umbrellaService.GetAsync(coordinates);
+		return umbrellas != null ? Ok(umbrellas) : NotFound("No umbrella found");
 	}
 
 	[HttpPost("Save")]
@@ -45,9 +45,9 @@ public class CategoriesController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> Save([FromBody] SaveCategoryRequest request)
+	public async Task<IActionResult> Save([FromBody] SaveUmbrellaRequest request)
 	{
-		var savedCategory = await categoryService.SaveAsync(request);
-		return Ok(savedCategory);
+		var savedUmbrella = await umbrellaService.SaveAsync(request);
+		return Ok(savedUmbrella);
 	}
 }

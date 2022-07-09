@@ -46,11 +46,11 @@ public sealed class IdentityService : IIdentityService
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.GivenName, user.FirstName),
-            new Claim(ClaimTypes.Surname, user.LastName),
+            new Claim(ClaimTypes.GivenName, user.Name),
             new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
+            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
+            new Claim(CustomClaimTypes.Umbrella, request.Umbrella ?? string.Empty)
         }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var response = CreateToken(claims);
@@ -64,7 +64,7 @@ public sealed class IdentityService : IIdentityService
         if (result.Succeeded)
         {
             var user = await userManager.FindByNameAsync(request.UserName);
-            result = await userManager.AddToRoleAsync(user, RoleNames.Cliente);
+            result = await userManager.AddToRoleAsync(user, RoleNames.Customer);
         }
 
         return new RegisterResponse(result.Succeeded, result.Errors.Select(e => e.Description));
@@ -117,8 +117,7 @@ public sealed class IdentityService : IIdentityService
     {
         var user = new ApplicationUser
         {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
+            Name = $"{request.FirstName} {request.LastName}",
             DateOfBirth = request.DateOfBirth,
             PhoneNumber = request.PhoneNumber,
             Email = request.Email,
@@ -186,10 +185,10 @@ public sealed class IdentityService : IIdentityService
 
         return null;
     }
-    private Task SaveRefreshTokenAsync(ApplicationUser user, string refreshToken)
+    private async Task SaveRefreshTokenAsync(ApplicationUser user, string refreshToken)
     {
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);
-        return userManager.UpdateAsync(user);
+        await userManager.UpdateAsync(user);
     }
 }

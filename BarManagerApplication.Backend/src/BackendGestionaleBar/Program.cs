@@ -1,7 +1,11 @@
 using BackendGestionaleBar.BusinessLayer.Extensions;
+using BackendGestionaleBar.BusinessLayer.Services;
+using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.BusinessLayer.Settings;
+using BackendGestionaleBar.Contracts;
 using BackendGestionaleBar.Extensions;
 using BackendGestionaleBar.Security;
+using BackendGestionaleBar.Services;
 using BackendGestionaleBar.StorageProviders.Extensions;
 using BackendGestionaleBar.WeatherClient.DependencyInjection;
 using Hellang.Middleware.ProblemDetails;
@@ -25,7 +29,13 @@ builder.Services.AddDataContext(connectionString);
 
 builder.Services.AddIdentitySettings(jwtSettings);
 
-builder.Services.AddServices();
+builder.Services.AddScoped<IUserService, HttpUserService>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IUmbrellaService, UmbrellaService>();
 builder.Services.AddWeatherService(options =>
 {
     options.BaseUrl = builder.Configuration.GetValue<string>("WeatherClientSettings:BaseUrl");

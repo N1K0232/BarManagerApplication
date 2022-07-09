@@ -82,13 +82,13 @@ public class BarManagerDataContext : AuthenticationDataContext, IBarManagerDataC
             BaseEntity baseEntity = (BaseEntity)entry.Entity;
             if (entry.State == EntityState.Added)
             {
+                baseEntity.CreatedDate = DateTime.UtcNow;
+                baseEntity.LastModifiedDate = null;
                 if (baseEntity is DeletableEntity deletableEntity)
                 {
                     deletableEntity.IsDeleted = false;
                     deletableEntity.DeletedDate = null;
                 }
-                baseEntity.CreatedDate = DateTime.UtcNow;
-                baseEntity.LastModifiedDate = null;
             }
             if (entry.State == EntityState.Modified)
             {
@@ -109,6 +109,7 @@ public class BarManagerDataContext : AuthenticationDataContext, IBarManagerDataC
     }
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
+        configurationBuilder.Properties<decimal>().HavePrecision(8, 2);
         base.ConfigureConventions(configurationBuilder);
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -155,7 +156,9 @@ public class BarManagerDataContext : AuthenticationDataContext, IBarManagerDataC
     {
         var result = new List<MethodInfo>();
 
-        if (typeof(DeletableEntity).IsAssignableFrom(type))
+        Type deletableEntityType = typeof(DeletableEntity);
+
+        if (deletableEntityType.IsAssignableFrom(type))
         {
             result.Add(setQueryFilter);
         }

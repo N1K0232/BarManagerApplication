@@ -20,7 +20,7 @@ public class AuthenticationStartupTask : IHostedService
         using var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
         using var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-        string[] roleNames = new string[] { RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente };
+        string[] roleNames = new string[] { RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer };
 
         foreach (string roleName in roleNames)
         {
@@ -33,8 +33,7 @@ public class AuthenticationStartupTask : IHostedService
 
         var admin = new ApplicationUser
         {
-            FirstName = "Nicola",
-            LastName = "Silvestri",
+            Name = "Nicola Silvestri",
             DateOfBirth = DateTime.Parse("22/10/2002"),
             Email = "ns.nicolasilvestri@gmail.com",
             UserName = "N1K0232",

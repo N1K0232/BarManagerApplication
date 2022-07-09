@@ -13,15 +13,14 @@ public class MeController : ControllerBase
 {
     [HttpGet("GetMe")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Cliente)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer)]
     public IActionResult GetMe()
     {
         var user = new User
         {
             Id = User.GetId(),
-            FirstName = User.GetFirstName(),
-            LastName = User.GetLastName(),
+            Name = User.GetName(),
             DateOfBirth = User.GetDateOfBirth(),
             Email = User.GetEmail(),
             UserName = User.GetUserName(),
