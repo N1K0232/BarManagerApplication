@@ -9,7 +9,7 @@ using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 
 namespace BackendGestionaleBar.BusinessLayer.Services;
 
-public class UmbrellaService : IUmbrellaService
+public sealed class UmbrellaService : IUmbrellaService
 {
 	private readonly IBarManagerDataContext dataContext;
 	private readonly IMapper mapper;
@@ -47,7 +47,11 @@ public class UmbrellaService : IUmbrellaService
 
 		if (dbUmbrella == null)
 		{
-			dbUmbrella.Coordinates = $"{request.Row}{request.Letter}";
+			dbUmbrella = new Entities.Umbrella
+			{
+				Coordinates = $"{request.Letter}{request.Row}"
+			};
+
 			dataContext.Insert(dbUmbrella);
 		}
 		else

@@ -29,7 +29,7 @@ public class UmbrellasController : ControllerBase
 		return Ok("Successfully deleted");
 	}
 
-	[HttpDelete("Get")]
+	[HttpGet("Get")]
 	[RoleAuthorize(RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
