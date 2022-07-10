@@ -1,18 +1,17 @@
-﻿using BackendGestionaleBar.Authentication;
-using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Reflection;
 
 namespace BackendGestionaleBar.DataAccessLayer;
 
-public class BarManagerDataContext : AuthenticationDataContext, IBarManagerDataContext
+public sealed class DataContext : DbContext, IDataContext
 {
-    private static readonly MethodInfo setQueryFilter = typeof(BarManagerDataContext)
+    private static readonly MethodInfo setQueryFilter = typeof(DataContext)
         .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
         .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
 
-    public BarManagerDataContext(DbContextOptions<AuthenticationDataContext> options) : base(options)
+    public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }
 
