@@ -65,7 +65,7 @@ public static class HostBuilderExtensions
     public static IServiceCollection AddDataContext(this IServiceCollection services, string connectionString)
     {
         services.AddSqlServer<AuthenticationDataContext>(connectionString);
-        services.AddDbContext<IBarManagerDataContext, BarManagerDataContext>(options =>
+        services.AddDbContext<IDataContext, DataContext>(options =>
         {
             options.UseSqlServer(connectionString, dbOptions =>
             {
