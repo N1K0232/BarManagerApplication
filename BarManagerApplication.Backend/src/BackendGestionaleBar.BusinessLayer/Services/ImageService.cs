@@ -13,11 +13,11 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class ImageService : IImageService
 {
-	private readonly IBarManagerDataContext dataContext;
+	private readonly IDataContext dataContext;
 	private readonly IStorageProvider storageProvider;
 	private readonly IMapper mapper;
 
-	public ImageService(IBarManagerDataContext dataContext, IStorageProvider storageProvider, IMapper mapper)
+	public ImageService(IDataContext dataContext, IStorageProvider storageProvider, IMapper mapper)
 	{
 		this.dataContext = dataContext;
 		this.storageProvider = storageProvider;

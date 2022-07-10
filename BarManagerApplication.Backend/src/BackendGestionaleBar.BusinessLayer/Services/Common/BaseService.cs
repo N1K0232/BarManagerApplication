@@ -7,9 +7,9 @@ namespace BackendGestionaleBar.BusinessLayer.Services.Common;
 
 public abstract class BaseService
 {
-    private readonly IBarManagerDataContext dataContext;
+    private readonly IDataContext dataContext;
 
-    protected BaseService(IBarManagerDataContext dataContext)
+    protected BaseService(IDataContext dataContext)
     {
         this.dataContext = dataContext;
     }

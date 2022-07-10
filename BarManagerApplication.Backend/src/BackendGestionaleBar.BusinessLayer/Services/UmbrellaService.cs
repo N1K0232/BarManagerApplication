@@ -11,10 +11,10 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class UmbrellaService : IUmbrellaService
 {
-	private readonly IBarManagerDataContext dataContext;
+	private readonly IDataContext dataContext;
 	private readonly IMapper mapper;
 
-	public UmbrellaService(IBarManagerDataContext dataContext, IMapper mapper)
+	public UmbrellaService(IDataContext dataContext, IMapper mapper)
 	{
 		this.dataContext = dataContext;
 		this.mapper = mapper;
