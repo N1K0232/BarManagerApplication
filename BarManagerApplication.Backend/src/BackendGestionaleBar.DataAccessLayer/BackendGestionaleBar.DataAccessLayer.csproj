@@ -10,7 +10,6 @@
 		</ItemGroup>
 
 		<ItemGroup>
-				<ProjectReference Include="..\BackendGestionaleBar.Authentication\BackendGestionaleBar.Authentication.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.Contracts\BackendGestionaleBar.Contracts.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.Shared\BackendGestionaleBar.Shared.csproj" />
 		</ItemGroup>
