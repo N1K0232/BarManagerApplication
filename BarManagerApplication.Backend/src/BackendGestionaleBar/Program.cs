@@ -4,8 +4,8 @@ using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.Contracts;
 using BackendGestionaleBar.Extensions;
+using BackendGestionaleBar.Internal;
 using BackendGestionaleBar.Security;
-using BackendGestionaleBar.Services;
 using BackendGestionaleBar.StorageProviders.Extensions;
 using BackendGestionaleBar.WeatherClient.DependencyInjection;
 using Hellang.Middleware.ProblemDetails;
@@ -29,7 +29,7 @@ builder.Services.AddDataContext(connectionString);
 
 builder.Services.AddIdentitySettings(jwtSettings);
 
-builder.Services.AddScoped<IUserService, HttpUserService>();
+builder.Services.AddScoped<IUserService, InternalUserService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
