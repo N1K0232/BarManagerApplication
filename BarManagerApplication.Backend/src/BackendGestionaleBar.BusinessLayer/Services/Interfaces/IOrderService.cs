@@ -7,5 +7,6 @@ public interface IOrderService
     Task DeleteAsync(Guid? id);
     Task<IEnumerable<Order>> GetAsync();
     Task<decimal> GetTotalPriceAsync();
+    Task<Order> GetYourOrderAsync();
     Task<Order> SaveAsync(SaveOrderRequest request);
 }
