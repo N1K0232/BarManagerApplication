@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace BackendGestionaleBar.Authentication;
 
-public class AuthenticationDataContext
+public sealed class AuthenticationDataContext
     : IdentityDbContext<ApplicationUser,
       ApplicationRole,
       Guid,
