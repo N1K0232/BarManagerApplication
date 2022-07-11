@@ -109,15 +109,6 @@ public sealed class DataContext : DbContext, IDataContext
 
         return base.SaveChangesAsync(cancellationToken);
     }
-    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-    {
-        configurationBuilder.Properties<decimal>().HavePrecision(8, 2);
-        base.ConfigureConventions(configurationBuilder);
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
