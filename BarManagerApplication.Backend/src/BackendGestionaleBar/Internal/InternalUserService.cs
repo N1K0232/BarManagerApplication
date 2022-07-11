@@ -17,11 +17,11 @@ internal class InternalUserService : IUserService
 
     public Guid GetId()
     {
-        return User.Identity.IsAuthenticated ? User.GetId() : Guid.Empty;
+        return httpContextAccessor.HttpContext.User.GetId();
     }
 
     public string GetUsername()
     {
-        return User.Identity.IsAuthenticated ? User.GetUserName() : string.Empty;
+        return httpContextAccessor.HttpContext.User.GetUserName();
     }
 }
