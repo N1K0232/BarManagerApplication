@@ -1,8 +1,11 @@
-﻿namespace BackendGestionaleBar.Contracts;
+﻿using System.Security.Claims;
+
+namespace BackendGestionaleBar.Contracts;
 
 public interface IUserService
 {
+    ClaimsPrincipal User { get; }
+
     Guid GetId();
-    string GetUmbrella();
     string GetUsername();
 }

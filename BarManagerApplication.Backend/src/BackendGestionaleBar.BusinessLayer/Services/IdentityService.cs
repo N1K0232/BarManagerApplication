@@ -49,8 +49,7 @@ public sealed class IdentityService : IIdentityService
             new Claim(ClaimTypes.GivenName, user.Name),
             new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
-            new Claim(CustomClaimTypes.Umbrella, request.Umbrella ?? string.Empty)
+            new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
         }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var response = CreateToken(claims);
