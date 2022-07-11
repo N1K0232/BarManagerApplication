@@ -7,10 +7,13 @@ namespace BackendGestionaleBar.DataAccessLayer;
 
 public sealed class DataContext : DbContext, IDataContext
 {
-    private static readonly MethodInfo setQueryFilter = typeof(DataContext)
-        .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
-        .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
+    private static readonly MethodInfo setQueryFilter;
 
+    static DataContext()
+    {
+        setQueryFilter = typeof(DataContext).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+            .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
+    }
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }
