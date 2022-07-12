@@ -120,6 +120,11 @@ public sealed class DataContext : DbContext, IDataContext
 
         return task;
     }
+    public override void Dispose()
+    {
+        sqlConnection.Dispose();
+        base.Dispose();
+    }
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         entries = ChangeTracker.Entries()
