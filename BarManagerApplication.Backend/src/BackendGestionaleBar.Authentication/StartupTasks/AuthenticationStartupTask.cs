@@ -1,4 +1,5 @@
 ﻿using BackendGestionaleBar.Authentication.Entities;
+using BackendGestionaleBar.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,7 +32,7 @@ public class AuthenticationStartupTask : IHostedService
             }
         }
 
-        var admin = new ApplicationUser
+        var nicoAdminUser = new ApplicationUser
         {
             Name = "Nicola Silvestri",
             DateOfBirth = DateTime.Parse("22/10/2002"),
@@ -40,14 +41,24 @@ public class AuthenticationStartupTask : IHostedService
             PhoneNumber = "3319907702"
         };
 
-        await CheckCreateUserAsync(admin, "NicoSilve22!", RoleNames.Administrator, RoleNames.Staff);
+        var mamtaAdminUser = new ApplicationUser
+        {
+            Name = "Mamta",
+            DateOfBirth = DateTime.Parse("03/03/2002"),
+            Email = "ns.nicolasilvestri@libero.it",
+            UserName = "R1K023",
+            PhoneNumber = "3319907703"
+        };
+
+        await CheckCreateUserAsync(nicoAdminUser, "Tmljb0xvdmVzTWFtdGExOTE2IQ==", RoleNames.Administrator, RoleNames.Staff);
+        await CheckCreateUserAsync(mamtaAdminUser, "TWFtdGFMb3Zlc05pY28xNjE5IQ==", RoleNames.Administrator, RoleNames.Staff);
 
         async Task CheckCreateUserAsync(ApplicationUser user, string password, params string[] roles)
         {
             var dbUser = await userManager.FindByNameAsync(user.UserName);
             if (dbUser == null)
             {
-                var result = await userManager.CreateAsync(user, password);
+                var result = await userManager.CreateAsync(user, StringConverter.GetString(password));
                 if (result.Succeeded)
                 {
                     await userManager.AddToRolesAsync(user, roles);
