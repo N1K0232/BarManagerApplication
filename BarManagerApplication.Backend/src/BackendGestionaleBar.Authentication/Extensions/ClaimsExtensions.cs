@@ -54,6 +54,11 @@ public static class ClaimsExtensions
 
     private static string GetClaimValueInternal(IPrincipal user, string claimType)
     {
+        if (string.IsNullOrEmpty(claimType) || string.IsNullOrWhiteSpace(claimType))
+        {
+            throw new ArgumentNullException(nameof(claimType), "");
+        }
+
         ClaimsPrincipal principal = (ClaimsPrincipal)user;
         Claim claim = principal.FindFirst(claimType);
         return claim?.Value;

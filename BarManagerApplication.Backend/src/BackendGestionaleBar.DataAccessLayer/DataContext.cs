@@ -24,6 +24,7 @@ public sealed class DataContext : DbContext, IDataContext
         setQueryFilter = typeof(DataContext).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
     }
+
     public DataContext(DbContextOptions<DataContext> options, ILogger<DataContext> logger) : base(options)
     {
         this.logger = logger;
@@ -36,26 +37,31 @@ public sealed class DataContext : DbContext, IDataContext
         var set = Set<T>();
         set.Remove(entity);
     }
+
     public void Delete<T>(IEnumerable<T> entities) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
         var set = Set<T>();
         set.RemoveRange(entities);
     }
+
     public void Edit<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
         var set = Set<T>();
         set.Update(entity);
     }
+
     public ValueTask<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity
     {
         var set = Set<T>();
         return set.FindAsync(keyValues);
     }
+
     public async Task<List<Menu>> GetMenuAsync()
     {
-        using var reader = await ExecuteReaderAsync("SELECT * FROM Menu");
+        using var reader = await ExecuteReaderAsync("SELECT * FROM Menu").ConfigureAwait(false);
+
         if (reader == null)
         {
             return null;
@@ -80,6 +86,7 @@ public sealed class DataContext : DbContext, IDataContext
             return result;
         }
     }
+
     public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
     {
         var set = Set<T>().AsQueryable();
@@ -93,13 +100,16 @@ public sealed class DataContext : DbContext, IDataContext
             set.AsTracking() :
             set.AsNoTrackingWithIdentityResolution();
     }
+
     public void Insert<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
         var set = Set<T>();
         set.Add(entity);
     }
+
     public Task SaveAsync() => SaveChangesAsync();
+
     public Task ExecuteTransactionAsync(Func<Task> action)
     {
         var strategy = Database.CreateExecutionStrategy();
@@ -113,11 +123,13 @@ public sealed class DataContext : DbContext, IDataContext
 
         return task;
     }
+
     public override void Dispose()
     {
         sqlConnection.Dispose();
         base.Dispose();
     }
+
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         entries = ChangeTracker.Entries()
@@ -165,6 +177,7 @@ public sealed class DataContext : DbContext, IDataContext
             return Task.FromResult(0);
         }
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -197,6 +210,7 @@ public sealed class DataContext : DbContext, IDataContext
 
         base.OnModelCreating(modelBuilder);
     }
+
     private async Task<SqlDataReader> ExecuteReaderAsync(string commandText)
     {
         SqlCommand sqlCommand;
@@ -204,10 +218,10 @@ public sealed class DataContext : DbContext, IDataContext
 
         try
         {
-            await sqlConnection.OpenAsync();
+            await sqlConnection.OpenAsync().ConfigureAwait(false);
             sqlCommand = new SqlCommand(commandText, sqlConnection);
-            reader = await sqlCommand.ExecuteReaderAsync();
-            await sqlConnection.CloseAsync();
+            reader = await sqlCommand.ExecuteReaderAsync().ConfigureAwait(false);
+            await sqlConnection.CloseAsync().ConfigureAwait(false);
         }
         catch (SqlException ex)
         {
@@ -222,6 +236,7 @@ public sealed class DataContext : DbContext, IDataContext
 
         return reader;
     }
+
     private void Configure()
     {
         string connectionString = Database.GetConnectionString();
@@ -231,10 +246,12 @@ public sealed class DataContext : DbContext, IDataContext
             sqlConnection.Close();
         }
     }
+
     private void SetQueryFilter<T>(ModelBuilder modelBuilder) where T : DeletableEntity
     {
         modelBuilder.Entity<T>().HasQueryFilter(x => !x.IsDeleted && x.DeletedDate == null);
     }
+
     private static IEnumerable<MethodInfo> SetGlobalQueryMethods(Type type)
     {
         var result = new List<MethodInfo>();
