@@ -72,7 +72,7 @@
     <Build Include="dbo\Tables\AspNetUsers.sql" />
     <Build Include="dbo\Tables\Categories.sql" />
     <Build Include="dbo\Tables\Products.sql" />
-    <Build Include="dbo\Views\ViewMenu.sql" />
+    <Build Include="dbo\Views\Menu.sql" />
     <Build Include="dbo\Tables\Orders.sql" />
     <Build Include="dbo\Tables\OrderDetails.sql" />
     <Build Include="dbo\Tables\Images.sql" />
