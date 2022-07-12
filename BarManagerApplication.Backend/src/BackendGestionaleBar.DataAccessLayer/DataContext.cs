@@ -56,6 +56,7 @@ public sealed class DataContext : DbContext, IDataContext
     public async Task<List<Menu>> GetMenuAsync()
     {
         using var reader = await ExecuteReaderAsync("SELECT * FROM Menu").ConfigureAwait(false);
+
         if (reader == null)
         {
             return null;
