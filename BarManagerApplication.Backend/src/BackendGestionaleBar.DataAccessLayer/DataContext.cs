@@ -1,6 +1,10 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+using BackendGestionaleBar.DataAccessLayer.Views;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Data;
 using System.Reflection;
 
 namespace BackendGestionaleBar.DataAccessLayer;
@@ -9,6 +13,9 @@ public sealed class DataContext : DbContext, IDataContext
 {
     private static readonly MethodInfo setQueryFilter;
 
+    private List<EntityEntry> entries = null;
+    private SqlConnection sqlConnection = null;
+
     static DataContext()
     {
         setQueryFilter = typeof(DataContext).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
@@ -16,6 +23,7 @@ public sealed class DataContext : DbContext, IDataContext
     }
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
+        Configure();
     }
 
     public void Delete<T>(T entity) where T : BaseEntity
@@ -41,9 +49,47 @@ public sealed class DataContext : DbContext, IDataContext
         var set = Set<T>();
         return set.FindAsync(keyValues);
     }
+    public async Task<List<Menu>> GetMenuAsync()
+    {
+        List<Menu> result;
+
+        try
+        {
+            await sqlConnection.OpenAsync();
+
+            using var command = new SqlCommand(null, sqlConnection);
+            command.CommandText = "SELECT * FROM Menu";
+
+            using var reader = await command.ExecuteReaderAsync();
+            result = new List<Menu>();
+            while (reader.Read())
+            {
+                var menu = new Menu
+                {
+                    Product = reader["Product"].ToString(),
+                    Category = reader["Category"].ToString(),
+                    Price = Convert.ToDecimal(reader["Price"]),
+                    Quantity = Convert.ToInt32(reader["Quantity"])
+                };
+                result.Add(menu);
+            }
+
+            await sqlConnection.CloseAsync();
+        }
+        catch (SqlException)
+        {
+            result = null;
+        }
+        catch (InvalidOperationException)
+        {
+            result = null;
+        }
+
+        return result;
+    }
     public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
     {
-        var set = Set<T>().AsQueryable<T>();
+        var set = Set<T>().AsQueryable();
 
         if (ignoreQueryFilters)
         {
@@ -76,7 +122,7 @@ public sealed class DataContext : DbContext, IDataContext
     }
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var entries = ChangeTracker.Entries()
+        entries = ChangeTracker.Entries()
             .Where(e => e.Entity.GetType().IsSubclassOf(typeof(BaseEntity))).ToList();
 
         foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
@@ -140,6 +186,15 @@ public sealed class DataContext : DbContext, IDataContext
         }
 
         base.OnModelCreating(modelBuilder);
+    }
+    private void Configure()
+    {
+        string connectionString = Database.GetConnectionString();
+        sqlConnection = new SqlConnection(connectionString);
+        if (sqlConnection.State is ConnectionState.Open)
+        {
+            sqlConnection.Close();
+        }
     }
     private void SetQueryFilter<T>(ModelBuilder modelBuilder) where T : DeletableEntity
     {
