@@ -44,7 +44,7 @@ public class AuthenticationStartupTask : IHostedService
         var mamtaAdminUser = new ApplicationUser
         {
             Name = "Mamta",
-            DateOfBirth = DateTime.Parse("03/03/2002"),
+            DateOfBirth = DateTime.Parse("03/03/2006"),
             Email = "ns.nicolasilvestri@libero.it",
             UserName = "R1K023",
             PhoneNumber = "3319907703"
