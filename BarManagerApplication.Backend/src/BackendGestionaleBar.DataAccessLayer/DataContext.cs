@@ -55,7 +55,7 @@ public sealed class DataContext : DbContext, IDataContext
     }
     public async Task<List<Menu>> GetMenuAsync()
     {
-        using var reader = await ExecuteReaderAsync("SELECT * FROM Menu");
+        using var reader = await ExecuteReaderAsync("SELECT * FROM Menu").ConfigureAwait(false);
         if (reader == null)
         {
             return null;
@@ -204,10 +204,10 @@ public sealed class DataContext : DbContext, IDataContext
 
         try
         {
-            await sqlConnection.OpenAsync();
+            await sqlConnection.OpenAsync().ConfigureAwait(false);
             sqlCommand = new SqlCommand(commandText, sqlConnection);
-            reader = await sqlCommand.ExecuteReaderAsync();
-            await sqlConnection.CloseAsync();
+            reader = await sqlCommand.ExecuteReaderAsync().ConfigureAwait(false);
+            await sqlConnection.CloseAsync().ConfigureAwait(false);
         }
         catch (SqlException ex)
         {
