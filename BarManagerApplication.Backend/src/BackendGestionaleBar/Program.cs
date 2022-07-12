@@ -14,11 +14,13 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));
+
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
 {
     loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddProblemDetails();
 builder.Services.AddMapperProfiles();
 builder.Services.AddValidators();
