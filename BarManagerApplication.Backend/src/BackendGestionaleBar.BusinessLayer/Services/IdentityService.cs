@@ -56,7 +56,7 @@ public sealed class IdentityService : IIdentityService
         await SaveRefreshTokenAsync(user, response.RefreshToken);
         return response;
     }
-    public async Task<RegisterResponse> RegisterClienteAsync(RegisterUserRequest request)
+    public async Task<RegisterResponse> RegisterCustomerAsync(RegisterUserRequest request)
     {
         var result = await RegisterAsync(request);
 
