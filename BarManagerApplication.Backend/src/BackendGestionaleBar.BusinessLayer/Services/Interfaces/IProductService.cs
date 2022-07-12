@@ -6,5 +6,6 @@ public interface IProductService
 {
     Task DeleteAsync(Guid id);
     Task<IEnumerable<Product>> GetAsync(string name);
+    Task<IEnumerable<Menu>> GetMenuAsync();
     Task<Product> SaveAsync(SaveProductRequest request);
 }
