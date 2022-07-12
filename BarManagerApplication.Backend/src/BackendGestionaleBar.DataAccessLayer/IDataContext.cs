@@ -1,4 +1,5 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+using BackendGestionaleBar.DataAccessLayer.Views;
 
 namespace BackendGestionaleBar.DataAccessLayer;
 
@@ -9,6 +10,7 @@ public interface IDataContext
     void Edit<T>(T entity) where T : BaseEntity;
     IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity;
     ValueTask<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity;
+    Task<List<Menu>> GetMenuAsync();
     void Insert<T>(T entity) where T : BaseEntity;
     Task SaveAsync();
     Task ExecuteTransactionAsync(Func<Task> action);

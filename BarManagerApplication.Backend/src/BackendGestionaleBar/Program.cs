@@ -4,8 +4,8 @@ using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.BusinessLayer.Settings;
 using BackendGestionaleBar.Contracts;
 using BackendGestionaleBar.Extensions;
+using BackendGestionaleBar.Internal;
 using BackendGestionaleBar.Security;
-using BackendGestionaleBar.Services;
 using BackendGestionaleBar.StorageProviders.Extensions;
 using BackendGestionaleBar.WeatherClient.DependencyInjection;
 using Hellang.Middleware.ProblemDetails;
@@ -14,11 +14,13 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = Configure<JwtSettings>(nameof(JwtSettings));
+
 builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
 {
     loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddProblemDetails();
 builder.Services.AddMapperProfiles();
 builder.Services.AddValidators();
@@ -29,7 +31,7 @@ builder.Services.AddDataContext(connectionString);
 
 builder.Services.AddIdentitySettings(jwtSettings);
 
-builder.Services.AddScoped<IUserService, HttpUserService>();
+builder.Services.AddScoped<IUserService, InternalUserService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();

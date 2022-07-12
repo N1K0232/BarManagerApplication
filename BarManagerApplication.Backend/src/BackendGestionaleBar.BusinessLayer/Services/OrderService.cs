@@ -13,112 +13,130 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class OrderService : IOrderService
 {
-	private readonly IDataContext dataContext;
-	private readonly IUserService userService;
-	private readonly IMapper mapper;
+    private readonly IDataContext dataContext;
+    private readonly IUserService userService;
+    private readonly IMapper mapper;
 
-	public OrderService(IDataContext dataContext, IUserService userService, IMapper mapper)
-	{
-		this.dataContext = dataContext;
-		this.userService = userService;
-		this.mapper = mapper;
-	}
+    public OrderService(IDataContext dataContext, IUserService userService, IMapper mapper)
+    {
+        this.dataContext = dataContext;
+        this.userService = userService;
+        this.mapper = mapper;
+    }
 
-	public async Task DeleteAsync(Guid? id)
-	{
-		if (id == null)
-		{
-			var dbOrders = await dataContext.GetData<Entities.Order>()
-				.Where(o => o.OrderStatus == OrderStatus.Canceled)
-				.ToListAsync();
+    public async Task DeleteAsync(Guid? id)
+    {
+        if (id == null)
+        {
+            var dbOrders = await dataContext.GetData<Entities.Order>()
+                .Where(o => o.OrderStatus == OrderStatus.Canceled)
+                .ToListAsync();
 
-			dataContext.Delete(dbOrders);
-		}
-		else
-		{
-			var dbOrder = await dataContext.GetAsync<Entities.Order>(id.Value);
-			dataContext.Delete(dbOrder);
-		}
+            dataContext.Delete(dbOrders);
+        }
+        else
+        {
+            var dbOrder = await dataContext.GetAsync<Entities.Order>(id.Value);
+            dataContext.Delete(dbOrder);
+        }
 
-		await dataContext.SaveAsync();
-	}
+        await dataContext.SaveAsync();
+    }
 
-	public async Task<IEnumerable<Order>> GetAsync()
-	{
-		var orders = await dataContext.GetData<Entities.Order>()
-			.ProjectTo<Order>(mapper.ConfigurationProvider)
-			.ToListAsync();
+    public async Task<Order> GetYourOrderAsync()
+    {
+        var dbOrder = await dataContext.GetData<Entities.Order>()
+            .Include(o => o.OrderDetails)
+            .FirstOrDefaultAsync(o => o.UserId == userService.GetId() && o.OrderDate == DateTime.Today);
 
-		return orders;
-	}
+        var products = new List<Product>();
 
-	public async Task<decimal> GetTotalPriceAsync()
-	{
-		var dbOrder = await dataContext.GetData<Entities.Order>()
-			.Include(o => o.OrderDetails)
-			.FirstOrDefaultAsync(o => o.UserId == userService.GetId() && o.OrderDate == DateTime.Today);
+        foreach (var orderDetail in dbOrder.OrderDetails)
+        {
+            var product = mapper.Map<Product>(orderDetail.Product);
+            products.Add(product);
+        }
 
-		decimal totalPrice = 0;
+        var order = mapper.Map<Order>(dbOrder);
+        order.Products = products;
+        return order;
+    }
 
-		foreach (var orderDetail in dbOrder.OrderDetails)
-		{
-			totalPrice += orderDetail.Price * orderDetail.OrderedQuantity;
-		}
+    public async Task<IEnumerable<Order>> GetAsync()
+    {
+        var orders = await dataContext.GetData<Entities.Order>()
+            .ProjectTo<Order>(mapper.ConfigurationProvider)
+            .ToListAsync();
 
-		return totalPrice;
-	}
+        return orders;
+    }
 
-	public async Task<Order> SaveAsync(SaveOrderRequest request)
-	{
-		var query = dataContext.GetData<Entities.Order>(trackingChanges: true);
-		var dbOrder = request.Id != null ? await query.FirstOrDefaultAsync(o => o.Id == request.Id) : null;
+    public async Task<decimal> GetTotalPriceAsync()
+    {
+        var dbOrder = await dataContext.GetData<Entities.Order>()
+            .Include(o => o.OrderDetails)
+            .FirstOrDefaultAsync(o => o.UserId == userService.GetId() && o.OrderDate == DateTime.Today);
 
-		if (dbOrder == null)
-		{
-			string umbrella = userService.GetUmbrella();
-			var dbUmbrella = await dataContext.GetData<Entities.Umbrella>().FirstOrDefaultAsync(u => u.Coordinates == umbrella);
+        decimal totalPrice = 0;
 
-			dbOrder = new Entities.Order
-			{
-				UserId = userService.GetId(),
-				UmbrellaId = dbUmbrella.Id,
-				OrderDate = DateTime.UtcNow,
-				OrderStatus = OrderStatus.New,
-				OrderDetails = new List<Entities.OrderDetail>()
-			};
+        foreach (var orderDetail in dbOrder.OrderDetails)
+        {
+            totalPrice += orderDetail.Price * orderDetail.OrderedQuantity;
+        }
 
-			foreach (var product in request.Products)
-			{
-				var dbProduct = await dataContext.GetAsync<Entities.Product>(product.Id);
+        return totalPrice;
+    }
 
-				if (dbProduct.Quantity < request.OrderedQuantity)
-				{
-					throw new Exception($"you can order a maximum of {dbProduct.Quantity}");
-				}
+    public async Task<Order> SaveAsync(SaveOrderRequest request)
+    {
+        var query = dataContext.GetData<Entities.Order>(trackingChanges: true);
+        var dbOrder = request.Id != null ? await query.FirstOrDefaultAsync(o => o.Id == request.Id) : null;
 
-				var orderDetail = new Entities.OrderDetail
-				{
-					OrderId = dbOrder.Id,
-					ProductId = dbProduct.Id,
-					Price = dbProduct.Price,
-					OrderedQuantity = request.OrderedQuantity
-				};
+        if (dbOrder == null)
+        {
+            var dbUmbrella = await dataContext.GetData<Entities.Umbrella>().FirstOrDefaultAsync(u => u.Coordinates == request.Umbrella);
 
-				dbOrder.OrderDetails.Add(orderDetail);
+            dbOrder = new Entities.Order
+            {
+                UserId = userService.GetId(),
+                UmbrellaId = dbUmbrella.Id,
+                OrderDate = DateTime.UtcNow,
+                OrderStatus = OrderStatus.New,
+                OrderDetails = new List<Entities.OrderDetail>()
+            };
 
-				dbProduct.Quantity -= request.OrderedQuantity;
-				dataContext.Edit(dbProduct);
-			}
+            foreach (var product in request.Products)
+            {
+                var dbProduct = await dataContext.GetAsync<Entities.Product>(product.Id);
 
-			dataContext.Insert(dbOrder);
-		}
-		else
-		{
-			mapper.Map(request, dbOrder);
-			dataContext.Edit(dbOrder);
-		}
+                if (dbProduct.Quantity < request.OrderedQuantity)
+                {
+                    throw new Exception($"you can order a maximum of {dbProduct.Quantity}");
+                }
 
-		await dataContext.SaveAsync();
-		return mapper.Map<Order>(dbOrder);
-	}
+                var orderDetail = new Entities.OrderDetail
+                {
+                    OrderId = dbOrder.Id,
+                    ProductId = dbProduct.Id,
+                    Price = dbProduct.Price,
+                    OrderedQuantity = request.OrderedQuantity
+                };
+
+                dbOrder.OrderDetails.Add(orderDetail);
+
+                dbProduct.Quantity -= request.OrderedQuantity;
+                dataContext.Edit(dbProduct);
+            }
+
+            dataContext.Insert(dbOrder);
+        }
+        else
+        {
+            mapper.Map(request, dbOrder);
+            dataContext.Edit(dbOrder);
+        }
+
+        await dataContext.SaveAsync();
+        return mapper.Map<Order>(dbOrder);
+    }
 }

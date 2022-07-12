@@ -1,18 +1,33 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+using BackendGestionaleBar.DataAccessLayer.Views;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.Extensions.Logging;
+using System.Data;
 using System.Reflection;
 
 namespace BackendGestionaleBar.DataAccessLayer;
 
 public sealed class DataContext : DbContext, IDataContext
 {
-    private static readonly MethodInfo setQueryFilter = typeof(DataContext)
-        .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
-        .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
+    private static readonly MethodInfo setQueryFilter;
 
-    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    private readonly ILogger<DataContext> logger;
+
+    private List<EntityEntry> entries = null;
+    private SqlConnection sqlConnection = null;
+
+    static DataContext()
     {
+        setQueryFilter = typeof(DataContext).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+            .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
+    }
+    public DataContext(DbContextOptions<DataContext> options, ILogger<DataContext> logger) : base(options)
+    {
+        this.logger = logger;
+        Configure();
     }
 
     public void Delete<T>(T entity) where T : BaseEntity
@@ -38,9 +53,36 @@ public sealed class DataContext : DbContext, IDataContext
         var set = Set<T>();
         return set.FindAsync(keyValues);
     }
+    public async Task<List<Menu>> GetMenuAsync()
+    {
+        using var reader = await ExecuteReaderAsync("SELECT * FROM Menu");
+        if (reader == null)
+        {
+            return null;
+        }
+        else
+        {
+            var result = new List<Menu>();
+
+            while (reader.Read())
+            {
+                var menu = new Menu
+                {
+                    Product = Convert.ToString(reader["Product"]),
+                    Category = Convert.ToString(reader["Category"]),
+                    Price = Convert.ToDecimal(reader["Price"]),
+                    Quantity = Convert.ToInt32(reader["Quantity"])
+                };
+
+                result.Add(menu);
+            }
+
+            return result;
+        }
+    }
     public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
     {
-        var set = Set<T>().AsQueryable<T>();
+        var set = Set<T>().AsQueryable();
 
         if (ignoreQueryFilters)
         {
@@ -71,49 +113,57 @@ public sealed class DataContext : DbContext, IDataContext
 
         return task;
     }
+    public override void Dispose()
+    {
+        sqlConnection.Dispose();
+        base.Dispose();
+    }
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var entries = ChangeTracker.Entries()
+        entries = ChangeTracker.Entries()
             .Where(e => e.Entity.GetType().IsSubclassOf(typeof(BaseEntity))).ToList();
 
-        foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
+        try
         {
-            BaseEntity baseEntity = (BaseEntity)entry.Entity;
-            if (entry.State == EntityState.Added)
+            foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
             {
-                baseEntity.CreatedDate = DateTime.UtcNow;
-                baseEntity.LastModifiedDate = null;
-                if (baseEntity is DeletableEntity deletableEntity)
+                BaseEntity baseEntity = (BaseEntity)entry.Entity;
+                if (entry.State == EntityState.Added)
                 {
-                    deletableEntity.IsDeleted = false;
-                    deletableEntity.DeletedDate = null;
+                    logger.LogInformation("Saving entity . . .");
+                    baseEntity.CreatedDate = DateTime.UtcNow;
+                    baseEntity.LastModifiedDate = null;
+                    if (baseEntity is DeletableEntity deletableEntity)
+                    {
+                        deletableEntity.IsDeleted = false;
+                        deletableEntity.DeletedDate = null;
+                    }
+                }
+                if (entry.State == EntityState.Modified)
+                {
+                    logger.LogInformation("Updating entity . . .");
+                    baseEntity.LastModifiedDate = DateTime.UtcNow;
+                }
+                if (entry.State == EntityState.Deleted)
+                {
+                    logger.LogInformation("Deleting entity . . .");
+                    if (baseEntity is DeletableEntity deletableEntity)
+                    {
+                        entry.State = EntityState.Modified;
+                        deletableEntity.IsDeleted = true;
+                        deletableEntity.DeletedDate = DateTime.UtcNow;
+                    }
                 }
             }
-            if (entry.State == EntityState.Modified)
-            {
-                baseEntity.LastModifiedDate = DateTime.UtcNow;
-            }
-            if (entry.State == EntityState.Deleted)
-            {
-                if (baseEntity is DeletableEntity deletableEntity)
-                {
-                    entry.State = EntityState.Modified;
-                    deletableEntity.IsDeleted = true;
-                    deletableEntity.DeletedDate = DateTime.UtcNow;
-                }
-            }
-        }
 
-        return base.SaveChangesAsync(cancellationToken);
-    }
-    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-    {
-        configurationBuilder.Properties<decimal>().HavePrecision(8, 2);
-        base.ConfigureConventions(configurationBuilder);
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
+            logger.LogInformation("Applying changes to the database . . .");
+            return base.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error");
+            return Task.FromResult(0);
+        }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -146,6 +196,40 @@ public sealed class DataContext : DbContext, IDataContext
         }
 
         base.OnModelCreating(modelBuilder);
+    }
+    private async Task<SqlDataReader> ExecuteReaderAsync(string commandText)
+    {
+        SqlCommand sqlCommand;
+        SqlDataReader reader;
+
+        try
+        {
+            await sqlConnection.OpenAsync();
+            sqlCommand = new SqlCommand(commandText, sqlConnection);
+            reader = await sqlCommand.ExecuteReaderAsync();
+            await sqlConnection.CloseAsync();
+        }
+        catch (SqlException ex)
+        {
+            logger.LogError(ex, "Error");
+            reader = null;
+        }
+        catch (InvalidOperationException ex)
+        {
+            logger.LogError(ex, "Error");
+            reader = null;
+        }
+
+        return reader;
+    }
+    private void Configure()
+    {
+        string connectionString = Database.GetConnectionString();
+        sqlConnection = new SqlConnection(connectionString);
+        if (sqlConnection.State is ConnectionState.Open)
+        {
+            sqlConnection.Close();
+        }
     }
     private void SetQueryFilter<T>(ModelBuilder modelBuilder) where T : DeletableEntity
     {

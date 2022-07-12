@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace BackendGestionaleBar.Authentication;
 
-public class AuthenticationDataContext
+public sealed class AuthenticationDataContext
     : IdentityDbContext<ApplicationUser,
       ApplicationRole,
       Guid,
@@ -20,18 +20,6 @@ public class AuthenticationDataContext
     {
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        return base.SaveChangesAsync(cancellationToken);
-    }
-    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-    {
-        base.ConfigureConventions(configurationBuilder);
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

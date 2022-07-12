@@ -14,4 +14,6 @@ public class Order : BaseObject
     public OrderStatus OrderStatus { get; set; }
 
     public decimal TotalPrice { get; set; }
+
+    public IEnumerable<Product> Products { get; set; }
 }

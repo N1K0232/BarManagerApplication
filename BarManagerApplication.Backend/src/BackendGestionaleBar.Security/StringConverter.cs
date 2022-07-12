@@ -4,9 +4,10 @@ namespace BackendGestionaleBar.Security;
 
 public static class StringConverter
 {
-    public static string GetString(string decodedString)
+    public static string GetString(string encodedString)
     {
-        byte[] bytes = Convert.FromBase64String(decodedString);
-        return Encoding.UTF8.GetString(bytes);
+        byte[] bytes = Convert.FromBase64String(encodedString);
+        string decodedString = Encoding.UTF8.GetString(bytes);
+        return decodedString;
     }
 }

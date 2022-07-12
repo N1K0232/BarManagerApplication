@@ -48,13 +48,13 @@ public class AuthController : ControllerBase
         return BadRequest("errors during refreshing the token");
     }
 
-    [HttpPost("RegisterCliente")]
+    [HttpPost("RegisterCustomer")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RegisterCliente([FromBody] RegisterUserRequest request)
+    public async Task<IActionResult> RegisterCustomer([FromBody] RegisterUserRequest request)
     {
-        var response = await authenticationService.RegisterClienteAsync(request);
+        var response = await authenticationService.RegisterCustomerAsync(request);
         if (response.Succeeded)
         {
             return Ok("Utente registrato con successo");
