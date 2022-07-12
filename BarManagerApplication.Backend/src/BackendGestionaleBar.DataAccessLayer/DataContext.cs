@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Reflection;
 
@@ -13,6 +14,8 @@ public sealed class DataContext : DbContext, IDataContext
 {
     private static readonly MethodInfo setQueryFilter;
 
+    private readonly ILogger<DataContext> logger;
+
     private List<EntityEntry> entries = null;
     private SqlConnection sqlConnection = null;
 
@@ -21,8 +24,9 @@ public sealed class DataContext : DbContext, IDataContext
         setQueryFilter = typeof(DataContext).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
     }
-    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    public DataContext(DbContextOptions<DataContext> options, ILogger<DataContext> logger) : base(options)
     {
+        this.logger = logger;
         Configure();
     }
 
@@ -130,35 +134,47 @@ public sealed class DataContext : DbContext, IDataContext
         entries = ChangeTracker.Entries()
             .Where(e => e.Entity.GetType().IsSubclassOf(typeof(BaseEntity))).ToList();
 
-        foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
+        try
         {
-            BaseEntity baseEntity = (BaseEntity)entry.Entity;
-            if (entry.State == EntityState.Added)
+            foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
             {
-                baseEntity.CreatedDate = DateTime.UtcNow;
-                baseEntity.LastModifiedDate = null;
-                if (baseEntity is DeletableEntity deletableEntity)
+                BaseEntity baseEntity = (BaseEntity)entry.Entity;
+                if (entry.State == EntityState.Added)
                 {
-                    deletableEntity.IsDeleted = false;
-                    deletableEntity.DeletedDate = null;
+                    logger.LogInformation("Saving entity . . .");
+                    baseEntity.CreatedDate = DateTime.UtcNow;
+                    baseEntity.LastModifiedDate = null;
+                    if (baseEntity is DeletableEntity deletableEntity)
+                    {
+                        deletableEntity.IsDeleted = false;
+                        deletableEntity.DeletedDate = null;
+                    }
+                }
+                if (entry.State == EntityState.Modified)
+                {
+                    logger.LogInformation("Updating entity . . .");
+                    baseEntity.LastModifiedDate = DateTime.UtcNow;
+                }
+                if (entry.State == EntityState.Deleted)
+                {
+                    logger.LogInformation("Deleting entity . . .");
+                    if (baseEntity is DeletableEntity deletableEntity)
+                    {
+                        entry.State = EntityState.Modified;
+                        deletableEntity.IsDeleted = true;
+                        deletableEntity.DeletedDate = DateTime.UtcNow;
+                    }
                 }
             }
-            if (entry.State == EntityState.Modified)
-            {
-                baseEntity.LastModifiedDate = DateTime.UtcNow;
-            }
-            if (entry.State == EntityState.Deleted)
-            {
-                if (baseEntity is DeletableEntity deletableEntity)
-                {
-                    entry.State = EntityState.Modified;
-                    deletableEntity.IsDeleted = true;
-                    deletableEntity.DeletedDate = DateTime.UtcNow;
-                }
-            }
-        }
 
-        return base.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Applying changes to the database . . .");
+            return base.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error");
+            return Task.FromResult(0);
+        }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
