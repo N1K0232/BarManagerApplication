@@ -55,41 +55,30 @@ public sealed class DataContext : DbContext, IDataContext
     }
     public async Task<List<Menu>> GetMenuAsync()
     {
-        List<Menu> result;
-
-        try
+        using var reader = await ExecuteReaderAsync("SELECT * FROM Menu");
+        if (reader == null)
         {
-            await sqlConnection.OpenAsync();
+            return null;
+        }
+        else
+        {
+            var result = new List<Menu>();
 
-            using var command = new SqlCommand(null, sqlConnection);
-            command.CommandText = "SELECT * FROM Menu";
-
-            using var reader = await command.ExecuteReaderAsync();
-            result = new List<Menu>();
             while (reader.Read())
             {
                 var menu = new Menu
                 {
-                    Product = reader["Product"].ToString(),
-                    Category = reader["Category"].ToString(),
+                    Product = Convert.ToString(reader["Product"]),
+                    Category = Convert.ToString(reader["Category"]),
                     Price = Convert.ToDecimal(reader["Price"]),
                     Quantity = Convert.ToInt32(reader["Quantity"])
                 };
+
                 result.Add(menu);
             }
 
-            await sqlConnection.CloseAsync();
+            return result;
         }
-        catch (SqlException)
-        {
-            result = null;
-        }
-        catch (InvalidOperationException)
-        {
-            result = null;
-        }
-
-        return result;
     }
     public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
     {
@@ -207,6 +196,31 @@ public sealed class DataContext : DbContext, IDataContext
         }
 
         base.OnModelCreating(modelBuilder);
+    }
+    private async Task<SqlDataReader> ExecuteReaderAsync(string commandText)
+    {
+        SqlCommand sqlCommand;
+        SqlDataReader reader;
+
+        try
+        {
+            await sqlConnection.OpenAsync();
+            sqlCommand = new SqlCommand(commandText, sqlConnection);
+            reader = await sqlCommand.ExecuteReaderAsync();
+            await sqlConnection.CloseAsync();
+        }
+        catch (SqlException ex)
+        {
+            logger.LogError(ex, "Error");
+            reader = null;
+        }
+        catch (InvalidOperationException ex)
+        {
+            logger.LogError(ex, "Error");
+            reader = null;
+        }
+
+        return reader;
     }
     private void Configure()
     {
