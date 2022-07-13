@@ -13,5 +13,6 @@ internal class ImageConfiguration : BaseEntityConfiguration<Image>
         builder.ToTable("Images");
         builder.Property(i => i.Path).HasMaxLength(256).IsRequired();
         builder.Property(i => i.Length).IsRequired();
+        builder.Property(i => i.Description).HasMaxLength(512).IsRequired(false);
     }
 }

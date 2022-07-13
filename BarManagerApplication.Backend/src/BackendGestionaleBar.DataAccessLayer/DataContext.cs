@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities;
+using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using BackendGestionaleBar.DataAccessLayer.Views;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -24,16 +25,18 @@ public sealed class DataContext : DbContext, IDataContext
         setQueryFilter = typeof(DataContext).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
     }
-
     public DataContext(DbContextOptions<DataContext> options, ILogger<DataContext> logger) : base(options)
     {
         this.logger = logger;
         Configure();
     }
 
+    public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
+
     public void Delete<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
         var set = Set<T>();
         set.Remove(entity);
     }
@@ -41,6 +44,7 @@ public sealed class DataContext : DbContext, IDataContext
     public void Delete<T>(IEnumerable<T> entities) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
+
         var set = Set<T>();
         set.RemoveRange(entities);
     }
@@ -48,6 +52,7 @@ public sealed class DataContext : DbContext, IDataContext
     public void Edit<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
         var set = Set<T>();
         set.Update(entity);
     }
@@ -104,6 +109,7 @@ public sealed class DataContext : DbContext, IDataContext
     public void Insert<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
         var set = Set<T>();
         set.Add(entity);
     }
@@ -241,6 +247,7 @@ public sealed class DataContext : DbContext, IDataContext
     {
         string connectionString = Database.GetConnectionString();
         sqlConnection = new SqlConnection(connectionString);
+
         if (sqlConnection.State is ConnectionState.Open)
         {
             sqlConnection.Close();

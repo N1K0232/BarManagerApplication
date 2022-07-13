@@ -8,5 +8,7 @@ public class Image : BaseObject
 
     public long Length { get; set; }
 
+    public string Description { get; set; }
+
     public string ContentType { get; set; }
 }
