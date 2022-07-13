@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities;
+using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using BackendGestionaleBar.DataAccessLayer.Views;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -24,12 +25,13 @@ public sealed class DataContext : DbContext, IDataContext
         setQueryFilter = typeof(DataContext).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
     }
-
     public DataContext(DbContextOptions<DataContext> options, ILogger<DataContext> logger) : base(options)
     {
         this.logger = logger;
         Configure();
     }
+
+    public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
 
     public void Delete<T>(T entity) where T : BaseEntity
     {
