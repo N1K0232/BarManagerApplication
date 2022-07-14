@@ -237,9 +237,11 @@ public sealed class DataContext : DbContext, IDataContext
         try
         {
             await sqlConnection.OpenAsync().ConfigureAwait(false);
-            sqlCommand = new SqlCommand(commandText, sqlConnection);
+            sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandText = commandText;
             reader = await sqlCommand.ExecuteReaderAsync().ConfigureAwait(false);
             await sqlConnection.CloseAsync().ConfigureAwait(false);
+            sqlCommand.Dispose();
         }
         catch (SqlException ex)
         {
