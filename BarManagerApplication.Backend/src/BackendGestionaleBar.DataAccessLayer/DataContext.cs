@@ -31,7 +31,13 @@ public sealed class DataContext : DbContext, IDataContext
         Configure();
     }
 
-    public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
+    public DbSet<OrderDetail> OrderDetails
+    {
+        get
+        {
+            return Set<OrderDetail>();
+        }
+    }
 
     public void Delete<T>(T entity) where T : BaseEntity
     {
@@ -188,6 +194,8 @@ public sealed class DataContext : DbContext, IDataContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
+        //applying converter for strings. When the runtime gets, adds or updates an entity
+        //the runtime trims the strings
         var trimStringConverter = new ValueConverter<string, string>(v => v.Trim(), v => v.Trim());
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
@@ -195,14 +203,18 @@ public sealed class DataContext : DbContext, IDataContext
             {
                 if (property.ClrType == typeof(string))
                 {
-                    modelBuilder.Entity(entityType.Name).Property(property.Name).HasConversion(trimStringConverter);
+                    modelBuilder.Entity(entityType.Name)
+                        .Property(property.Name)
+                        .HasConversion(trimStringConverter);
                 }
             }
         }
 
-        var entities = modelBuilder.Model.GetEntityTypes()
-            .Where(t => typeof(DeletableEntity).IsAssignableFrom(t.ClrType)).ToList();
-
+        //applying query filter on DeletableEntity objects
+        var entities = modelBuilder.Model
+            .GetEntityTypes()
+            .Where(t => typeof(DeletableEntity).IsAssignableFrom(t.ClrType))
+            .ToList();
         foreach (var type in entities.Select(t => t.ClrType))
         {
             var methods = SetGlobalQueryMethods(type);
