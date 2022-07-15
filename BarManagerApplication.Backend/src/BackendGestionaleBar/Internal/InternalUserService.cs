@@ -1,6 +1,5 @@
 ﻿using BackendGestionaleBar.Authentication.Extensions;
 using BackendGestionaleBar.Contracts;
-using System.Security.Claims;
 
 namespace BackendGestionaleBar.Internal;
 
@@ -12,8 +11,6 @@ internal class InternalUserService : IUserService
     {
         this.httpContextAccessor = httpContextAccessor;
     }
-
-    public ClaimsPrincipal User => httpContextAccessor.HttpContext.User;
 
     public Guid GetId()
     {
