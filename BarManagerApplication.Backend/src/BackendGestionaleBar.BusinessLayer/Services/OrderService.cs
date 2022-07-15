@@ -24,22 +24,12 @@ public sealed class OrderService : IOrderService
         this.mapper = mapper;
     }
 
-    public async Task DeleteAsync(Guid? id)
+    public async Task DeleteAsync(Guid id)
     {
-        if (id == null)
-        {
-            var dbOrders = await dataContext.GetData<Entities.Order>()
-                .Where(o => o.OrderStatus == OrderStatus.Canceled)
-                .ToListAsync();
-
-            dataContext.Delete(dbOrders);
-        }
-        else
-        {
-            var dbOrder = await dataContext.GetAsync<Entities.Order>(id.Value);
-            dataContext.Delete(dbOrder);
-        }
-
+        var order = await dataContext.GetAsync<Entities.Order>(id);
+        var orderDetails = await dataContext.OrderDetails.Where(o => o.OrderId == id).ToListAsync();
+        dataContext.Delete(order);
+        dataContext.OrderDetails.RemoveRange(orderDetails);
         await dataContext.SaveAsync();
     }
 
