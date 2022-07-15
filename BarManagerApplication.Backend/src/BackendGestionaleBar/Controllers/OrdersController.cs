@@ -23,7 +23,7 @@ public class OrdersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Delete(Guid? id = null)
+    public async Task<IActionResult> Delete(Guid id)
     {
         await orderService.DeleteAsync(id);
         return Ok("order deleted successfully");

@@ -150,52 +150,46 @@ public sealed class DataContext : DbContext, IDataContext
         entries = ChangeTracker.Entries()
             .Where(e => e.Entity.GetType().IsSubclassOf(typeof(BaseEntity))).ToList();
 
-        try
+        Guid userId = userService.GetId();
+
+        foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
         {
-            foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
+            BaseEntity baseEntity = (BaseEntity)entry.Entity;
+            if (entry.State == EntityState.Added)
             {
-                BaseEntity baseEntity = (BaseEntity)entry.Entity;
-                if (entry.State == EntityState.Added)
+                logger.LogInformation("Saving entity");
+                baseEntity.CreatedDate = DateTime.UtcNow;
+                baseEntity.CreatedBy = userId;
+                baseEntity.LastModifiedDate = null;
+                baseEntity.UpdatedBy = null;
+                if (baseEntity is DeletableEntity deletableEntity)
                 {
-                    logger.LogInformation("Saving entity . . .");
-                    baseEntity.CreatedDate = DateTime.UtcNow;
-                    baseEntity.CreatedBy = userService.GetId();
-                    baseEntity.LastModifiedDate = null;
-                    baseEntity.UpdatedBy = null;
-                    if (baseEntity is DeletableEntity deletableEntity)
-                    {
-                        deletableEntity.IsDeleted = false;
-                        deletableEntity.DeletedDate = null;
-                        deletableEntity.DeletedBy = null;
-                    }
-                }
-                if (entry.State == EntityState.Modified)
-                {
-                    logger.LogInformation("Updating entity . . .");
-                    baseEntity.LastModifiedDate = DateTime.UtcNow;
-                    baseEntity.UpdatedBy = userService.GetId();
-                }
-                if (entry.State == EntityState.Deleted)
-                {
-                    logger.LogInformation("Deleting entity . . .");
-                    if (baseEntity is DeletableEntity deletableEntity)
-                    {
-                        entry.State = EntityState.Modified;
-                        deletableEntity.IsDeleted = true;
-                        deletableEntity.DeletedDate = DateTime.UtcNow;
-                        deletableEntity.DeletedBy = userService.GetId();
-                    }
+                    deletableEntity.IsDeleted = false;
+                    deletableEntity.DeletedDate = null;
+                    deletableEntity.DeletedBy = null;
                 }
             }
+            if (entry.State == EntityState.Modified)
+            {
+                logger.LogInformation("Updating entity");
+                baseEntity.LastModifiedDate = DateTime.UtcNow;
+                baseEntity.UpdatedBy = userId;
+            }
+            if (entry.State == EntityState.Deleted)
+            {
+                logger.LogInformation("Deleting entity");
+                if (baseEntity is DeletableEntity deletableEntity)
+                {
+                    entry.State = EntityState.Modified;
+                    deletableEntity.IsDeleted = true;
+                    deletableEntity.DeletedDate = DateTime.UtcNow;
+                    deletableEntity.DeletedBy = userId;
+                }
+            }
+        }
 
-            logger.LogInformation("Applying changes to the database . . .");
-            return base.SaveChangesAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error");
-            return Task.FromResult(0);
-        }
+        logger.LogInformation("Applying changes to the database");
+        return base.SaveChangesAsync(cancellationToken);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -268,11 +262,33 @@ public sealed class DataContext : DbContext, IDataContext
     private void Configure()
     {
         string connectionString = Database.GetConnectionString();
-        sqlConnection = new SqlConnection(connectionString);
+        SqlConnection connection = new(connectionString);
+        Exception e = null;
 
-        if (sqlConnection.State is ConnectionState.Open)
+        try
         {
-            sqlConnection.Close();
+            logger.LogInformation("Testing connection");
+            connection.Open();
+            connection.Close();
+        }
+        catch (SqlException ex)
+        {
+            e = ex;
+        }
+        catch (InvalidOperationException ex)
+        {
+            e = ex;
+        }
+
+        if (e != null)
+        {
+            logger.LogError(e, "Error");
+            throw e;
+        }
+        else
+        {
+            logger.LogInformation("Test connection succedeed");
+            sqlConnection = connection;
         }
     }
 
