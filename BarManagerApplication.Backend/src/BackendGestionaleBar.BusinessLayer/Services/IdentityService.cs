@@ -33,13 +33,18 @@ public sealed class IdentityService : IIdentityService
 
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
-        var signInResult = await signInManager.PasswordSignInAsync(request.UserName, request.Password, false, false);
+        var user = await userManager.FindByEmailAsync(request.Email);
+        if (user == null)
+        {
+            return null;
+        }
+
+        var signInResult = await signInManager.PasswordSignInAsync(user, request.Password, false, false);
         if (!signInResult.Succeeded)
         {
             return null;
         }
 
-        var user = await userManager.FindByNameAsync(request.UserName);
         var roles = await userManager.GetRolesAsync(user);
 
         var claims = new List<Claim>
@@ -56,6 +61,7 @@ public sealed class IdentityService : IIdentityService
         await SaveRefreshTokenAsync(user, response.RefreshToken);
         return response;
     }
+    public Task EnableTwoFactorAuthenticationAsync() => Task.CompletedTask;
     public async Task<RegisterResponse> RegisterCustomerAsync(RegisterUserRequest request)
     {
         var result = await RegisterAsync(request);
@@ -66,7 +72,7 @@ public sealed class IdentityService : IIdentityService
             result = await userManager.AddToRoleAsync(user, RoleNames.Customer);
         }
 
-        return new RegisterResponse(result.Succeeded, result.Errors.Select(e => e.Description));
+        return new(result.Succeeded, result.Errors.Select(e => e.Description));
     }
     public async Task<RegisterResponse> RegisterStaffAsync(RegisterUserRequest request)
     {
@@ -129,7 +135,7 @@ public sealed class IdentityService : IIdentityService
     {
         string accessToken = GetAccessToken(claims);
         string refreshToken = GetRefreshToken();
-        return new AuthResponse(accessToken, refreshToken);
+        return new(accessToken, refreshToken);
     }
     private string GetAccessToken(IEnumerable<Claim> claims)
     {

@@ -11,11 +11,11 @@ namespace BackendGestionaleBar.Controllers;
 [Produces("application/json")]
 public class AuthController : ControllerBase
 {
-    private readonly IIdentityService authenticationService;
+    private readonly IIdentityService identityService;
 
-    public AuthController(IIdentityService authenticationService)
+    public AuthController(IIdentityService identityService)
     {
-        this.authenticationService = authenticationService;
+        this.identityService = identityService;
     }
 
     [HttpPost("Login")]
@@ -24,7 +24,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var response = await authenticationService.LoginAsync(request);
+        var response = await identityService.LoginAsync(request);
         if (response != null)
         {
             return Ok(response);
@@ -33,13 +33,24 @@ public class AuthController : ControllerBase
         return BadRequest("email o password errati");
     }
 
+    [HttpPost("EnableTwoFactorAuthentication")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthResponse))]
+    //[ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+    public async Task<IActionResult> EnableTwoFactorAuthentication()
+    {
+        await identityService.EnableTwoFactorAuthenticationAsync();
+        return NoContent();
+    }
+
     [HttpPost("Refresh")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Refresh(RefreshTokenRequest request)
     {
-        var response = await authenticationService.RefreshTokenAsync(request);
+        var response = await identityService.RefreshTokenAsync(request);
         if (response != null)
         {
             return Ok(response);
@@ -54,15 +65,13 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RegisterCustomer([FromBody] RegisterUserRequest request)
     {
-        var response = await authenticationService.RegisterCustomerAsync(request);
+        var response = await identityService.RegisterCustomerAsync(request);
         if (response.Succeeded)
         {
             return Ok("Utente registrato con successo");
         }
-        else
-        {
-            return BadRequest(response);
-        }
+
+        return BadRequest(response);
     }
 
     [HttpPost("RegisterStaff")]
@@ -71,15 +80,13 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RegisterStaff([FromBody] RegisterUserRequest request)
     {
-        var response = await authenticationService.RegisterStaffAsync(request);
+        var response = await identityService.RegisterStaffAsync(request);
         if (response.Succeeded)
         {
             return Ok("Utente registrato con successo");
         }
-        else
-        {
-            return BadRequest(response);
-        }
+
+        return BadRequest(response);
     }
 
     [HttpPut("UpdatePassword")]
@@ -88,7 +95,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
     {
-        var response = await authenticationService.UpdatePasswordAsync(request);
+        var response = await identityService.UpdatePasswordAsync(request);
         if (response.Succeeded)
         {
             return Ok("password cambiata con successo");
