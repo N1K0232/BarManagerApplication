@@ -268,11 +268,33 @@ public sealed class DataContext : DbContext, IDataContext
     private void Configure()
     {
         string connectionString = Database.GetConnectionString();
-        sqlConnection = new SqlConnection(connectionString);
+        SqlConnection connection = new(connectionString);
+        Exception e = null;
 
-        if (sqlConnection.State is ConnectionState.Open)
+        try
         {
-            sqlConnection.Close();
+            logger.LogInformation("Testing connection");
+            connection.Open();
+            connection.Close();
+        }
+        catch (SqlException ex)
+        {
+            e = ex;
+        }
+        catch (InvalidOperationException ex)
+        {
+            e = ex;
+        }
+
+        if (e != null)
+        {
+            logger.LogError(e, "Error");
+            throw e;
+        }
+        else
+        {
+            logger.LogInformation("Test connection succedeed");
+            sqlConnection = connection;
         }
     }
 
