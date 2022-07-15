@@ -14,19 +14,17 @@ namespace BackendGestionaleBar.DataAccessLayer;
 
 public sealed class DataContext : DbContext, IDataContext
 {
-    private static readonly MethodInfo setQueryFilter;
+    private static readonly MethodInfo setQueryFilter = typeof(DataContext)
+        .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+        .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
 
     private readonly IUserService userService;
     private readonly ILogger<DataContext> logger;
 
-    private List<EntityEntry> entries = null;
     private SqlConnection sqlConnection = null;
+    private SqlCommand sqlCommand = null;
+    private SqlDataReader sqlDataReader = null;
 
-    static DataContext()
-    {
-        setQueryFilter = typeof(DataContext).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
-            .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
-    }
     public DataContext(DbContextOptions<DataContext> options, IUserService userService, ILogger<DataContext> logger) : base(options)
     {
         this.userService = userService;
@@ -74,9 +72,9 @@ public sealed class DataContext : DbContext, IDataContext
 
     public async Task<List<Menu>> GetMenuAsync()
     {
-        using var reader = await ExecuteReaderAsync("SELECT * FROM Menu").ConfigureAwait(false);
+        sqlDataReader = await ExecuteReaderAsync("SELECT * FROM Menu").ConfigureAwait(false);
 
-        if (reader == null)
+        if (sqlDataReader == null)
         {
             return null;
         }
@@ -84,19 +82,20 @@ public sealed class DataContext : DbContext, IDataContext
         {
             var result = new List<Menu>();
 
-            while (reader.Read())
+            while (sqlDataReader.Read())
             {
                 var menu = new Menu
                 {
-                    Product = Convert.ToString(reader["Product"]),
-                    Category = Convert.ToString(reader["Category"]),
-                    Price = Convert.ToDecimal(reader["Price"]),
-                    Quantity = Convert.ToInt32(reader["Quantity"])
+                    Product = Convert.ToString(sqlDataReader["Product"]),
+                    Category = Convert.ToString(sqlDataReader["Category"]),
+                    Price = Convert.ToDecimal(sqlDataReader["Price"]),
+                    Quantity = Convert.ToInt32(sqlDataReader["Quantity"])
                 };
 
                 result.Add(menu);
             }
 
+            sqlDataReader.Dispose();
             return result;
         }
     }
@@ -147,7 +146,7 @@ public sealed class DataContext : DbContext, IDataContext
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        entries = ChangeTracker.Entries()
+        var entries = ChangeTracker.Entries()
             .Where(e => e.Entity.GetType().IsSubclassOf(typeof(BaseEntity))).ToList();
 
         Guid userId = userService.GetId();
@@ -231,16 +230,15 @@ public sealed class DataContext : DbContext, IDataContext
         base.OnModelCreating(modelBuilder);
     }
 
-    private async Task<SqlDataReader> ExecuteReaderAsync(string commandText)
+    private async Task<SqlDataReader> ExecuteReaderAsync(string tableName)
     {
-        SqlCommand sqlCommand;
         SqlDataReader reader;
 
         try
         {
             await sqlConnection.OpenAsync().ConfigureAwait(false);
             sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandText = commandText;
+            sqlCommand.CommandText = $"SELECT * FROM {tableName}";
             reader = await sqlCommand.ExecuteReaderAsync().ConfigureAwait(false);
             await sqlConnection.CloseAsync().ConfigureAwait(false);
             sqlCommand.Dispose();
