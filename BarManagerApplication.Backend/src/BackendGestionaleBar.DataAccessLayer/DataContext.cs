@@ -72,7 +72,7 @@ public sealed class DataContext : DbContext, IDataContext
 
     public async Task<List<Menu>> GetMenuAsync()
     {
-        sqlDataReader = await ExecuteReaderAsync("SELECT * FROM Menu").ConfigureAwait(false);
+        sqlDataReader = await ExecuteReaderAsync("Menu").ConfigureAwait(false);
 
         if (sqlDataReader == null)
         {
