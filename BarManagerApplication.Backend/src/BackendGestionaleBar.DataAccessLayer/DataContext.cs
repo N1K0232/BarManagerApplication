@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.DataAccessLayer.Entities;
+﻿using BackendGestionaleBar.Contracts;
+using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using BackendGestionaleBar.DataAccessLayer.Views;
 using Microsoft.Data.SqlClient;
@@ -15,6 +16,7 @@ public sealed class DataContext : DbContext, IDataContext
 {
     private static readonly MethodInfo setQueryFilter;
 
+    private readonly IUserService userService;
     private readonly ILogger<DataContext> logger;
 
     private List<EntityEntry> entries = null;
@@ -25,8 +27,9 @@ public sealed class DataContext : DbContext, IDataContext
         setQueryFilter = typeof(DataContext).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
     }
-    public DataContext(DbContextOptions<DataContext> options, ILogger<DataContext> logger) : base(options)
+    public DataContext(DbContextOptions<DataContext> options, IUserService userService, ILogger<DataContext> logger) : base(options)
     {
+        this.userService = userService;
         this.logger = logger;
         Configure();
     }
@@ -156,17 +159,21 @@ public sealed class DataContext : DbContext, IDataContext
                 {
                     logger.LogInformation("Saving entity . . .");
                     baseEntity.CreatedDate = DateTime.UtcNow;
+                    baseEntity.CreatedBy = userService.GetId();
                     baseEntity.LastModifiedDate = null;
+                    baseEntity.UpdatedBy = null;
                     if (baseEntity is DeletableEntity deletableEntity)
                     {
                         deletableEntity.IsDeleted = false;
                         deletableEntity.DeletedDate = null;
+                        deletableEntity.DeletedBy = null;
                     }
                 }
                 if (entry.State == EntityState.Modified)
                 {
                     logger.LogInformation("Updating entity . . .");
                     baseEntity.LastModifiedDate = DateTime.UtcNow;
+                    baseEntity.UpdatedBy = userService.GetId();
                 }
                 if (entry.State == EntityState.Deleted)
                 {
@@ -176,6 +183,7 @@ public sealed class DataContext : DbContext, IDataContext
                         entry.State = EntityState.Modified;
                         deletableEntity.IsDeleted = true;
                         deletableEntity.DeletedDate = DateTime.UtcNow;
+                        deletableEntity.DeletedBy = userService.GetId();
                     }
                 }
             }
@@ -270,7 +278,7 @@ public sealed class DataContext : DbContext, IDataContext
 
     private void SetQueryFilter<T>(ModelBuilder modelBuilder) where T : DeletableEntity
     {
-        modelBuilder.Entity<T>().HasQueryFilter(x => !x.IsDeleted && x.DeletedDate == null);
+        modelBuilder.Entity<T>().HasQueryFilter(x => !x.IsDeleted && x.DeletedDate == null && x.DeletedBy == null);
     }
 
     private static IEnumerable<MethodInfo> SetGlobalQueryMethods(Type type)

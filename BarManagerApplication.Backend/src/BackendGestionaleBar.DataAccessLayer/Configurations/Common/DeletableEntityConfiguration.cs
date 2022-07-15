@@ -11,5 +11,6 @@ internal abstract class DeletableEntityConfiguration<T> : BaseEntityConfiguratio
 
         builder.Property(x => x.IsDeleted).IsRequired();
         builder.Property(x => x.DeletedDate).IsRequired(false);
+        builder.Property(x => x.DeletedBy).IsRequired(false);
     }
 }

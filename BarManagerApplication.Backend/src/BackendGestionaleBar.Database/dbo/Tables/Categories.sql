@@ -2,8 +2,12 @@
     [Id]          UNIQUEIDENTIFIER NOT NULL,
     [Name]        NVARCHAR (256)   NOT NULL,
     [Description] NVARCHAR (512)   NULL,
-    [CreatedDate] DATETIME NOT NULL,
-	[LastModifiedDate] DATETIME NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC)
+    [CreatedDate]       DATETIME         NOT NULL,
+    [CreatedBy]         UNIQUEIDENTIFIER NOT NULL,
+    [LastModifiedDate]  DATETIME         NULL,
+    [UpdatedBy]         UNIQUEIDENTIFIER NULL,
+    
+    PRIMARY KEY(Id),
+    FOREIGN KEY(CreatedBy) REFERENCES AspNetUsers(Id),
+    FOREIGN KEY(UpdatedBy) REFERENCES AspNetUsers(Id)
 );
-
