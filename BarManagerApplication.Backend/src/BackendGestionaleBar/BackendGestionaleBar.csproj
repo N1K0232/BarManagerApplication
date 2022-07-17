@@ -15,6 +15,7 @@
 		</ItemGroup>
 
 		<ItemGroup>
+				<ProjectReference Include="..\BackendGestionaleBar.Abstractions\BackendGestionaleBar.Abstractions.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.Authorization\BackendGestionaleBar.Authorization.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.BusinessLayer\BackendGestionaleBar.BusinessLayer.csproj" />
 				<ProjectReference Include="..\BackendGestionaleBar.Security\BackendGestionaleBar.Security.csproj" />
