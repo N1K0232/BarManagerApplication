@@ -233,6 +233,7 @@ public sealed class DataContext : DbContext, IDataContext
     private async Task<SqlDataReader> ExecuteReaderAsync(string tableName)
     {
         SqlDataReader reader;
+        Exception e = null;
 
         try
         {
@@ -245,13 +246,18 @@ public sealed class DataContext : DbContext, IDataContext
         }
         catch (SqlException ex)
         {
-            logger.LogError(ex, "Error");
+            e = ex;
             reader = null;
         }
         catch (InvalidOperationException ex)
         {
-            logger.LogError(ex, "Error");
+            e = ex;
             reader = null;
+        }
+
+        if (e != null)
+        {
+            logger.LogError(e, "Error");
         }
 
         return reader;
