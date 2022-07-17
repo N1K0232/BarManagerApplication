@@ -2,7 +2,6 @@
 using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.Extensions;
-using BackendGestionaleBar.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendGestionaleBar.Controllers;
