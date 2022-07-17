@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
+﻿using BackendGestionaleBar.Abstractions;
+using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.Shared.Requests;
 using BackendGestionaleBar.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -6,10 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackendGestionaleBar.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-[Produces("application/json")]
-public class AuthController : ControllerBase
+public class AuthController : ApiController
 {
     private readonly IIdentityService identityService;
 

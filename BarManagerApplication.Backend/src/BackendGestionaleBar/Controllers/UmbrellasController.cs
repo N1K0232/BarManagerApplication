@@ -1,15 +1,12 @@
-﻿using BackendGestionaleBar.Authentication;
-using BackendGestionaleBar.Authorization;
+﻿using BackendGestionaleBar.Abstractions;
+using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.Shared.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendGestionaleBar.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-[Produces("application/json")]
-public class UmbrellasController : ControllerBase
+public class UmbrellasController : ApiController
 {
 	private readonly IUmbrellaService umbrellaService;
 

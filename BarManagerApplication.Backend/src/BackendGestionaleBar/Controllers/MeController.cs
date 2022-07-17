@@ -1,15 +1,12 @@
-﻿using BackendGestionaleBar.Authentication;
+﻿using BackendGestionaleBar.Abstractions;
+using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.Authentication.Extensions;
-using BackendGestionaleBar.Authorization;
 using BackendGestionaleBar.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendGestionaleBar.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-[Produces("application/json")]
-public class MeController : ControllerBase
+public class MeController : ApiController
 {
     [HttpGet("GetMe")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]

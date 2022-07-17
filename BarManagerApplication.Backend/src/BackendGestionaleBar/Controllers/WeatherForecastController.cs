@@ -1,14 +1,11 @@
-﻿using BackendGestionaleBar.Authentication;
-using BackendGestionaleBar.Authorization;
+﻿using BackendGestionaleBar.Abstractions;
+using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.WeatherClient;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendGestionaleBar.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-[Produces("application/json")]
-public class WeatherForecastController : ControllerBase
+public class WeatherForecastController : ApiController
 {
 	private readonly IWeatherForecastService weatherForecastService;
 
