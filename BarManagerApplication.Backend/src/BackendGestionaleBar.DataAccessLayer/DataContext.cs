@@ -21,14 +21,19 @@ public sealed class DataContext : DbContext, IDataContext
     private readonly IUserService userService;
     private readonly ILogger<DataContext> logger;
 
-    private SqlConnection sqlConnection = null;
-    private SqlCommand sqlCommand = null;
-    private SqlDataReader sqlDataReader = null;
+    private SqlConnection sqlConnection;
+    private SqlCommand sqlCommand;
+    private SqlDataReader sqlDataReader;
 
     public DataContext(DbContextOptions<DataContext> options, IUserService userService, ILogger<DataContext> logger) : base(options)
     {
         this.userService = userService;
         this.logger = logger;
+
+        sqlConnection = null;
+        sqlCommand = null;
+        sqlDataReader = null;
+
         Configure();
     }
 
@@ -43,48 +48,42 @@ public sealed class DataContext : DbContext, IDataContext
     public void Delete<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-
-        var set = Set<T>();
-        set.Remove(entity);
+        Set<T>().Remove(entity);
     }
 
     public void Delete<T>(IEnumerable<T> entities) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
-
-        var set = Set<T>();
-        set.RemoveRange(entities);
+        Set<T>().RemoveRange(entities);
     }
 
     public void Edit<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-
-        var set = Set<T>();
-        set.Update(entity);
+        Set<T>().Update(entity);
     }
 
     public ValueTask<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity
     {
-        var set = Set<T>();
-        return set.FindAsync(keyValues);
+        return Set<T>().FindAsync(keyValues);
     }
 
     public async Task<List<Menu>> GetMenuAsync()
     {
         sqlDataReader = await ExecuteReaderAsync("Menu").ConfigureAwait(false);
+        List<Menu> result;
 
         if (sqlDataReader == null)
         {
-            return null;
+            result = null;
         }
         else
         {
-            var result = new List<Menu>();
+            result = new List<Menu>();
 
             while (sqlDataReader.Read())
             {
-                var menu = new Menu
+                Menu menu = new()
                 {
                     Product = Convert.ToString(sqlDataReader["Product"]),
                     Category = Convert.ToString(sqlDataReader["Category"]),
@@ -96,13 +95,14 @@ public sealed class DataContext : DbContext, IDataContext
             }
 
             sqlDataReader.Dispose();
-            return result;
         }
+
+        return result;
     }
 
     public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
     {
-        var set = Set<T>().AsQueryable();
+        IQueryable<T> set = Set<T>().AsQueryable();
 
         if (ignoreQueryFilters)
         {
@@ -117,9 +117,7 @@ public sealed class DataContext : DbContext, IDataContext
     public void Insert<T>(T entity) where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
-
-        var set = Set<T>();
-        set.Add(entity);
+        Set<T>().Add(entity);
     }
 
     public Task SaveAsync() => SaveChangesAsync();
@@ -154,13 +152,16 @@ public sealed class DataContext : DbContext, IDataContext
         foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
         {
             BaseEntity baseEntity = (BaseEntity)entry.Entity;
+
             if (entry.State == EntityState.Added)
             {
                 logger.LogInformation("Saving entity");
+
                 baseEntity.CreatedDate = DateTime.UtcNow;
                 baseEntity.CreatedBy = userId.GetValueOrDefault(Guid.Empty);
                 baseEntity.LastModifiedDate = null;
                 baseEntity.UpdatedBy = null;
+
                 if (baseEntity is DeletableEntity deletableEntity)
                 {
                     deletableEntity.IsDeleted = false;
@@ -171,12 +172,14 @@ public sealed class DataContext : DbContext, IDataContext
             if (entry.State == EntityState.Modified)
             {
                 logger.LogInformation("Updating entity");
+
                 baseEntity.LastModifiedDate = DateTime.UtcNow;
                 baseEntity.UpdatedBy = userId.GetValueOrDefault(Guid.Empty);
             }
             if (entry.State == EntityState.Deleted)
             {
                 logger.LogInformation("Deleting entity");
+
                 if (baseEntity is DeletableEntity deletableEntity)
                 {
                     entry.State = EntityState.Modified;
