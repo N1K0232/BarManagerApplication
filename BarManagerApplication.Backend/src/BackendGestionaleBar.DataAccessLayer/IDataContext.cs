@@ -18,6 +18,7 @@ public interface IDataContext
     IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity;
 
     ValueTask<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity;
+
     Task<List<Menu>> GetMenuAsync();
 
     void Insert<T>(T entity) where T : BaseEntity;
