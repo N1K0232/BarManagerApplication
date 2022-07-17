@@ -149,7 +149,7 @@ public sealed class DataContext : DbContext, IDataContext
         var entries = ChangeTracker.Entries()
             .Where(e => e.Entity.GetType().IsSubclassOf(typeof(BaseEntity))).ToList();
 
-        Guid userId = userService.GetId();
+        Guid? userId = userService.GetId();
 
         foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
         {
@@ -158,7 +158,7 @@ public sealed class DataContext : DbContext, IDataContext
             {
                 logger.LogInformation("Saving entity");
                 baseEntity.CreatedDate = DateTime.UtcNow;
-                baseEntity.CreatedBy = userId;
+                baseEntity.CreatedBy = userId.GetValueOrDefault(Guid.Empty);
                 baseEntity.LastModifiedDate = null;
                 baseEntity.UpdatedBy = null;
                 if (baseEntity is DeletableEntity deletableEntity)
@@ -172,7 +172,7 @@ public sealed class DataContext : DbContext, IDataContext
             {
                 logger.LogInformation("Updating entity");
                 baseEntity.LastModifiedDate = DateTime.UtcNow;
-                baseEntity.UpdatedBy = userId;
+                baseEntity.UpdatedBy = userId.GetValueOrDefault(Guid.Empty);
             }
             if (entry.State == EntityState.Deleted)
             {
@@ -182,7 +182,7 @@ public sealed class DataContext : DbContext, IDataContext
                     entry.State = EntityState.Modified;
                     deletableEntity.IsDeleted = true;
                     deletableEntity.DeletedDate = DateTime.UtcNow;
-                    deletableEntity.DeletedBy = userId;
+                    deletableEntity.DeletedBy = userId.GetValueOrDefault(Guid.Empty);
                 }
             }
         }

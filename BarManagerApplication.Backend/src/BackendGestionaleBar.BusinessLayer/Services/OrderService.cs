@@ -88,7 +88,7 @@ public sealed class OrderService : IOrderService
 
             dbOrder = new Entities.Order
             {
-                UserId = userService.GetId(),
+                UserId = userService.GetId().GetValueOrDefault(Guid.Empty),
                 UmbrellaId = dbUmbrella.Id,
                 OrderDate = DateTime.UtcNow,
                 OrderStatus = OrderStatus.New,
