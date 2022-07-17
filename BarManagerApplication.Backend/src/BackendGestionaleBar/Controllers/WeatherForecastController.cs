@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.Abstractions;
+﻿using BackendGestionaleBar.Abstractions.Controllers;
+using BackendGestionaleBar.Abstractions.Filters;
 using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.WeatherClient;
 using Microsoft.AspNetCore.Mvc;
