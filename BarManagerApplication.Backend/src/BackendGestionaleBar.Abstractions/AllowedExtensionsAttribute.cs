@@ -18,9 +18,12 @@ public sealed class AllowedExtensionsAttribute : ValidationAttribute
         if (value is IFormFile file)
         {
             string extension = Path.GetExtension(file.FileName).ToLowerInvariant()[1..];
-            if (!extensions.Contains(extension))
+            bool contains = !extensions.Contains(extension);
+
+            if (!contains)
             {
-                return new ValidationResult(GetErrorMessage());
+                string errorMessage = GetErrorMessage();
+                return new ValidationResult(errorMessage);
             }
         }
 
