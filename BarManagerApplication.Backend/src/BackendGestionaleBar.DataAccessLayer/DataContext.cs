@@ -14,9 +14,7 @@ namespace BackendGestionaleBar.DataAccessLayer;
 
 public sealed class DataContext : DbContext, IDataContext
 {
-    private static readonly MethodInfo setQueryFilter = typeof(DataContext)
-        .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
-        .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
+    private static readonly MethodInfo setQueryFilter;
 
     private readonly IUserService userService;
     private readonly ILogger<DataContext> logger;
@@ -25,6 +23,12 @@ public sealed class DataContext : DbContext, IDataContext
     private SqlCommand sqlCommand;
     private SqlDataReader sqlDataReader;
 
+    static DataContext()
+    {
+        Type type = typeof(DataContext);
+        setQueryFilter = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+            .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
+    }
     public DataContext(DbContextOptions<DataContext> options, IUserService userService, ILogger<DataContext> logger) : base(options)
     {
         this.userService = userService;
