@@ -1,4 +1,6 @@
-﻿using BackendGestionaleBar.Abstractions;
+﻿using BackendGestionaleBar.Abstractions.Controllers;
+using BackendGestionaleBar.Abstractions.Filters;
+using BackendGestionaleBar.Abstractions.Models;
 using BackendGestionaleBar.Authentication;
 using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.Extensions;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace BackendGestionaleBar.Abstractions;
+namespace BackendGestionaleBar.Abstractions.Models;
 
 public class UploadImageRequest
 {

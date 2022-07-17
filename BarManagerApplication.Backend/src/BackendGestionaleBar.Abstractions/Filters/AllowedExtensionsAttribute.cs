@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendGestionaleBar.Abstractions;
+namespace BackendGestionaleBar.Abstractions.Filters;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false)]
 public sealed class AllowedExtensionsAttribute : ValidationAttribute
