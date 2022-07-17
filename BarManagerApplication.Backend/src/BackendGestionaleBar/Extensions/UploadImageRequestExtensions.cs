@@ -1,4 +1,4 @@
-﻿using BackendGestionaleBar.Abstractions;
+﻿using BackendGestionaleBar.Abstractions.Models;
 using BackendGestionaleBar.BusinessLayer.Models;
 
 namespace BackendGestionaleBar.Extensions;
