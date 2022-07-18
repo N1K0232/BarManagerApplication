@@ -194,6 +194,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
     {
         ThrowIfDisposed();
+
         IQueryable<T> set = Set<T>().AsQueryable();
 
         if (ignoreQueryFilters)
@@ -288,6 +289,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     public Task<IEnumerable<T>> GetDataAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
         where T : class
     {
+        ThrowIfDisposed();
         return ConnectionInternal.QueryAsync<T>(sql, param, transaction, commandType: commandType);
     }
 
@@ -296,6 +298,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         where TSecond : class
         where TReturn : class
     {
+        ThrowIfDisposed();
         return ConnectionInternal.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
     }
 
@@ -305,6 +308,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         where TThrid : class
         where TReturn : class
     {
+        ThrowIfDisposed();
         return ConnectionInternal.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
     }
 
@@ -315,12 +319,14 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         where TFourth : class
         where TReturn : class
     {
+        ThrowIfDisposed();
         return ConnectionInternal.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
     }
 
     public Task<T> GetObjectAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
         where T : class
     {
+        ThrowIfDisposed();
         return ConnectionInternal.QueryFirstOrDefaultAsync<T>(sql, param, transaction, commandType: commandType);
     }
 
@@ -329,6 +335,8 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         where TSecond : class
         where TReturn : class
     {
+        ThrowIfDisposed();
+
         var result = await ConnectionInternal.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
         return result.FirstOrDefault();
     }
@@ -339,6 +347,8 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         where TThird : class
         where TReturn : class
     {
+        ThrowIfDisposed();
+
         var result = await ConnectionInternal.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
         return result.FirstOrDefault();
     }
@@ -350,22 +360,27 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         where TFourth : class
         where TReturn : class
     {
+        ThrowIfDisposed();
+
         var result = await ConnectionInternal.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
         return result.FirstOrDefault();
     }
 
     public Task<T> GetSingleValueAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
     {
+        ThrowIfDisposed();
         return ConnectionInternal.ExecuteScalarAsync<T>(sql, param, transaction, commandType: commandType);
     }
 
     public Task<int> ExecuteAsync(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
     {
+        ThrowIfDisposed();
         return ConnectionInternal.ExecuteAsync(sql, param, transaction, commandType: commandType);
     }
 
     public IDbTransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Unspecified)
     {
+        ThrowIfDisposed();
         return ConnectionInternal.BeginTransaction(isolationLevel);
     }
 
