@@ -15,12 +15,14 @@ public sealed class OrderService : IOrderService
 {
     private readonly IDataContext dataContext;
     private readonly IUserService userService;
+    private readonly IAuthenticatedService authenticatedService;
     private readonly IMapper mapper;
 
-    public OrderService(IDataContext dataContext, IUserService userService, IMapper mapper)
+    public OrderService(IDataContext dataContext, IUserService userService, IAuthenticatedService authenticatedService, IMapper mapper)
     {
         this.dataContext = dataContext;
         this.userService = userService;
+        this.authenticatedService = authenticatedService;
         this.mapper = mapper;
     }
 
@@ -79,6 +81,8 @@ public sealed class OrderService : IOrderService
 
     public async Task<Order> SaveAsync(SaveOrderRequest request)
     {
+        Guid? userId = userService.GetId();
+
         var query = dataContext.GetData<Entities.Order>(trackingChanges: true);
         var dbOrder = request.Id != null ? await query.FirstOrDefaultAsync(o => o.Id == request.Id) : null;
 
@@ -88,7 +92,7 @@ public sealed class OrderService : IOrderService
 
             dbOrder = new Entities.Order
             {
-                UserId = userService.GetId().GetValueOrDefault(Guid.Empty),
+                UserId = userId.GetValueOrDefault(Guid.Empty),
                 UmbrellaId = dbUmbrella.Id,
                 OrderDate = DateTime.UtcNow,
                 OrderStatus = OrderStatus.New,
@@ -127,6 +131,9 @@ public sealed class OrderService : IOrderService
         }
 
         await dataContext.SaveAsync();
-        return mapper.Map<Order>(dbOrder);
+
+        var savedOrder = mapper.Map<Order>(dbOrder);
+        savedOrder.User = await authenticatedService.GetUserAsync();
+        return savedOrder;
     }
 }
