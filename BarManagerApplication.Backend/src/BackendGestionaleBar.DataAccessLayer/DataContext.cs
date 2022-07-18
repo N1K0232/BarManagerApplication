@@ -484,9 +484,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     private void Configure()
     {
         string connectionString = Database.GetConnectionString();
-
         SqlConnection connection = new(connectionString);
-
         Exception e = null;
 
         try
@@ -521,8 +519,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     }
     private static IEnumerable<MethodInfo> SetGlobalQueryMethods(Type type)
     {
-        var result = new List<MethodInfo>();
-
+        List<MethodInfo> result = new();
         Type deletableEntityType = typeof(DeletableEntity);
 
         if (deletableEntityType.IsAssignableFrom(type))
