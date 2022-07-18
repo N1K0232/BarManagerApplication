@@ -375,6 +375,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     {
         Dispose(true);
         base.Dispose();
+        GC.SuppressFinalize(this);
     }
     private void Dispose(bool disposing)
     {
