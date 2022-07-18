@@ -184,8 +184,6 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
                 result.Add(menu);
             }
-
-            dataReader.Dispose();
         }
 
         return result;
@@ -461,7 +459,6 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
             command.CommandText = $"SELECT * FROM {tableName}";
             reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
             await activeConnection.CloseAsync().ConfigureAwait(false);
-            command.Dispose();
         }
         catch (SqlException ex)
         {
