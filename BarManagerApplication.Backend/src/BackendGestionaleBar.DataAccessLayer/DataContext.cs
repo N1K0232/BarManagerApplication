@@ -24,6 +24,8 @@ public sealed class DataContext : DbContext, IDataContext
     private SqlCommand command;
     private SqlDataReader dataReader;
 
+    private bool disposed;
+
     static DataContext()
     {
         dataContextType = typeof(DataContext);
@@ -38,6 +40,8 @@ public sealed class DataContext : DbContext, IDataContext
         activeConnection = null;
         command = null;
         dataReader = null;
+
+        disposed = false;
 
         Configure();
     }
@@ -85,29 +89,35 @@ public sealed class DataContext : DbContext, IDataContext
 
     public void Delete<T>(T entity) where T : BaseEntity
     {
+        ThrowIfDisposed();
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
         Set<T>().Remove(entity);
     }
 
     public void Delete<T>(IEnumerable<T> entities) where T : BaseEntity
     {
+        ThrowIfDisposed();
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
         Set<T>().RemoveRange(entities);
     }
 
     public void Edit<T>(T entity) where T : BaseEntity
     {
+        ThrowIfDisposed();
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
         Set<T>().Update(entity);
     }
 
     public ValueTask<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity
     {
+        ThrowIfDisposed();
         return Set<T>().FindAsync(keyValues);
     }
 
     public async Task<List<Menu>> GetMenuAsync()
     {
+        ThrowIfDisposed();
+
         dataReader = await ExecuteReaderAsync("Menu").ConfigureAwait(false);
         List<Menu> result;
 
@@ -140,6 +150,7 @@ public sealed class DataContext : DbContext, IDataContext
 
     public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
     {
+        ThrowIfDisposed();
         IQueryable<T> set = Set<T>().AsQueryable();
 
         if (ignoreQueryFilters)
@@ -154,6 +165,7 @@ public sealed class DataContext : DbContext, IDataContext
 
     public void Insert<T>(T entity) where T : BaseEntity
     {
+        ThrowIfDisposed();
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
         Set<T>().Add(entity);
     }
@@ -162,6 +174,8 @@ public sealed class DataContext : DbContext, IDataContext
 
     public Task ExecuteTransactionAsync(Func<Task> action)
     {
+        ThrowIfDisposed();
+
         var strategy = Database.CreateExecutionStrategy();
 
         Task task = strategy.ExecuteAsync(async () =>
@@ -174,14 +188,10 @@ public sealed class DataContext : DbContext, IDataContext
         return task;
     }
 
-    public override void Dispose()
-    {
-        activeConnection.Dispose();
-        base.Dispose();
-    }
-
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
+
         var entries = ChangeTracker.Entries()
             .Where(e => e.Entity.GetType().IsSubclassOf(typeof(BaseEntity))).ToList();
 
@@ -230,6 +240,47 @@ public sealed class DataContext : DbContext, IDataContext
 
         logger.LogInformation("Applying changes to the database");
         return base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override void Dispose()
+    {
+        Dispose(true);
+        base.Dispose();
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (disposing && !disposed)
+        {
+            if (activeConnection != null)
+            {
+                if (activeConnection.State == ConnectionState.Open)
+                {
+                    activeConnection.Close();
+                }
+                activeConnection.Dispose();
+            }
+
+            if (command != null)
+            {
+                command.Dispose();
+            }
+
+            if (dataReader != null)
+            {
+                dataReader.Dispose();
+            }
+
+            disposed = true;
+        }
+    }
+
+    private void ThrowIfDisposed()
+    {
+        if (disposed)
+        {
+            throw new ObjectDisposedException(dataContextType.Name);
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
