@@ -9,7 +9,6 @@ using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
@@ -65,13 +64,9 @@ public static class HostBuilderExtensions
     public static IServiceCollection AddDataContext(this IServiceCollection services, string connectionString)
     {
         services.AddSqlServer<AuthenticationDataContext>(connectionString);
-        services.AddDbContext<IDataContext, DataContext>(options =>
-        {
-            options.UseSqlServer(connectionString, dbOptions =>
-            {
-                dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(2), null);
-            });
-        });
+        services.AddSqlServer<DataContext>(connectionString);
+        services.AddScoped<IDataContext>(services => services.GetRequiredService<DataContext>());
+        services.AddScoped<ISqlContext>(services => services.GetRequiredService<DataContext>());
 
         return services;
     }
