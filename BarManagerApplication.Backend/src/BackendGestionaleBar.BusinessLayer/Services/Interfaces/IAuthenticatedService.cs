@@ -3,5 +3,5 @@
 namespace BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 public interface IAuthenticatedService
 {
-    Task<User> GetUserAsync();
+    Task<User> GetUserAsync(Guid userId);
 }

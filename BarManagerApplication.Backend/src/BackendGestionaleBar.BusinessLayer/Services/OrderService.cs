@@ -133,7 +133,7 @@ public sealed class OrderService : IOrderService
         await dataContext.SaveAsync();
 
         var savedOrder = mapper.Map<Order>(dbOrder);
-        savedOrder.User = await authenticatedService.GetUserAsync();
+        savedOrder.User = await authenticatedService.GetUserAsync(userId.Value);
         return savedOrder;
     }
 }
