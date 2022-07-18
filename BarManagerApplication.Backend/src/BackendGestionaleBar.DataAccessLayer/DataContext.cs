@@ -19,9 +19,9 @@ public sealed class DataContext : DbContext, IDataContext
     private readonly IUserService userService;
     private readonly ILogger<DataContext> logger;
 
-    private SqlConnection sqlConnection;
-    private SqlCommand sqlCommand;
-    private SqlDataReader sqlDataReader;
+    private SqlConnection activeConnection;
+    private SqlCommand command;
+    private SqlDataReader dataReader;
 
     static DataContext()
     {
@@ -34,9 +34,9 @@ public sealed class DataContext : DbContext, IDataContext
         this.userService = userService;
         this.logger = logger;
 
-        sqlConnection = null;
-        sqlCommand = null;
-        sqlDataReader = null;
+        activeConnection = null;
+        command = null;
+        dataReader = null;
 
         Configure();
     }
@@ -74,10 +74,10 @@ public sealed class DataContext : DbContext, IDataContext
 
     public async Task<List<Menu>> GetMenuAsync()
     {
-        sqlDataReader = await ExecuteReaderAsync("Menu").ConfigureAwait(false);
+        dataReader = await ExecuteReaderAsync("Menu").ConfigureAwait(false);
         List<Menu> result;
 
-        if (sqlDataReader == null)
+        if (dataReader == null)
         {
             result = null;
         }
@@ -85,20 +85,20 @@ public sealed class DataContext : DbContext, IDataContext
         {
             result = new List<Menu>();
 
-            while (sqlDataReader.Read())
+            while (dataReader.Read())
             {
                 Menu menu = new()
                 {
-                    Product = Convert.ToString(sqlDataReader["Product"]),
-                    Category = Convert.ToString(sqlDataReader["Category"]),
-                    Price = Convert.ToDecimal(sqlDataReader["Price"]),
-                    Quantity = Convert.ToInt32(sqlDataReader["Quantity"])
+                    Product = Convert.ToString(dataReader["Product"]),
+                    Category = Convert.ToString(dataReader["Category"]),
+                    Price = Convert.ToDecimal(dataReader["Price"]),
+                    Quantity = Convert.ToInt32(dataReader["Quantity"])
                 };
 
                 result.Add(menu);
             }
 
-            sqlDataReader.Dispose();
+            dataReader.Dispose();
         }
 
         return result;
@@ -142,7 +142,7 @@ public sealed class DataContext : DbContext, IDataContext
 
     public override void Dispose()
     {
-        sqlConnection.Dispose();
+        activeConnection.Dispose();
         base.Dispose();
     }
 
@@ -244,12 +244,12 @@ public sealed class DataContext : DbContext, IDataContext
 
         try
         {
-            await sqlConnection.OpenAsync().ConfigureAwait(false);
-            sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandText = $"SELECT * FROM {tableName}";
-            reader = await sqlCommand.ExecuteReaderAsync().ConfigureAwait(false);
-            await sqlConnection.CloseAsync().ConfigureAwait(false);
-            sqlCommand.Dispose();
+            await activeConnection.OpenAsync().ConfigureAwait(false);
+            command = activeConnection.CreateCommand();
+            command.CommandText = $"SELECT * FROM {tableName}";
+            reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+            await activeConnection.CloseAsync().ConfigureAwait(false);
+            command.Dispose();
         }
         catch (SqlException ex)
         {
@@ -299,7 +299,7 @@ public sealed class DataContext : DbContext, IDataContext
         else
         {
             logger.LogInformation("Test connection succedeed");
-            sqlConnection = connection;
+            activeConnection = connection;
         }
     }
 
