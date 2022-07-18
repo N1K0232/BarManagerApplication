@@ -50,6 +50,8 @@ public sealed class DataContext : DbContext, IDataContext
     {
         get
         {
+            ThrowIfDisposed();
+
             if (activeConnection.State is ConnectionState.Open)
             {
                 //attempting close the active connection before returning it
@@ -83,6 +85,7 @@ public sealed class DataContext : DbContext, IDataContext
     {
         get
         {
+            ThrowIfDisposed();
             return Set<OrderDetail>();
         }
     }
