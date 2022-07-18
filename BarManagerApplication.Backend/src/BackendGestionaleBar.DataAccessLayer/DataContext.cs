@@ -312,7 +312,16 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     public IDbTransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Unspecified)
     {
         ThrowIfDisposed();
-        return InternalConnection.BeginTransaction(isolationLevel);
+
+        IDbTransaction transaction = BeginTransactionInternal(isolationLevel);
+        return transaction;
+    }
+    public Task<IDbTransaction> BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.Unspecified)
+    {
+        ThrowIfDisposed();
+
+        IDbTransaction transaction = BeginTransactionInternal(isolationLevel);
+        return Task.FromResult(transaction);
     }
 
     //helper methods
@@ -478,6 +487,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
         return reader;
     }
+    private IDbTransaction BeginTransactionInternal(IsolationLevel isolationLevel) => InternalConnection.BeginTransaction(isolationLevel);
     private void Configure()
     {
         string connectionString = Database.GetConnectionString();

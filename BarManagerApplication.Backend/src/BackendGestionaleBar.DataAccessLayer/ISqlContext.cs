@@ -51,4 +51,6 @@ public interface ISqlContext
     Task<int> ExecuteAsync(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null);
 
     IDbTransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Unspecified);
+
+    Task<IDbTransaction> BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.Unspecified);
 }
