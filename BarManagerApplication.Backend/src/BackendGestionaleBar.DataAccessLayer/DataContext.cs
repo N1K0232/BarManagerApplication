@@ -15,6 +15,7 @@ namespace BackendGestionaleBar.DataAccessLayer;
 public sealed class DataContext : DbContext, IDataContext
 {
     private static readonly MethodInfo setQueryFilter;
+    private static readonly Type dataContextType;
 
     private readonly IUserService userService;
     private readonly ILogger<DataContext> logger;
@@ -25,8 +26,8 @@ public sealed class DataContext : DbContext, IDataContext
 
     static DataContext()
     {
-        Type type = typeof(DataContext);
-        setQueryFilter = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+        dataContextType = typeof(DataContext);
+        setQueryFilter = dataContextType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
     }
     public DataContext(DbContextOptions<DataContext> options, IUserService userService, ILogger<DataContext> logger) : base(options)
@@ -41,6 +42,39 @@ public sealed class DataContext : DbContext, IDataContext
         Configure();
     }
 
+    public IDbConnection Connection
+    {
+        get
+        {
+            if (activeConnection.State is ConnectionState.Open)
+            {
+                //attempting close the active connection before returning it
+                Exception e = null;
+
+                try
+                {
+                    logger.LogInformation("closing connection");
+                    activeConnection.Close();
+                }
+                catch (SqlException ex)
+                {
+                    e = ex;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    e = ex;
+                }
+
+                if (e != null)
+                {
+                    logger.LogError(e, "Error");
+                    throw e;
+                }
+            }
+
+            return activeConnection;
+        }
+    }
     public DbSet<OrderDetail> OrderDetails
     {
         get
@@ -200,7 +234,8 @@ public sealed class DataContext : DbContext, IDataContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        //applying configurations
+        modelBuilder.ApplyConfigurationsFromAssembly(dataContextType.Assembly);
 
         //applying converter for strings. When the runtime gets, adds or updates an entity
         //the runtime trims the strings
@@ -273,7 +308,9 @@ public sealed class DataContext : DbContext, IDataContext
     private void Configure()
     {
         string connectionString = Database.GetConnectionString();
+
         SqlConnection connection = new(connectionString);
+
         Exception e = null;
 
         try
