@@ -27,6 +27,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
     private bool disposed;
 
+    //constructors
     static DataContext()
     {
         dataContextType = typeof(DataContext);
@@ -47,11 +48,13 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         Configure();
     }
 
+    //destructor
     ~DataContext()
     {
         Dispose(false);
     }
 
+    //properties
     public DbSet<OrderDetail> OrderDetails
     {
         get
@@ -130,33 +133,30 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         }
     }
 
+    //IDataContext interface implemented methods
     public void Delete<T>(T entity) where T : BaseEntity
     {
         ThrowIfDisposed();
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
         Set<T>().Remove(entity);
     }
-
     public void Delete<T>(IEnumerable<T> entities) where T : BaseEntity
     {
         ThrowIfDisposed();
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
         Set<T>().RemoveRange(entities);
     }
-
     public void Edit<T>(T entity) where T : BaseEntity
     {
         ThrowIfDisposed();
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
         Set<T>().Update(entity);
     }
-
     public ValueTask<T> GetAsync<T>(params object[] keyValues) where T : BaseEntity
     {
         ThrowIfDisposed();
         return Set<T>().FindAsync(keyValues);
     }
-
     public async Task<List<Menu>> GetMenuAsync()
     {
         ThrowIfDisposed();
@@ -190,7 +190,6 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
         return result;
     }
-
     public IQueryable<T> GetData<T>(bool trackingChanges = false, bool ignoreQueryFilters = false) where T : BaseEntity
     {
         ThrowIfDisposed();
@@ -206,16 +205,13 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
             set.AsTracking() :
             set.AsNoTrackingWithIdentityResolution();
     }
-
     public void Insert<T>(T entity) where T : BaseEntity
     {
         ThrowIfDisposed();
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
         Set<T>().Add(entity);
     }
-
     public Task SaveAsync() => SaveChangesAsync();
-
     public Task ExecuteTransactionAsync(Func<Task> action)
     {
         ThrowIfDisposed();
@@ -232,6 +228,96 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         return task;
     }
 
+    //ISqlContext interface implemented methods
+    public Task<IEnumerable<T>> GetDataAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
+        where T : class
+    {
+        ThrowIfDisposed();
+        return InternalConnection.QueryAsync<T>(sql, param, transaction, commandType: commandType);
+    }
+    public Task<IEnumerable<TReturn>> GetDataAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
+        where TFirst : class
+        where TSecond : class
+        where TReturn : class
+    {
+        ThrowIfDisposed();
+        return InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
+    }
+    public Task<IEnumerable<TReturn>> GetDataAsync<TFirst, TSecond, TThrid, TReturn>(string sql, Func<TFirst, TSecond, TThrid, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
+        where TFirst : class
+        where TSecond : class
+        where TThrid : class
+        where TReturn : class
+    {
+        ThrowIfDisposed();
+        return InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
+    }
+    public Task<IEnumerable<TReturn>> GetDataAsync<TFirst, TSecond, TThrid, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThrid, TFourth, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
+        where TFirst : class
+        where TSecond : class
+        where TThrid : class
+        where TFourth : class
+        where TReturn : class
+    {
+        ThrowIfDisposed();
+        return InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
+    }
+    public Task<T> GetObjectAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
+        where T : class
+    {
+        ThrowIfDisposed();
+        return InternalConnection.QueryFirstOrDefaultAsync<T>(sql, param, transaction, commandType: commandType);
+    }
+    public async Task<TReturn> GetObjectAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
+        where TFirst : class
+        where TSecond : class
+        where TReturn : class
+    {
+        ThrowIfDisposed();
+
+        var result = await InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
+        return result.FirstOrDefault();
+    }
+    public async Task<TReturn> GetObjectAsync<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
+        where TFirst : class
+        where TSecond : class
+        where TThird : class
+        where TReturn : class
+    {
+        ThrowIfDisposed();
+
+        var result = await InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
+        return result.FirstOrDefault();
+    }
+    public async Task<TReturn> GetObjectAsync<TFirst, TSecond, TThird, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
+        where TFirst : class
+        where TSecond : class
+        where TThird : class
+        where TFourth : class
+        where TReturn : class
+    {
+        ThrowIfDisposed();
+
+        var result = await InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
+        return result.FirstOrDefault();
+    }
+    public Task<T> GetSingleValueAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
+    {
+        ThrowIfDisposed();
+        return InternalConnection.ExecuteScalarAsync<T>(sql, param, transaction, commandType: commandType);
+    }
+    public Task<int> ExecuteAsync(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
+    {
+        ThrowIfDisposed();
+        return InternalConnection.ExecuteAsync(sql, param, transaction, commandType: commandType);
+    }
+    public IDbTransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Unspecified)
+    {
+        ThrowIfDisposed();
+        return InternalConnection.BeginTransaction(isolationLevel);
+    }
+
+    //helper methods
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         ThrowIfDisposed();
@@ -285,111 +371,11 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         logger.LogInformation("Applying changes to the database");
         return base.SaveChangesAsync(cancellationToken);
     }
-
-    public Task<IEnumerable<T>> GetDataAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
-        where T : class
-    {
-        ThrowIfDisposed();
-        return InternalConnection.QueryAsync<T>(sql, param, transaction, commandType: commandType);
-    }
-
-    public Task<IEnumerable<TReturn>> GetDataAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-        return InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
-    }
-
-    public Task<IEnumerable<TReturn>> GetDataAsync<TFirst, TSecond, TThrid, TReturn>(string sql, Func<TFirst, TSecond, TThrid, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TThrid : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-        return InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
-    }
-
-    public Task<IEnumerable<TReturn>> GetDataAsync<TFirst, TSecond, TThrid, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThrid, TFourth, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TThrid : class
-        where TFourth : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-        return InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
-    }
-
-    public Task<T> GetObjectAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
-        where T : class
-    {
-        ThrowIfDisposed();
-        return InternalConnection.QueryFirstOrDefaultAsync<T>(sql, param, transaction, commandType: commandType);
-    }
-
-    public async Task<TReturn> GetObjectAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-
-        var result = await InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
-        return result.FirstOrDefault();
-    }
-
-    public async Task<TReturn> GetObjectAsync<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TThird : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-
-        var result = await InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
-        return result.FirstOrDefault();
-    }
-
-    public async Task<TReturn> GetObjectAsync<TFirst, TSecond, TThird, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TThird : class
-        where TFourth : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-
-        var result = await InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
-        return result.FirstOrDefault();
-    }
-
-    public Task<T> GetSingleValueAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
-    {
-        ThrowIfDisposed();
-        return InternalConnection.ExecuteScalarAsync<T>(sql, param, transaction, commandType: commandType);
-    }
-
-    public Task<int> ExecuteAsync(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
-    {
-        ThrowIfDisposed();
-        return InternalConnection.ExecuteAsync(sql, param, transaction, commandType: commandType);
-    }
-
-    public IDbTransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Unspecified)
-    {
-        ThrowIfDisposed();
-        return InternalConnection.BeginTransaction(isolationLevel);
-    }
-
     public override void Dispose()
     {
         Dispose(true);
         base.Dispose();
     }
-
     private void Dispose(bool disposing)
     {
         if (disposing && !disposed)
@@ -416,7 +402,6 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
             disposed = true;
         }
     }
-
     private void ThrowIfDisposed()
     {
         if (disposed)
@@ -424,7 +409,6 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
             throw new ObjectDisposedException(dataContextType.Name);
         }
     }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //applying configurations
@@ -464,7 +448,6 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
         base.OnModelCreating(modelBuilder);
     }
-
     private async Task<SqlDataReader> ExecuteReaderAsync(string tableName)
     {
         SqlDataReader reader;
@@ -497,7 +480,6 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
         return reader;
     }
-
     private void Configure()
     {
         string connectionString = Database.GetConnectionString();
@@ -532,12 +514,10 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
             activeConnection = connection;
         }
     }
-
     private void SetQueryFilter<T>(ModelBuilder modelBuilder) where T : DeletableEntity
     {
         modelBuilder.Entity<T>().HasQueryFilter(x => !x.IsDeleted && x.DeletedDate == null && x.DeletedBy == null);
     }
-
     private static IEnumerable<MethodInfo> SetGlobalQueryMethods(Type type)
     {
         var result = new List<MethodInfo>();
