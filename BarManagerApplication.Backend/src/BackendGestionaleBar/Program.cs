@@ -21,9 +21,13 @@ builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
 });
 
 builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddProblemDetails();
+
 builder.Services.AddMapperProfiles();
+
 builder.Services.AddValidators();
+
 builder.Services.AddSwaggerSettings();
 
 string connectionString = StringConverter.GetString(builder.Configuration.GetConnectionString("SqlConnection"));
@@ -31,18 +35,21 @@ builder.Services.AddDataContext(connectionString);
 
 builder.Services.AddIdentitySettings(jwtSettings);
 
-builder.Services.AddScoped<IUserService, InternalUserService>();
+builder.Services.AddScoped<IUserService, HttpUserService>();
+builder.Services.AddScoped<IAuthenticatedService, AuthenticatedService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IUmbrellaService, UmbrellaService>();
+
 builder.Services.AddWeatherService(options =>
 {
     options.BaseUrl = builder.Configuration.GetValue<string>("WeatherClientSettings:BaseUrl");
     options.ApiKey = builder.Configuration.GetValue<string>("WeatherClientSettings:ApiKey");
 });
+
 builder.Services.AddFileSystemStorageProvider(options =>
 {
     options.StorageFolder = builder.Configuration.GetValue<string>("AppSettings:StorageFolder");
@@ -57,14 +64,22 @@ T Configure<T>(string sectionName) where T : class
 }
 
 var app = builder.Build();
+
 app.UseProblemDetails();
+
 app.UseSwaggerSettings();
+
 app.UseSerilogRequestLogging(options =>
 {
     options.IncludeQueryInRequestPath = true;
 });
+
 app.UseHttpsRedirection();
+
 app.UseRouting();
+
 app.UseIdentitySettings();
+
 app.MapControllers();
+
 await app.RunAsync();
