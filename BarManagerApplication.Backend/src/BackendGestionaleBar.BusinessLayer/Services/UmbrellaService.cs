@@ -5,6 +5,7 @@ using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Requests;
 using Microsoft.EntityFrameworkCore;
+using TinyHelpers.Extensions;
 using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 
 namespace BackendGestionaleBar.BusinessLayer.Services;
@@ -31,7 +32,7 @@ public sealed class UmbrellaService : IUmbrellaService
     {
         var query = dataContext.GetData<Entities.Umbrella>();
 
-        if (!string.IsNullOrWhiteSpace(coordinates))
+        if (coordinates.HasValue())
         {
             query = query.Where(u => u.Coordinates.Equals(coordinates));
         }
