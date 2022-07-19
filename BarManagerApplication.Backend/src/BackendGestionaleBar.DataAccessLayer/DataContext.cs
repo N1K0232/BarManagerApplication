@@ -69,15 +69,16 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         {
             ThrowIfDisposed();
 
-            if (activeConnection.State is ConnectionState.Open)
-            {
-                //attempting close the active connection before returning it
-                Exception e = null;
+            SqlConnection connection = activeConnection;
+            Exception e = null;
 
+            //attempting close the active connection before returning it
+            if (connection.State is ConnectionState.Open)
+            {
                 try
                 {
                     logger.LogInformation("closing connection");
-                    activeConnection.Close();
+                    connection.Close();
                 }
                 catch (SqlException ex)
                 {
@@ -95,7 +96,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
                 }
             }
 
-            return activeConnection;
+            return connection;
         }
     }
     private IDbConnection InternalConnection
@@ -104,14 +105,16 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         {
             ThrowIfDisposed();
 
-            if (activeConnection.State is ConnectionState.Closed)
-            {
-                Exception e = null;
+            SqlConnection connection = activeConnection;
+            Exception e = null;
 
+            //attempting open the active connection before returning it
+            if (connection.State is ConnectionState.Closed)
+            {
                 try
                 {
                     logger.LogInformation("opening connection");
-                    activeConnection.Open();
+                    connection.Open();
                 }
                 catch (SqlException ex)
                 {
@@ -129,7 +132,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
                 }
             }
 
-            return activeConnection;
+            return connection;
         }
     }
 
