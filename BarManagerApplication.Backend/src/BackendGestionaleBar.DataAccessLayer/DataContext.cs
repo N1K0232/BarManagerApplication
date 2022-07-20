@@ -15,35 +15,35 @@ namespace BackendGestionaleBar.DataAccessLayer;
 
 public sealed class DataContext : DbContext, IDataContext, ISqlContext
 {
-    private static readonly MethodInfo setQueryFilter;
-    private static readonly Type dataContextType;
+    private static readonly MethodInfo _setQueryFilter;
+    private static readonly Type _dataContextType;
 
-    private readonly IUserService userService;
-    private readonly ILogger<DataContext> logger;
+    private readonly IUserService _userService;
+    private readonly ILogger<DataContext> _logger;
 
-    private SqlConnection activeConnection;
-    private SqlCommand command;
-    private SqlDataReader dataReader;
+    private SqlConnection _connection;
+    private SqlCommand _command;
+    private SqlDataReader _dataReader;
 
-    private bool disposed;
+    private bool _disposed;
 
     //constructors
     static DataContext()
     {
-        dataContextType = typeof(DataContext);
-        setQueryFilter = dataContextType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+        _dataContextType = typeof(DataContext);
+        _setQueryFilter = _dataContextType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
     }
     public DataContext(DbContextOptions<DataContext> options, IUserService userService, ILogger<DataContext> logger) : base(options)
     {
-        this.userService = userService;
-        this.logger = logger;
+        _userService = userService;
+        _logger = logger;
 
-        activeConnection = null;
-        command = null;
-        dataReader = null;
+        _connection = null;
+        _command = null;
+        _dataReader = null;
 
-        disposed = false;
+        _disposed = false;
 
         Configure();
     }
@@ -69,7 +69,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         {
             ThrowIfDisposed();
 
-            SqlConnection connection = activeConnection;
+            SqlConnection connection = _connection;
             Exception e = null;
 
             //attempting close the active connection before returning it
@@ -77,7 +77,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
             {
                 try
                 {
-                    logger.LogInformation("closing connection");
+                    _logger.LogInformation("closing connection");
                     connection.Close();
                 }
                 catch (SqlException ex)
@@ -91,7 +91,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
                 if (e != null)
                 {
-                    logger.LogError(e, "Error");
+                    _logger.LogError(e, "Error");
                     throw e;
                 }
             }
@@ -105,7 +105,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         {
             ThrowIfDisposed();
 
-            SqlConnection connection = activeConnection;
+            SqlConnection connection = _connection;
             Exception e = null;
 
             //attempting open the active connection before returning it
@@ -113,7 +113,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
             {
                 try
                 {
-                    logger.LogInformation("opening connection");
+                    _logger.LogInformation("opening connection");
                     connection.Open();
                 }
                 catch (SqlException ex)
@@ -127,7 +127,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
                 if (e != null)
                 {
-                    logger.LogError(e, "Error");
+                    _logger.LogError(e, "Error");
                     throw e;
                 }
             }
@@ -164,10 +164,10 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     {
         ThrowIfDisposed();
 
-        dataReader = await ExecuteReaderAsync("Menu").ConfigureAwait(false);
+        _dataReader = await ExecuteReaderAsync("Menu").ConfigureAwait(false);
         List<Menu> result;
 
-        if (dataReader == null)
+        if (_dataReader == null)
         {
             result = null;
         }
@@ -175,14 +175,14 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         {
             result = new List<Menu>();
 
-            while (dataReader.Read())
+            while (_dataReader.Read())
             {
                 Menu menu = new()
                 {
-                    Product = Convert.ToString(dataReader["Product"]),
-                    Category = Convert.ToString(dataReader["Category"]),
-                    Price = Convert.ToDecimal(dataReader["Price"]),
-                    Quantity = Convert.ToInt32(dataReader["Quantity"])
+                    Product = Convert.ToString(_dataReader["Product"]),
+                    Category = Convert.ToString(_dataReader["Category"]),
+                    Price = Convert.ToDecimal(_dataReader["Price"]),
+                    Quantity = Convert.ToInt32(_dataReader["Quantity"])
                 };
 
                 result.Add(menu);
@@ -335,7 +335,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         var entries = ChangeTracker.Entries()
             .Where(e => e.Entity.GetType().IsSubclassOf(typeof(BaseEntity))).ToList();
 
-        Guid? userId = userService.GetId();
+        Guid? userId = _userService.GetId();
 
         foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
         {
@@ -343,7 +343,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
             if (entry.State == EntityState.Added)
             {
-                logger.LogInformation("Saving entity");
+                _logger.LogInformation("Saving entity");
 
                 baseEntity.CreatedDate = DateTime.UtcNow;
                 baseEntity.CreatedBy = userId.GetValueOrDefault(Guid.Empty);
@@ -359,14 +359,14 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
             }
             if (entry.State == EntityState.Modified)
             {
-                logger.LogInformation("Updating entity");
+                _logger.LogInformation("Updating entity");
 
                 baseEntity.LastModifiedDate = DateTime.UtcNow;
                 baseEntity.UpdatedBy = userId.GetValueOrDefault(Guid.Empty);
             }
             if (entry.State == EntityState.Deleted)
             {
-                logger.LogInformation("Deleting entity");
+                _logger.LogInformation("Deleting entity");
 
                 if (baseEntity is DeletableEntity deletableEntity)
                 {
@@ -378,7 +378,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
             }
         }
 
-        logger.LogInformation("Applying changes to the database");
+        _logger.LogInformation("Applying changes to the database");
         return base.SaveChangesAsync(cancellationToken);
     }
     public override void Dispose()
@@ -389,41 +389,41 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     }
     private void Dispose(bool disposing)
     {
-        if (disposing && !disposed)
+        if (disposing && !_disposed)
         {
-            if (activeConnection != null)
+            if (_connection != null)
             {
-                if (activeConnection.State == ConnectionState.Open)
+                if (_connection.State == ConnectionState.Open)
                 {
-                    activeConnection.Close();
+                    _connection.Close();
                 }
-                activeConnection.Dispose();
+                _connection.Dispose();
             }
 
-            if (command != null)
+            if (_command != null)
             {
-                command.Dispose();
+                _command.Dispose();
             }
 
-            if (dataReader != null)
+            if (_dataReader != null)
             {
-                dataReader.Dispose();
+                _dataReader.Dispose();
             }
 
-            disposed = true;
+            _disposed = true;
         }
     }
     private void ThrowIfDisposed()
     {
-        if (disposed)
+        if (_disposed)
         {
-            throw new ObjectDisposedException(dataContextType.Name);
+            throw new ObjectDisposedException(_dataContextType.Name);
         }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //applying configurations
-        modelBuilder.ApplyConfigurationsFromAssembly(dataContextType.Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(_dataContextType.Assembly);
 
         //applying converter for strings. When the runtime gets, adds or updates an entity
         //the runtime trims the strings
@@ -466,11 +466,11 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
         try
         {
-            await activeConnection.OpenAsync().ConfigureAwait(false);
-            command = activeConnection.CreateCommand();
-            command.CommandText = $"SELECT * FROM {tableName}";
-            reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
-            await activeConnection.CloseAsync().ConfigureAwait(false);
+            await _connection.OpenAsync().ConfigureAwait(false);
+            _command = _connection.CreateCommand();
+            _command.CommandText = $"SELECT * FROM {tableName}";
+            reader = await _command.ExecuteReaderAsync().ConfigureAwait(false);
+            await _connection.CloseAsync().ConfigureAwait(false);
         }
         catch (SqlException ex)
         {
@@ -485,7 +485,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
         if (e != null)
         {
-            logger.LogError(e, "Error");
+            _logger.LogError(e, "Error");
         }
 
         return reader;
@@ -499,7 +499,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
         try
         {
-            logger.LogInformation("Testing connection");
+            _logger.LogInformation("Testing connection");
             connection.Open();
             connection.Close();
         }
@@ -514,13 +514,13 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
         if (e != null)
         {
-            logger.LogError(e, "Error");
+            _logger.LogError(e, "Error");
             throw e;
         }
         else
         {
-            logger.LogInformation("Test connection succedeed");
-            activeConnection = connection;
+            _logger.LogInformation("Test connection succedeed");
+            _connection = connection;
         }
     }
     private void SetQueryFilter<T>(ModelBuilder modelBuilder) where T : DeletableEntity
@@ -534,7 +534,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
         if (deletableEntityType.IsAssignableFrom(type))
         {
-            result.Add(setQueryFilter);
+            result.Add(_setQueryFilter);
         }
 
         return result;
