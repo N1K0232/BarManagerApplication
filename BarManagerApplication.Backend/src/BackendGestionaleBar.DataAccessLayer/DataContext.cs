@@ -104,7 +104,7 @@ public sealed class DataContext : DbContext, IDataContext
 
             Exception e = null;
 
-            if (value != null)
+            if (value == null)
             {
                 e = new Exception("please provide a valid connection");
                 _logger.LogError(e, "Error");
