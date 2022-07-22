@@ -2,7 +2,6 @@
 using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using BackendGestionaleBar.DataAccessLayer.Views;
-using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -14,7 +13,7 @@ using TinyHelpers.Extensions;
 
 namespace BackendGestionaleBar.DataAccessLayer;
 
-public sealed class DataContext : DbContext, IDataContext, ISqlContext
+public sealed class DataContext : DbContext, IDataContext
 {
     private static readonly MethodInfo _setQueryFilter;
     private static readonly Type _dataContextType;
@@ -99,41 +98,35 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
             return connection;
         }
-    }
-    private IDbConnection InternalConnection
-    {
-        get
+        set
         {
             ThrowIfDisposed();
 
-            SqlConnection connection = _connection;
+            SqlConnection connection = (SqlConnection)value;
             Exception e = null;
 
-            //attempting open the active connection before returning it
-            if (connection.State is ConnectionState.Closed)
+            try
             {
-                try
-                {
-                    _logger.LogInformation("opening connection");
-                    connection.Open();
-                }
-                catch (SqlException ex)
-                {
-                    e = ex;
-                }
-                catch (InvalidOperationException ex)
-                {
-                    e = ex;
-                }
-
-                if (e != null)
-                {
-                    _logger.LogError(e, "Error");
-                    throw e;
-                }
+                _logger.LogInformation("testing connection");
+                connection.Open();
+                connection.Close();
+            }
+            catch (SqlException ex)
+            {
+                e = ex;
+            }
+            catch (InvalidOperationException ex)
+            {
+                e = ex;
             }
 
-            return connection;
+            if (e != null)
+            {
+                _logger.LogError(e, "Error");
+                throw e;
+            }
+
+            _connection = connection;
         }
     }
 
@@ -228,104 +221,6 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
         });
 
         return task;
-    }
-
-    //ISqlContext interface implemented methods
-    public Task<IEnumerable<T>> GetDataAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
-        where T : class
-    {
-        ThrowIfDisposed();
-        return InternalConnection.QueryAsync<T>(sql, param, transaction, commandType: commandType);
-    }
-    public Task<IEnumerable<TReturn>> GetDataAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-        return InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
-    }
-    public Task<IEnumerable<TReturn>> GetDataAsync<TFirst, TSecond, TThrid, TReturn>(string sql, Func<TFirst, TSecond, TThrid, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TThrid : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-        return InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
-    }
-    public Task<IEnumerable<TReturn>> GetDataAsync<TFirst, TSecond, TThrid, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThrid, TFourth, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TThrid : class
-        where TFourth : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-        return InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType);
-    }
-    public Task<T> GetObjectAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
-        where T : class
-    {
-        ThrowIfDisposed();
-        return InternalConnection.QueryFirstOrDefaultAsync<T>(sql, param, transaction, commandType: commandType);
-    }
-    public async Task<TReturn> GetObjectAsync<TFirst, TSecond, TReturn>(string sql, Func<TFirst, TSecond, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-
-        var result = await InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
-        return result.FirstOrDefault();
-    }
-    public async Task<TReturn> GetObjectAsync<TFirst, TSecond, TThird, TReturn>(string sql, Func<TFirst, TSecond, TThird, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TThird : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-
-        var result = await InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
-        return result.FirstOrDefault();
-    }
-    public async Task<TReturn> GetObjectAsync<TFirst, TSecond, TThird, TFourth, TReturn>(string sql, Func<TFirst, TSecond, TThird, TFourth, TReturn> map, object param = null, IDbTransaction transaction = null, CommandType? commandType = null, string splitOn = "Id")
-        where TFirst : class
-        where TSecond : class
-        where TThird : class
-        where TFourth : class
-        where TReturn : class
-    {
-        ThrowIfDisposed();
-
-        var result = await InternalConnection.QueryAsync(sql, map, param, transaction, splitOn: splitOn, commandType: commandType).ConfigureAwait(false);
-        return result.FirstOrDefault();
-    }
-    public Task<T> GetSingleValueAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
-    {
-        ThrowIfDisposed();
-        return InternalConnection.ExecuteScalarAsync<T>(sql, param, transaction, commandType: commandType);
-    }
-    public Task<int> ExecuteAsync(string sql, object param = null, IDbTransaction transaction = null, CommandType? commandType = null)
-    {
-        ThrowIfDisposed();
-        return InternalConnection.ExecuteAsync(sql, param, transaction, commandType: commandType);
-    }
-    public IDbTransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Unspecified)
-    {
-        ThrowIfDisposed();
-
-        IDbTransaction transaction = BeginTransactionInternal(isolationLevel);
-        return transaction;
-    }
-    public Task<IDbTransaction> BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.Unspecified)
-    {
-        ThrowIfDisposed();
-
-        IDbTransaction transaction = BeginTransactionInternal(isolationLevel);
-        return Task.FromResult(transaction);
     }
 
     //helper methods
@@ -495,7 +390,6 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
         return reader;
     }
-    private IDbTransaction BeginTransactionInternal(IsolationLevel isolationLevel) => InternalConnection.BeginTransaction(isolationLevel);
     private void Configure()
     {
         Exception e = null;
