@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Reflection;
+using TinyHelpers.Extensions;
 
 namespace BackendGestionaleBar.DataAccessLayer;
 
@@ -493,9 +494,18 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     private IDbTransaction BeginTransactionInternal(IsolationLevel isolationLevel) => InternalConnection.BeginTransaction(isolationLevel);
     private void Configure()
     {
-        string connectionString = Database.GetConnectionString();
-        SqlConnection connection = new(connectionString);
         Exception e = null;
+        string connectionString = Database.GetConnectionString();
+        bool hasValue = connectionString.HasValue();
+
+        if (!hasValue)
+        {
+            e = new Exception("please provide a valid connection string");
+            _logger.LogError(e, "Error");
+            throw e;
+        }
+
+        SqlConnection connection = new(connectionString);
 
         try
         {
