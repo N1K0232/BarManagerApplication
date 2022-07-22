@@ -427,7 +427,8 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //applying configurations
-        modelBuilder.ApplyConfigurationsFromAssembly(_dataContextType.Assembly);
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        modelBuilder.ApplyConfigurationsFromAssembly(assembly);
 
         //applying converter for strings. When the runtime gets, adds or updates an entity
         //the runtime trims the strings
@@ -536,9 +537,9 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
             _connection = connection;
         }
     }
-    private void SetQueryFilter<T>(ModelBuilder modelBuilder) where T : DeletableEntity
+    private void SetQueryFilter<T>(ModelBuilder builder) where T : DeletableEntity
     {
-        modelBuilder.Entity<T>().HasQueryFilter(x => !x.IsDeleted && x.DeletedDate == null && x.DeletedBy == null);
+        builder.Entity<T>().HasQueryFilter(x => !x.IsDeleted && x.DeletedDate == null && x.DeletedBy == null);
     }
     private static IEnumerable<MethodInfo> SetGlobalQueryMethods(Type type)
     {
