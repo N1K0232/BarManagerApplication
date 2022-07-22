@@ -416,9 +416,12 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     }
     private void ThrowIfDisposed()
     {
-        if (_disposed)
+        bool disposed = _disposed;
+        string name = _dataContextType.Name;
+
+        if (disposed)
         {
-            throw new ObjectDisposedException(_dataContextType.Name);
+            throw new ObjectDisposedException(name);
         }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
