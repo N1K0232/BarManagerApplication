@@ -133,8 +133,11 @@ public sealed class DataContext : DbContext, IDataContext
                 _logger.LogError(e, "Error");
                 throw e;
             }
-
-            _connection = connection;
+            else
+            {
+                _logger.LogInformation("test connection succeeded");
+                _connection = connection;
+            }
         }
     }
 
@@ -411,33 +414,7 @@ public sealed class DataContext : DbContext, IDataContext
             throw e;
         }
 
-        SqlConnection connection = new(connectionString);
-
-        try
-        {
-            _logger.LogInformation("Testing connection");
-            connection.Open();
-            connection.Close();
-        }
-        catch (SqlException ex)
-        {
-            e = ex;
-        }
-        catch (InvalidOperationException ex)
-        {
-            e = ex;
-        }
-
-        if (e != null)
-        {
-            _logger.LogError(e, "Error");
-            throw e;
-        }
-        else
-        {
-            _logger.LogInformation("Test connection succedeed");
-            _connection = connection;
-        }
+        Connection = new SqlConnection(connectionString);
     }
     private void SetQueryFilter<T>(ModelBuilder builder) where T : DeletableEntity
     {
