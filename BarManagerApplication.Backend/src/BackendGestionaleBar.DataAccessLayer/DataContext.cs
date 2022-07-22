@@ -165,7 +165,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
     {
         ThrowIfDisposed();
 
-        _dataReader = await ExecuteReaderAsync("Menu").ConfigureAwait(false);
+        _dataReader = await GetTableAsync("Menu").ConfigureAwait(false);
         List<Menu> result;
 
         if (_dataReader == null)
@@ -464,7 +464,7 @@ public sealed class DataContext : DbContext, IDataContext, ISqlContext
 
         base.OnModelCreating(modelBuilder);
     }
-    private async Task<SqlDataReader> ExecuteReaderAsync(string tableName)
+    private async Task<SqlDataReader> GetTableAsync(string tableName)
     {
         SqlDataReader reader;
         Exception e = null;
