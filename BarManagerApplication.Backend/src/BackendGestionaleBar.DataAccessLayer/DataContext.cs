@@ -102,8 +102,16 @@ public sealed class DataContext : DbContext, IDataContext
         {
             ThrowIfDisposed();
 
-            SqlConnection connection = (SqlConnection)value;
             Exception e = null;
+
+            if (value != null)
+            {
+                e = new Exception("please provide a valid connection");
+                _logger.LogError(e, "Error");
+                throw e;
+            }
+
+            SqlConnection connection = (SqlConnection)value;
 
             try
             {
