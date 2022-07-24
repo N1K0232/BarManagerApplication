@@ -7,6 +7,7 @@ using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.StorageProviders.Common;
 using Microsoft.EntityFrameworkCore;
 using MimeMapping;
+using TinyHelpers.Extensions;
 using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 
 namespace BackendGestionaleBar.BusinessLayer.Services;
@@ -39,7 +40,7 @@ public sealed class ImageService : IImageService
     {
         var query = dataContext.GetData<Entities.Image>();
 
-        if (!string.IsNullOrWhiteSpace(path))
+        if (path.HasValue())
         {
             query = query.Where(i => i.Path.Contains(path));
         }

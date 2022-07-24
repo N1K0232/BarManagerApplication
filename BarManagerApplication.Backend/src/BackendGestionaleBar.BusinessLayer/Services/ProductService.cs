@@ -4,6 +4,7 @@ using BackendGestionaleBar.DataAccessLayer;
 using BackendGestionaleBar.Shared.Models;
 using BackendGestionaleBar.Shared.Requests;
 using Microsoft.EntityFrameworkCore;
+using TinyHelpers.Extensions;
 using Entities = BackendGestionaleBar.DataAccessLayer.Entities;
 
 namespace BackendGestionaleBar.BusinessLayer.Services;
@@ -37,7 +38,7 @@ public sealed class ProductService : IProductService
     {
         var query = dataContext.GetData<Entities.Product>();
 
-        if (!string.IsNullOrWhiteSpace(name))
+        if (name.HasValue())
         {
             query = query.Where(p => p.Name.Contains(name));
         }
