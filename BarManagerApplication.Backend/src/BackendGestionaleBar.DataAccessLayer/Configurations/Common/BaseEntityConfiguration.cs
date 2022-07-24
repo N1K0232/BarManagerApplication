@@ -12,8 +12,6 @@ internal abstract class BaseEntityConfiguration<T> : IEntityTypeConfiguration<T>
         builder.Property(x => x.Id).ValueGeneratedOnAdd().IsRequired();
 
         builder.Property(x => x.CreatedDate).IsRequired();
-        builder.Property(x => x.CreatedBy).IsRequired();
         builder.Property(x => x.LastModifiedDate).IsRequired(false);
-        builder.Property(x => x.UpdatedBy).IsRequired(false);
     }
 }

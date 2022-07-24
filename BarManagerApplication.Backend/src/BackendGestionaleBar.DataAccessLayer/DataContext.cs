@@ -1,5 +1,4 @@
-﻿using BackendGestionaleBar.Contracts;
-using BackendGestionaleBar.DataAccessLayer.Entities;
+﻿using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using BackendGestionaleBar.DataAccessLayer.Views;
 using Microsoft.Data.SqlClient;
@@ -18,7 +17,6 @@ public sealed class DataContext : DbContext, IDataContext
     private static readonly MethodInfo _setQueryFilter;
     private static readonly Type _dataContextType;
 
-    private readonly IUserService _userService;
     private readonly ILogger<DataContext> _logger;
 
     private SqlConnection _connection;
@@ -27,16 +25,15 @@ public sealed class DataContext : DbContext, IDataContext
 
     private bool _disposed;
 
-    //constructors
+    #region Constructors
     static DataContext()
     {
         _dataContextType = typeof(DataContext);
         _setQueryFilter = _dataContextType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
             .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
     }
-    public DataContext(DbContextOptions<DataContext> options, IUserService userService, ILogger<DataContext> logger) : base(options)
+    public DataContext(DbContextOptions<DataContext> options, ILogger<DataContext> logger) : base(options)
     {
-        _userService = userService;
         _logger = logger;
 
         _connection = null;
@@ -47,14 +44,16 @@ public sealed class DataContext : DbContext, IDataContext
 
         Configure();
     }
+    #endregion
 
-    //destructor
+    #region Destructor
     ~DataContext()
     {
         Dispose(false);
     }
+    #endregion
 
-    //properties
+    #region Properties
     public DbSet<OrderDetail> OrderDetails
     {
         get
@@ -140,8 +139,9 @@ public sealed class DataContext : DbContext, IDataContext
             }
         }
     }
+    #endregion
 
-    //IDataContext interface implemented methods
+    #region IDataContext interface implemented methods
     public void Delete<T>(T entity) where T : BaseEntity
     {
         ThrowIfDisposed();
@@ -233,16 +233,15 @@ public sealed class DataContext : DbContext, IDataContext
 
         return task;
     }
+    #endregion
 
-    //helper methods
+    #region helper methods
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         ThrowIfDisposed();
 
         var entries = ChangeTracker.Entries()
             .Where(e => e.Entity.GetType().IsSubclassOf(typeof(BaseEntity))).ToList();
-
-        Guid? userId = _userService.GetId();
 
         foreach (var entry in entries.Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted))
         {
@@ -253,15 +252,12 @@ public sealed class DataContext : DbContext, IDataContext
                 _logger.LogInformation("Saving entity");
 
                 baseEntity.CreatedDate = DateTime.UtcNow;
-                baseEntity.CreatedBy = userId.GetValueOrDefault(Guid.Empty);
                 baseEntity.LastModifiedDate = null;
-                baseEntity.UpdatedBy = null;
 
                 if (baseEntity is DeletableEntity deletableEntity)
                 {
                     deletableEntity.IsDeleted = false;
                     deletableEntity.DeletedDate = null;
-                    deletableEntity.DeletedBy = null;
                 }
             }
             if (entry.State == EntityState.Modified)
@@ -269,7 +265,6 @@ public sealed class DataContext : DbContext, IDataContext
                 _logger.LogInformation("Updating entity");
 
                 baseEntity.LastModifiedDate = DateTime.UtcNow;
-                baseEntity.UpdatedBy = userId.GetValueOrDefault(Guid.Empty);
             }
             if (entry.State == EntityState.Deleted)
             {
@@ -280,7 +275,6 @@ public sealed class DataContext : DbContext, IDataContext
                     entry.State = EntityState.Modified;
                     deletableEntity.IsDeleted = true;
                     deletableEntity.DeletedDate = DateTime.UtcNow;
-                    deletableEntity.DeletedBy = userId.GetValueOrDefault(Guid.Empty);
                 }
             }
         }
@@ -418,12 +412,12 @@ public sealed class DataContext : DbContext, IDataContext
     }
     private void SetQueryFilter<T>(ModelBuilder builder) where T : DeletableEntity
     {
-        builder.Entity<T>().HasQueryFilter(x => !x.IsDeleted && x.DeletedDate == null && x.DeletedBy == null);
+        builder.Entity<T>().HasQueryFilter(x => !x.IsDeleted && x.DeletedDate == null);
     }
     private static IEnumerable<MethodInfo> SetGlobalQueryMethods(Type type)
     {
-        List<MethodInfo> result = new();
-        Type deletableEntityType = typeof(DeletableEntity);
+        var result = new List<MethodInfo>();
+        var deletableEntityType = typeof(DeletableEntity);
 
         if (deletableEntityType.IsAssignableFrom(type))
         {
@@ -432,4 +426,5 @@ public sealed class DataContext : DbContext, IDataContext
 
         return result;
     }
+    #endregion
 }
