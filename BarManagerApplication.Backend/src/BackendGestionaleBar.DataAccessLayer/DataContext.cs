@@ -233,6 +233,7 @@ public sealed class DataContext : DbContext, IDataContext
 
         return task;
     }
+    #endregion
 
     #region helper methods
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
