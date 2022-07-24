@@ -25,7 +25,7 @@ public sealed class DataContext : DbContext, IDataContext
 
     private bool _disposed;
 
-    //constructors
+    #region Constructors
     static DataContext()
     {
         _dataContextType = typeof(DataContext);
@@ -44,14 +44,16 @@ public sealed class DataContext : DbContext, IDataContext
 
         Configure();
     }
+    #endregion
 
-    //destructor
+    #region Destructor
     ~DataContext()
     {
         Dispose(false);
     }
+    #endregion
 
-    //properties
+    #region Properties
     public DbSet<OrderDetail> OrderDetails
     {
         get
@@ -137,8 +139,9 @@ public sealed class DataContext : DbContext, IDataContext
             }
         }
     }
+    #endregion
 
-    //IDataContext interface implemented methods
+    #region IDataContext interface implemented methods
     public void Delete<T>(T entity) where T : BaseEntity
     {
         ThrowIfDisposed();
@@ -231,7 +234,7 @@ public sealed class DataContext : DbContext, IDataContext
         return task;
     }
 
-    //helper methods
+    #region helper methods
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         ThrowIfDisposed();
@@ -422,4 +425,5 @@ public sealed class DataContext : DbContext, IDataContext
 
         return result;
     }
+    #endregion
 }
