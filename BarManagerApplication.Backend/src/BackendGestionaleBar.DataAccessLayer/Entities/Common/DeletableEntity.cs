@@ -9,6 +9,4 @@ public abstract class DeletableEntity : BaseEntity
     internal bool IsDeleted { get; set; }
 
     internal DateTime? DeletedDate { get; set; }
-
-    internal Guid? DeletedBy { get; set; }
 }
