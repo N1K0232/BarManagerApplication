@@ -9,6 +9,7 @@ using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
@@ -28,6 +29,8 @@ public static class HostBuilderExtensions
             options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
+
+        services.AddEndpointsApiExplorer();
 
         services.AddSwaggerGen(options =>
         {
@@ -64,10 +67,13 @@ public static class HostBuilderExtensions
     public static IServiceCollection AddDataContext(this IServiceCollection services, string connectionString)
     {
         services.AddSqlServer<AuthenticationDataContext>(connectionString);
-        services.AddSqlServer<DataContext>(connectionString);
-        services.AddScoped<IDataContext>(services => services.GetRequiredService<DataContext>());
-        services.AddScoped<ISqlContext>(services => services.GetRequiredService<DataContext>());
-
+        services.AddDbContext<IDataContext, DataContext>(options =>
+        {
+            options.UseSqlServer(connectionString, dbOptions =>
+            {
+                dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(2), null);
+            });
+        });
         return services;
     }
 
@@ -81,7 +87,8 @@ public static class HostBuilderExtensions
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
             options.Password.RequireUppercase = true;
-        }).AddEntityFrameworkStores<AuthenticationDataContext>().AddDefaultTokenProviders();
+        }).AddEntityFrameworkStores<AuthenticationDataContext>()
+        .AddDefaultTokenProviders();
 
         services.AddAuthentication(options =>
         {
@@ -118,7 +125,10 @@ public static class HostBuilderExtensions
     public static IApplicationBuilder UseSwaggerSettings(this IApplicationBuilder app)
     {
         app.UseSwagger();
-        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BackendGestionaleBar v1"));
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "BackendGestionaleBar v1");
+        });
         return app;
     }
 

@@ -21,13 +21,9 @@ builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
 });
 
 builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddProblemDetails();
-
 builder.Services.AddMapperProfiles();
-
 builder.Services.AddValidators();
-
 builder.Services.AddSwaggerSettings();
 
 string connectionString = StringConverter.GetString(builder.Configuration.GetConnectionString("SqlConnection"));
@@ -64,22 +60,14 @@ T Configure<T>(string sectionName) where T : class
 }
 
 var app = builder.Build();
-
 app.UseProblemDetails();
-
 app.UseSwaggerSettings();
-
 app.UseSerilogRequestLogging(options =>
 {
     options.IncludeQueryInRequestPath = true;
 });
-
 app.UseHttpsRedirection();
-
 app.UseRouting();
-
 app.UseIdentitySettings();
-
 app.MapControllers();
-
 await app.RunAsync();
