@@ -5,4 +5,11 @@
 				<ImplicitUsings>enable</ImplicitUsings>
 		</PropertyGroup>
 
+		<ItemGroup>
+		  <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.108">
+		    <PrivateAssets>all</PrivateAssets>
+		    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		  </PackageReference>
+		</ItemGroup>
+
 </Project>
