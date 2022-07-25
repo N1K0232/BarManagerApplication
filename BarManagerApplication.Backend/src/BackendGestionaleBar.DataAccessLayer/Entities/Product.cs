@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities;
 
-public class Product : DeletableEntity
+public sealed class Product : DeletableEntity
 {
     public Product() : base()
     {

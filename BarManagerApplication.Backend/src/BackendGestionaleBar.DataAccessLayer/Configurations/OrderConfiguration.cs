@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.DataAccessLayer.Configurations;
 
-internal class OrderConfiguration : DeletableEntityConfiguration<Order>
+internal sealed class OrderConfiguration : DeletableEntityConfiguration<Order>
 {
     public override void Configure(EntityTypeBuilder<Order> builder)
     {

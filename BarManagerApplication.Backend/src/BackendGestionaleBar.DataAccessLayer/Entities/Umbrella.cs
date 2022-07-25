@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities;
 
-public class Umbrella : DeletableEntity
+public sealed class Umbrella : DeletableEntity
 {
     public Umbrella() : base()
     {

@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities;
 
-public class Category : BaseEntity
+public sealed class Category : BaseEntity
 {
     public Category() : base()
     {
