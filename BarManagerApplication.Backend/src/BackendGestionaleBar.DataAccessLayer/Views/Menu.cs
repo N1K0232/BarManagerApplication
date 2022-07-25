@@ -1,6 +1,6 @@
 ﻿namespace BackendGestionaleBar.DataAccessLayer.Views;
 
-public class Menu
+public sealed class Menu
 {
     public string Product { get; set; }
 
