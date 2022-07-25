@@ -1,6 +1,6 @@
 ﻿namespace BackendGestionaleBar.DataAccessLayer.Entities;
 
-public class OrderDetail
+public sealed class OrderDetail
 {
     public OrderDetail()
     {

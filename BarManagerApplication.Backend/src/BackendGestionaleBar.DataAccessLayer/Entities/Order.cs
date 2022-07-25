@@ -3,7 +3,7 @@ using BackendGestionaleBar.Shared.Enums;
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities;
 
-public class Order : DeletableEntity
+public sealed class Order : DeletableEntity
 {
     public Order() : base()
     {

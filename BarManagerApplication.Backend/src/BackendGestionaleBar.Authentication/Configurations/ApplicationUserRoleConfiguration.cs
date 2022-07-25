@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.Authentication.Configurations;
 
-internal class ApplicationUserRoleConfiguration : IEntityTypeConfiguration<ApplicationUserRole>
+internal sealed class ApplicationUserRoleConfiguration : IEntityTypeConfiguration<ApplicationUserRole>
 {
     public void Configure(EntityTypeBuilder<ApplicationUserRole> builder)
     {

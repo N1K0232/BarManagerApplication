@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.DataAccessLayer.Entities;
 
-public class Image : BaseEntity
+public sealed class Image : BaseEntity
 {
     public Image() : base()
     {

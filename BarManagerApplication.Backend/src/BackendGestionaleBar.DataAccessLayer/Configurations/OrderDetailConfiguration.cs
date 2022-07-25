@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.DataAccessLayer.Configurations;
 
-internal class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
+internal sealed class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
 {
     public void Configure(EntityTypeBuilder<OrderDetail> builder)
     {
         builder.ToTable("OrderDetails");
+
         builder.HasKey(od => new { od.OrderId, od.ProductId });
 
         builder.HasOne(od => od.Order)
@@ -21,8 +22,10 @@ internal class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
             .HasForeignKey(od => od.ProductId)
             .IsRequired();
 
-        builder.Property(od => od.Price).IsRequired();
+        builder.Property(od => od.Price)
+            .IsRequired();
 
-        builder.Property(od => od.OrderedQuantity).IsRequired();
+        builder.Property(od => od.OrderedQuantity)
+            .IsRequired();
     }
 }
