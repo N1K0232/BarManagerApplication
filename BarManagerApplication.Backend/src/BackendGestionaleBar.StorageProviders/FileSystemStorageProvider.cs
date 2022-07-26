@@ -46,7 +46,7 @@ internal class FileSystemStorageProvider : IStorageProvider
         {
             string fullPath = GetFullPath(path);
             bool fileExists = File.Exists(fullPath);
-            if (!File.Exists(fullPath))
+            if (!fileExists)
             {
                 stream = null;
             }
