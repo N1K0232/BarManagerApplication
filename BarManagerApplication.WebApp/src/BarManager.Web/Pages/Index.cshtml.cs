@@ -1,23 +1,18 @@
-﻿using MeteoClient.Core;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BarManager.Web.Pages
+namespace BarManager.Web.Pages;
+
+public class IndexModel : PageModel
 {
-    public class IndexModel : PageModel
+    private readonly ILogger<IndexModel> _logger;
+
+    public IndexModel(ILogger<IndexModel> logger)
     {
-        private readonly ILogger<IndexModel> _logger;
-        private readonly IWeatherClient _weatherClient;
+        _logger = logger;
+    }
 
-        public IndexModel(ILogger<IndexModel> logger, IWeatherClient weatherClient)
-        {
-            _logger = logger;
-            _weatherClient = weatherClient;
-        }
+    public void OnGet()
+    {
 
-        public void OnGet()
-        {
-
-        }
     }
 }
