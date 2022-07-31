@@ -14,39 +14,78 @@ internal class FileSystemStorageProvider : IStorageProvider
 
     public async Task SaveAsync(string path, Stream stream)
     {
-        string fullPath = GetFullPath(path);
-        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+        try
+        {
+            string fullPath = GetFullPath(path);
+            string directoryName = Path.GetDirectoryName(fullPath);
+            bool directoryExists = Directory.Exists(directoryName);
 
-        using var outputStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write);
+            if (!directoryExists)
+            {
+                Directory.CreateDirectory(directoryName);
+            }
 
-        stream.Position = 0;
-        await stream.CopyToAsync(outputStream);
+            using var outputStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write);
 
-        outputStream.Close();
+            stream.Position = 0;
+            await stream.CopyToAsync(outputStream).ConfigureAwait(false);
+
+            outputStream.Close();
+        }
+        catch (Exception ex)
+        {
+            await Task.FromException(ex);
+        }
     }
 
     public Task<Stream> ReadAsync(string path)
     {
-        string fullPath = GetFullPath(path);
-        if (!File.Exists(fullPath))
+        FileStream stream;
+
+        try
         {
-            return null;
+            string fullPath = GetFullPath(path);
+            bool fileExists = File.Exists(fullPath);
+            if (!fileExists)
+            {
+                stream = null;
+            }
+
+            stream = File.OpenRead(fullPath);
+        }
+        catch (Exception)
+        {
+            stream = null;
         }
 
-        FileStream stream = File.OpenRead(fullPath);
         return Task.FromResult<Stream>(stream);
     }
 
     public Task DeleteAsync(string path)
     {
-        string fullPath = GetFullPath(path);
-        if (File.Exists(fullPath))
+        Task result;
+
+        try
         {
-            File.Delete(fullPath);
+            string fullPath = GetFullPath(path);
+            bool fileExists = File.Exists(fullPath);
+            if (fileExists)
+            {
+                File.Delete(fullPath);
+            }
+
+            result = Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            result = Task.FromException(ex);
         }
 
-        return Task.CompletedTask;
+        return result;
     }
 
-    private string GetFullPath(string path) => Path.Combine(settings.StorageFolder, path);
+    private string GetFullPath(string path)
+    {
+        return Path.Combine(settings.StorageFolder, path);
+    }
 }

@@ -1,10 +1,10 @@
 ﻿using BackendGestionaleBar.DataAccessLayer.Entities;
 using BackendGestionaleBar.DataAccessLayer.Entities.Common;
+using BackendGestionaleBar.DataAccessLayer.Extensions;
 using BackendGestionaleBar.DataAccessLayer.Views;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Reflection;
@@ -14,9 +14,6 @@ namespace BackendGestionaleBar.DataAccessLayer;
 
 public sealed class DataContext : DbContext, IDataContext
 {
-    private static readonly MethodInfo _setQueryFilter;
-    private static readonly Type _dataContextType;
-
     private readonly ILogger<DataContext> _logger;
 
     private SqlConnection _connection;
@@ -26,12 +23,6 @@ public sealed class DataContext : DbContext, IDataContext
     private bool _disposed;
 
     #region Constructors
-    static DataContext()
-    {
-        _dataContextType = typeof(DataContext);
-        _setQueryFilter = _dataContextType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
-            .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
-    }
     public DataContext(DbContextOptions<DataContext> options, ILogger<DataContext> logger) : base(options)
     {
         _logger = logger;
@@ -317,11 +308,11 @@ public sealed class DataContext : DbContext, IDataContext
     private void ThrowIfDisposed()
     {
         bool disposed = _disposed;
-        string name = _dataContextType.Name;
+        Type dataContextType = GetType();
 
         if (disposed)
         {
-            throw new ObjectDisposedException(name);
+            throw new ObjectDisposedException(dataContextType.FullName);
         }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -330,37 +321,8 @@ public sealed class DataContext : DbContext, IDataContext
         Assembly assembly = Assembly.GetExecutingAssembly();
         modelBuilder.ApplyConfigurationsFromAssembly(assembly);
 
-        //applying converter for strings. When the runtime gets, adds or updates an entity
-        //the runtime trims the strings
-        var trimStringConverter = new ValueConverter<string, string>(v => v.Trim(), v => v.Trim());
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-        {
-            foreach (var property in entityType.GetProperties())
-            {
-                if (property.ClrType == typeof(string))
-                {
-                    modelBuilder.Entity(entityType.Name)
-                        .Property(property.Name)
-                        .HasConversion(trimStringConverter);
-                }
-            }
-        }
-
-        //applying query filter on DeletableEntity objects
-        var entities = modelBuilder.Model
-            .GetEntityTypes()
-            .Where(t => typeof(DeletableEntity).IsAssignableFrom(t.ClrType))
-            .ToList();
-        foreach (var type in entities.Select(t => t.ClrType))
-        {
-            var methods = SetGlobalQueryMethods(type);
-
-            foreach (var method in methods)
-            {
-                var genericMethod = method.MakeGenericMethod(type);
-                genericMethod.Invoke(this, new object[] { modelBuilder });
-            }
-        }
+        modelBuilder.ApplyTrimStringConverter();
+        modelBuilder.ApplyQueryFilter(this);
 
         base.OnModelCreating(modelBuilder);
     }
@@ -397,7 +359,7 @@ public sealed class DataContext : DbContext, IDataContext
     }
     private void Configure()
     {
-        Exception e = null;
+        Exception e;
         string connectionString = Database.GetConnectionString();
         bool hasValue = connectionString.HasValue();
 
@@ -413,18 +375,6 @@ public sealed class DataContext : DbContext, IDataContext
     private void SetQueryFilter<T>(ModelBuilder builder) where T : DeletableEntity
     {
         builder.Entity<T>().HasQueryFilter(x => !x.IsDeleted && x.DeletedDate == null);
-    }
-    private static IEnumerable<MethodInfo> SetGlobalQueryMethods(Type type)
-    {
-        var result = new List<MethodInfo>();
-        var deletableEntityType = typeof(DeletableEntity);
-
-        if (deletableEntityType.IsAssignableFrom(type))
-        {
-            result.Add(_setQueryFilter);
-        }
-
-        return result;
     }
     #endregion
 }

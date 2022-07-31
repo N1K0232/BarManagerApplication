@@ -1,4 +1,5 @@
-﻿using BackendGestionaleBar.Authentication.Entities;
+﻿using AutoMapper;
+using BackendGestionaleBar.Authentication.Entities;
 using BackendGestionaleBar.BusinessLayer.Services.Interfaces;
 using BackendGestionaleBar.Shared.Models;
 using Microsoft.AspNetCore.Identity;
@@ -8,10 +9,12 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 public sealed class AuthenticatedService : IAuthenticatedService
 {
 	private readonly UserManager<ApplicationUser> userManager;
+	private readonly IMapper mapper;
 
-	public AuthenticatedService(UserManager<ApplicationUser> userManager)
+	public AuthenticatedService(UserManager<ApplicationUser> userManager, IMapper mapper)
 	{
 		this.userManager = userManager;
+		this.mapper = mapper;
 	}
 
 	public async Task<User> GetUserAsync(Guid userId)
@@ -21,17 +24,11 @@ public sealed class AuthenticatedService : IAuthenticatedService
 			return null;
 		}
 
-		var dbUser = await userManager.FindByIdAsync(userId.ToString());
+		string id = Convert.ToString(userId);
 
-		var user = new User
-		{
-			Name = dbUser.Name,
-			DateOfBirth = dbUser.DateOfBirth,
-			Email = dbUser.Email,
-			UserName = dbUser.UserName,
-			PhoneNumber = dbUser.PhoneNumber
-		};
+		var dbUser = await userManager.FindByIdAsync(id);
 
+		var user = mapper.Map<User>(dbUser);
 		return user;
 	}
 }
