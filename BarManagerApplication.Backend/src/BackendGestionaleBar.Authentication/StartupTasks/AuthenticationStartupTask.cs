@@ -1,4 +1,5 @@
 ﻿using BackendGestionaleBar.Authentication.Entities;
+using BackendGestionaleBar.Authentication.Extensions;
 using BackendGestionaleBar.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace BackendGestionaleBar.Authentication.StartupTasks;
 
-public class AuthenticationStartupTask : IHostedService
+public sealed class AuthenticationStartupTask : IHostedService
 {
     private readonly IServiceProvider serviceProvider;
 
@@ -50,22 +51,17 @@ public class AuthenticationStartupTask : IHostedService
             PhoneNumber = "3319907703"
         };
 
-        await CheckCreateUserAsync(nicoAdminUser, "Tmljb0xvdmVzTWFtdGExOTE2IQ==", RoleNames.Administrator, RoleNames.Staff);
-        await CheckCreateUserAsync(mamtaAdminUser, "TWFtdGFMb3Zlc05pY28xNjE5IQ==", RoleNames.Administrator, RoleNames.Staff);
+        await CheckCreateUserAsync(nicoAdminUser, "Tmljb0xvdmVzTWFtdGExOTE2IQ==");
+        await CheckCreateUserAsync(mamtaAdminUser, "TWFtdGFMb3Zlc05pY28xNjE5IQ==");
 
-        async Task CheckCreateUserAsync(AuthenticationUser user, string password, params string[] roles)
+        async Task CheckCreateUserAsync(AuthenticationUser user, string password)
         {
-            var dbUser = await userManager.FindByNameAsync(user.UserName);
-            if (dbUser == null)
-            {
-                var result = await userManager.CreateAsync(user, StringConverter.GetString(password));
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRolesAsync(user, roles);
-                }
-            }
+            await userManager.RegisterAsync(user, StringConverter.GetString(password), RoleNames.Administrator, RoleNames.Staff);
         }
     }
 
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
 }

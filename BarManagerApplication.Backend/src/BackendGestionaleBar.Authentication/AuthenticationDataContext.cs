@@ -24,10 +24,7 @@ public sealed class AuthenticationDataContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        builder.ApplyConfigurationsFromAssembly(assembly);
-
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         builder.ApplyTrimStringConverter();
     }
 }

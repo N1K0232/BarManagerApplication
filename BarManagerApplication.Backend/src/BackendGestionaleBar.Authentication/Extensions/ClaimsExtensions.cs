@@ -8,12 +8,8 @@ public static class ClaimsExtensions
     public static Guid GetId(this IPrincipal user)
     {
         string value = GetClaimValueInternal(user, ClaimTypes.NameIdentifier);
-        if (Guid.TryParse(value, out Guid id))
-        {
-            return id;
-        }
-
-        return Guid.Empty;
+        bool parsed = Guid.TryParse(value, out Guid userId);
+        return parsed ? userId : Guid.Empty;
     }
 
     public static string GetName(this IPrincipal user)
@@ -24,12 +20,8 @@ public static class ClaimsExtensions
     public static DateTime GetDateOfBirth(this IPrincipal user)
     {
         string value = GetClaimValueInternal(user, ClaimTypes.DateOfBirth);
-        if (DateTime.TryParse(value, out DateTime dateOfBirth))
-        {
-            return dateOfBirth;
-        }
-
-        return DateTime.MinValue;
+        bool parsed = DateTime.TryParse(value, out DateTime dateOfBirth);
+        return parsed ? dateOfBirth : DateTime.MinValue;
     }
 
     public static string GetEmail(this IPrincipal user)
