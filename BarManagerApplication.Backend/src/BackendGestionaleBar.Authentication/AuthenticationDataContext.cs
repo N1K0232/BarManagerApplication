@@ -8,11 +8,11 @@ using System.Reflection;
 namespace BackendGestionaleBar.Authentication;
 
 public sealed class AuthenticationDataContext
-    : IdentityDbContext<ApplicationUser,
-      ApplicationRole,
+    : IdentityDbContext<AuthenticationUser,
+      AuthenticationRole,
       Guid,
       IdentityUserClaim<Guid>,
-      ApplicationUserRole,
+      AuthenticationUserRole,
       IdentityUserLogin<Guid>,
       IdentityRoleClaim<Guid>,
       IdentityUserToken<Guid>>

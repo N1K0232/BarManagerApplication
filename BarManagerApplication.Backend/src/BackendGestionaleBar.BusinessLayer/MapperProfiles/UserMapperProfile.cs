@@ -9,7 +9,7 @@ internal class UserMapperProfile : Profile
 {
 	public UserMapperProfile()
 	{
-		CreateMap<ApplicationUser, User>();
-		CreateMap<RegisterUserRequest, ApplicationUser>();
+		CreateMap<AuthenticationUser, User>();
+		CreateMap<RegisterUserRequest, AuthenticationUser>();
 	}
 }

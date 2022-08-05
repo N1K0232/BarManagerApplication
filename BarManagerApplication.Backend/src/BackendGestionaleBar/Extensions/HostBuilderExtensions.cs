@@ -79,7 +79,7 @@ public static class HostBuilderExtensions
 
     public static IServiceCollection AddIdentitySettings(this IServiceCollection services, JwtSettings jwtSettings)
     {
-        services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+        services.AddIdentity<AuthenticationUser, AuthenticationRole>(options =>
         {
             options.User.RequireUniqueEmail = true;
             options.Password.RequiredLength = 8;

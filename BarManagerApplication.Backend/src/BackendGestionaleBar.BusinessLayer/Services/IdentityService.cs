@@ -18,11 +18,11 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 public sealed class IdentityService : IIdentityService
 {
     private readonly JwtSettings jwtSettings;
-    private readonly UserManager<ApplicationUser> userManager;
-    private readonly SignInManager<ApplicationUser> signInManager;
+    private readonly UserManager<AuthenticationUser> userManager;
+    private readonly SignInManager<AuthenticationUser> signInManager;
     private readonly RandomNumberGenerator generator;
 
-    public IdentityService(IOptions<JwtSettings> jwtSettingsOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    public IdentityService(IOptions<JwtSettings> jwtSettingsOptions, UserManager<AuthenticationUser> userManager, SignInManager<AuthenticationUser> signInManager)
     {
         generator = RandomNumberGenerator.Create();
         jwtSettings = jwtSettingsOptions.Value;
@@ -120,7 +120,7 @@ public sealed class IdentityService : IIdentityService
 
     private async Task<IdentityResult> RegisterAsync(RegisterUserRequest request)
     {
-        var user = new ApplicationUser
+        var user = new AuthenticationUser
         {
             Name = $"{request.FirstName} {request.LastName}",
             DateOfBirth = request.DateOfBirth,
@@ -190,7 +190,7 @@ public sealed class IdentityService : IIdentityService
 
         return null;
     }
-    private async Task SaveRefreshTokenAsync(ApplicationUser user, string refreshToken)
+    private async Task SaveRefreshTokenAsync(AuthenticationUser user, string refreshToken)
     {
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.Authentication.Configurations;
 
-internal sealed class ApplicationUserRoleConfiguration : IEntityTypeConfiguration<ApplicationUserRole>
+internal sealed class AuthenticationUserRoleConfiguration : IEntityTypeConfiguration<AuthenticationUserRole>
 {
-    public void Configure(EntityTypeBuilder<ApplicationUserRole> builder)
+    public void Configure(EntityTypeBuilder<AuthenticationUserRole> builder)
     {
         builder.HasKey(userRole => new { userRole.UserId, userRole.RoleId });
 

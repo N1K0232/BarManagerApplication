@@ -18,8 +18,8 @@ public class AuthenticationStartupTask : IHostedService
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
-        using var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
-        using var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        using var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AuthenticationRole>>();
+        using var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AuthenticationUser>>();
 
         string[] roleNames = new string[] { RoleNames.Administrator, RoleNames.Staff, RoleNames.Customer };
 
@@ -28,11 +28,11 @@ public class AuthenticationStartupTask : IHostedService
             bool roleExists = await roleManager.RoleExistsAsync(roleName);
             if (!roleExists)
             {
-                await roleManager.CreateAsync(new ApplicationRole(roleName));
+                await roleManager.CreateAsync(new AuthenticationRole(roleName));
             }
         }
 
-        var nicoAdminUser = new ApplicationUser
+        var nicoAdminUser = new AuthenticationUser
         {
             Name = "Nicola Silvestri",
             DateOfBirth = DateTime.Parse("22/10/2002"),
@@ -41,7 +41,7 @@ public class AuthenticationStartupTask : IHostedService
             PhoneNumber = "3319907702"
         };
 
-        var mamtaAdminUser = new ApplicationUser
+        var mamtaAdminUser = new AuthenticationUser
         {
             Name = "Mamta",
             DateOfBirth = DateTime.Parse("03/03/2006"),
@@ -53,7 +53,7 @@ public class AuthenticationStartupTask : IHostedService
         await CheckCreateUserAsync(nicoAdminUser, "Tmljb0xvdmVzTWFtdGExOTE2IQ==", RoleNames.Administrator, RoleNames.Staff);
         await CheckCreateUserAsync(mamtaAdminUser, "TWFtdGFMb3Zlc05pY28xNjE5IQ==", RoleNames.Administrator, RoleNames.Staff);
 
-        async Task CheckCreateUserAsync(ApplicationUser user, string password, params string[] roles)
+        async Task CheckCreateUserAsync(AuthenticationUser user, string password, params string[] roles)
         {
             var dbUser = await userManager.FindByNameAsync(user.UserName);
             if (dbUser == null)

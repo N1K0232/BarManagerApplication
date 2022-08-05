@@ -8,9 +8,9 @@ namespace BackendGestionaleBar.Authorization.Handlers;
 
 public class UserActiveHandler : AuthorizationHandler<UserActiveRequirement>
 {
-    private readonly UserManager<ApplicationUser> userManager;
+    private readonly UserManager<AuthenticationUser> userManager;
 
-    public UserActiveHandler(UserManager<ApplicationUser> userManager)
+    public UserActiveHandler(UserManager<AuthenticationUser> userManager)
     {
         this.userManager = userManager;
     }

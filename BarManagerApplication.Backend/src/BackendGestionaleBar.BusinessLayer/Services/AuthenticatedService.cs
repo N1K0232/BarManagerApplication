@@ -8,10 +8,10 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class AuthenticatedService : IAuthenticatedService
 {
-	private readonly UserManager<ApplicationUser> userManager;
+	private readonly UserManager<AuthenticationUser> userManager;
 	private readonly IMapper mapper;
 
-	public AuthenticatedService(UserManager<ApplicationUser> userManager, IMapper mapper)
+	public AuthenticatedService(UserManager<AuthenticationUser> userManager, IMapper mapper)
 	{
 		this.userManager = userManager;
 		this.mapper = mapper;

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BackendGestionaleBar.Authentication.Configurations;
 
-internal sealed class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
+internal sealed class AuthenticationUserConfiguration : IEntityTypeConfiguration<AuthenticationUser>
 {
-    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+    public void Configure(EntityTypeBuilder<AuthenticationUser> builder)
     {
         builder.Property(user => user.Name)
             .HasMaxLength(256)
