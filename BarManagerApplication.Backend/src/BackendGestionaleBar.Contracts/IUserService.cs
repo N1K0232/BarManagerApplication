@@ -2,6 +2,6 @@
 
 public interface IUserService
 {
-    Guid? GetId();
-    string? GetUsername();
+    Guid GetId();
+    string GetUsername();
 }
