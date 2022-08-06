@@ -19,6 +19,6 @@ internal class HttpUserService : IUserService
 
     public string GetUsername()
     {
-        return httpContext?.User.GetUserName();
+        return httpContext.User.GetUserName();
     }
 }
