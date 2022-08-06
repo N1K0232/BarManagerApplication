@@ -74,6 +74,9 @@ public static class HostBuilderExtensions
                 dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(2), null);
             });
         });
+
+        services.AddDatabase(connectionString);
+
         return services;
     }
 
