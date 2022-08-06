@@ -7,7 +7,7 @@ public static class UserManagerExtensions
 {
     public static async Task<IdentityResult> RegisterAsync(this UserManager<AuthenticationUser> userManager, AuthenticationUser user, string password, string role)
     {
-        IdentityResult identityResult = await TryRegisterAsync(userManager, user, password);
+        IdentityResult identityResult = await userManager.TryRegisterAsync(user, password);
         if (identityResult.Succeeded)
         {
             identityResult = await userManager.AddToRoleAsync(user, role);
@@ -18,7 +18,7 @@ public static class UserManagerExtensions
 
     internal static async Task<IdentityResult> RegisterAsync(this UserManager<AuthenticationUser> userManager, AuthenticationUser user, string password, params string[] roles)
     {
-        IdentityResult identityResult = await TryRegisterAsync(userManager, user, password);
+        IdentityResult identityResult = await userManager.TryRegisterAsync(user, password);
         if (identityResult.Succeeded)
         {
             identityResult = await userManager.AddToRolesAsync(user, roles);
@@ -27,7 +27,7 @@ public static class UserManagerExtensions
         return identityResult;
     }
 
-    private static async Task<IdentityResult> TryRegisterAsync(UserManager<AuthenticationUser> userManager, AuthenticationUser user, string password)
+    private static async Task<IdentityResult> TryRegisterAsync(this UserManager<AuthenticationUser> userManager, AuthenticationUser user, string password)
     {
         AuthenticationUser dbUser = await userManager.FindByEmailAsync(user.Email) ?? await userManager.FindByNameAsync(user.UserName);
         if (dbUser != null)
