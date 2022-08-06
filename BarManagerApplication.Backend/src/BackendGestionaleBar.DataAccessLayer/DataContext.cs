@@ -68,7 +68,10 @@ public sealed class DataContext : DbContext, IDataContext
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
         Set<T>().Add(entity);
     }
-    public Task SaveAsync() => SaveChangesAsync();
+    public Task SaveAsync()
+    {
+        return SaveChangesAsync();
+    }
     public Task ExecuteTransactionAsync(Func<Task> action)
     {
         var strategy = Database.CreateExecutionStrategy();
