@@ -17,12 +17,14 @@ namespace BackendGestionaleBar.BusinessLayer.Services;
 
 public sealed class IdentityService : IIdentityService
 {
-    private readonly JwtSettings jwtSettings;
-    private readonly UserManager<ApplicationUser> userManager;
-    private readonly SignInManager<ApplicationUser> signInManager;
     private readonly RandomNumberGenerator generator;
 
-    public IdentityService(IOptions<JwtSettings> jwtSettingsOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    private readonly JwtSettings jwtSettings;
+
+    private readonly UserManager<AuthenticationUser> userManager;
+    private readonly SignInManager<AuthenticationUser> signInManager;
+
+    public IdentityService(IOptions<JwtSettings> jwtSettingsOptions, UserManager<AuthenticationUser> userManager, SignInManager<AuthenticationUser> signInManager)
     {
         generator = RandomNumberGenerator.Create();
         jwtSettings = jwtSettingsOptions.Value;
@@ -33,18 +35,13 @@ public sealed class IdentityService : IIdentityService
 
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
+        var signInResult = await signInManager.LoginAsync(request.Email, request.Password);
+        if (signInResult == null || !signInResult.Succeeded)
+        {
+            return null;
+        }
+
         var user = await userManager.FindByEmailAsync(request.Email);
-        if (user == null)
-        {
-            return null;
-        }
-
-        var signInResult = await signInManager.PasswordSignInAsync(user, request.Password, false, false);
-        if (!signInResult.Succeeded)
-        {
-            return null;
-        }
-
         var roles = await userManager.GetRolesAsync(user);
 
         var claims = new List<Claim>
@@ -64,26 +61,30 @@ public sealed class IdentityService : IIdentityService
     public Task EnableTwoFactorAuthenticationAsync() => Task.CompletedTask;
     public async Task<RegisterResponse> RegisterCustomerAsync(RegisterUserRequest request)
     {
-        var result = await RegisterAsync(request);
-
-        if (result.Succeeded)
+        var user = new AuthenticationUser
         {
-            var user = await userManager.FindByNameAsync(request.UserName);
-            result = await userManager.AddToRoleAsync(user, RoleNames.Customer);
-        }
+            Name = $"{request.FirstName} {request.LastName}",
+            DateOfBirth = request.DateOfBirth,
+            PhoneNumber = request.PhoneNumber,
+            Email = request.Email,
+            UserName = request.UserName
+        };
 
+        var result = await userManager.RegisterAsync(user, request.Password, RoleNames.Customer);
         return new(result.Succeeded, result.Errors.Select(e => e.Description));
     }
     public async Task<RegisterResponse> RegisterStaffAsync(RegisterUserRequest request)
     {
-        var result = await RegisterAsync(request);
-
-        if (result.Succeeded)
+        var user = new AuthenticationUser
         {
-            var user = await userManager.FindByIdAsync(request.UserName);
-            result = await userManager.AddToRoleAsync(user, RoleNames.Staff);
-        }
+            Name = $"{request.FirstName} {request.LastName}",
+            DateOfBirth = request.DateOfBirth,
+            PhoneNumber = request.PhoneNumber,
+            Email = request.Email,
+            UserName = request.UserName
+        };
 
+        var result = await userManager.RegisterAsync(user, request.Password, RoleNames.Staff);
         return new(result.Succeeded, result.Errors.Select(e => e.Description));
     }
     public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request)
@@ -118,19 +119,6 @@ public sealed class IdentityService : IIdentityService
         return new(result.Succeeded, result.Errors.Select(e => e.Description));
     }
 
-    private async Task<IdentityResult> RegisterAsync(RegisterUserRequest request)
-    {
-        var user = new ApplicationUser
-        {
-            Name = $"{request.FirstName} {request.LastName}",
-            DateOfBirth = request.DateOfBirth,
-            PhoneNumber = request.PhoneNumber,
-            Email = request.Email,
-            UserName = request.UserName
-        };
-        var result = await userManager.CreateAsync(user, request.Password);
-        return result;
-    }
     private AuthResponse CreateToken(IEnumerable<Claim> claims)
     {
         string accessToken = GetAccessToken(claims);
@@ -190,7 +178,7 @@ public sealed class IdentityService : IIdentityService
 
         return null;
     }
-    private async Task SaveRefreshTokenAsync(ApplicationUser user, string refreshToken)
+    private async Task SaveRefreshTokenAsync(AuthenticationUser user, string refreshToken)
     {
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpirationDate = DateTime.UtcNow.AddMinutes(jwtSettings.RefreshTokenExpirationMinutes);

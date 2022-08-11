@@ -74,12 +74,15 @@ public static class HostBuilderExtensions
                 dbOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(2), null);
             });
         });
+
+        services.AddDatabase(connectionString);
+
         return services;
     }
 
     public static IServiceCollection AddIdentitySettings(this IServiceCollection services, JwtSettings jwtSettings)
     {
-        services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+        services.AddIdentity<AuthenticationUser, AuthenticationRole>(options =>
         {
             options.User.RequireUniqueEmail = true;
             options.Password.RequiredLength = 8;

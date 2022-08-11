@@ -2,14 +2,12 @@
 using BackendGestionaleBar.DataAccessLayer.Entities.Common;
 using BackendGestionaleBar.DataAccessLayer.Views;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace BackendGestionaleBar.DataAccessLayer;
 
 public interface IDataContext
 {
     DbSet<OrderDetail> OrderDetails { get; }
-    IDbConnection Connection { get; set; }
 
     void Delete<T>(T entity) where T : BaseEntity;
 

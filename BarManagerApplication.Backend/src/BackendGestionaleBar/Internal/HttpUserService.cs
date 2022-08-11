@@ -3,28 +3,22 @@ using BackendGestionaleBar.Contracts;
 
 namespace BackendGestionaleBar.Internal;
 
-#nullable enable
 internal class HttpUserService : IUserService
 {
-    private readonly HttpContext? httpContext;
+    private readonly HttpContext httpContext;
 
     public HttpUserService(IHttpContextAccessor httpContextAccessor)
     {
         httpContext = httpContextAccessor.HttpContext;
     }
 
-    public Guid? GetId()
+    public Guid GetId()
     {
-        Guid? userId = httpContext?.User.GetId();
-
-        if (userId == Guid.Empty)
-        {
-            return null;
-        }
-
-        return userId;
+        return httpContext.User.GetId();
     }
 
-    public string? GetUsername() => httpContext?.User.GetUserName();
+    public string GetUsername()
+    {
+        return httpContext.User.GetUserName();
+    }
 }
-#nullable disable

@@ -8,11 +8,11 @@ using System.Reflection;
 namespace BackendGestionaleBar.Authentication;
 
 public sealed class AuthenticationDataContext
-    : IdentityDbContext<ApplicationUser,
-      ApplicationRole,
+    : IdentityDbContext<AuthenticationUser,
+      AuthenticationRole,
       Guid,
       IdentityUserClaim<Guid>,
-      ApplicationUserRole,
+      AuthenticationUserRole,
       IdentityUserLogin<Guid>,
       IdentityRoleClaim<Guid>,
       IdentityUserToken<Guid>>
@@ -24,10 +24,7 @@ public sealed class AuthenticationDataContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        builder.ApplyConfigurationsFromAssembly(assembly);
-
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         builder.ApplyTrimStringConverter();
     }
 }

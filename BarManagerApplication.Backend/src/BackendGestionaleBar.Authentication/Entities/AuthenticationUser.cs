@@ -2,7 +2,7 @@
 
 namespace BackendGestionaleBar.Authentication.Entities;
 
-public sealed class ApplicationUser : IdentityUser<Guid>
+public sealed class AuthenticationUser : IdentityUser<Guid>
 {
     public string Name { get; set; }
 
@@ -12,5 +12,5 @@ public sealed class ApplicationUser : IdentityUser<Guid>
 
     public DateTime? RefreshTokenExpirationDate { get; set; }
 
-    public List<ApplicationUserRole> UserRoles { get; set; }
+    public List<AuthenticationUserRole> UserRoles { get; set; }
 }
